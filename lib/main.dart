@@ -20,11 +20,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: Scaffold(
-        body: SafeArea(
+      home: SafeArea(
           child: HomeScreen()
         ),
-      ),
       debugShowCheckedModeBanner: false,
   );
   }
