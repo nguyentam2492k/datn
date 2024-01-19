@@ -1,5 +1,4 @@
-import 'package:datn/screens/create_request/create_request_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:datn/screens/manage_request/manage_request_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -153,7 +152,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => CreateRequestScreen()
+                  builder: (context) => ManageRequestScreen()
                 )
               );
             },
