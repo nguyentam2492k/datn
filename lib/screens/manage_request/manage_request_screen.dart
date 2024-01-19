@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'dart:math';
+import 'dart:math';
 
 class ManageRequestScreen extends StatefulWidget {
   const ManageRequestScreen({super.key});
@@ -11,12 +11,19 @@ class ManageRequestScreen extends StatefulWidget {
 }
 
 class ManageRequestScreenState extends State<ManageRequestScreen> {
+  List<String> requestStatus = ["Tat ca", "Dang xu ly", "Da xong", "Da huy"];
+  String? selectedStatus = "Tat ca";
+
+  void setSelectedStatus(String? value) {
+    selectedStatus = value;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: buildAppBar(),
-        body: manageRequestScreenBody(),
+        body: manageRequestScreenBody(requestStatus, selectedStatus),
       ),
     );
   }
@@ -40,89 +47,104 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  Widget manageRequestScreenBody() {
+  Widget manageRequestScreenBody(List<String> listStatus, String? selectedStatus) {
+
+    //Random color for test
+    List myColors = [Colors.red, Colors.green, Colors.grey];
+    List colors = <Color>[];
+    for(int i=0; i < 20; i++) {
+      colors.add(myColors[Random().nextInt(3)]);
+    }
+
+    debugPrint(selectedStatus);
+    
+    return Stack(
+      children: [
+        buildRequestListView(colors),
+
+        Align(
+          alignment: Alignment.topRight,
+          child: buildFilterButton(selectedStatus),
+        ),
+      ]
+    );
+  }
+
+  ListView buildRequestListView(List<dynamic> colors) {
     return ListView.separated(
       itemCount: 20,
       separatorBuilder: (BuildContext context, int index) => const Divider(),
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       itemBuilder: (BuildContext context, int index) { 
         return GestureDetector(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 120,
-                color: Colors.red,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 30, 
-                      child: Text(
-                        "Ma: $index", 
-                        textAlign: TextAlign.left, 
-                        style: TextStyle(
-                          backgroundColor: Colors.cyan
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30, 
-                      child: Text(
-                        "Sinh vien: Nguyen Van $index", 
-                        textAlign: TextAlign.left, 
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          backgroundColor: Colors.white
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30, 
-                      child: Text(
-                        "Loai yeu cau: $index$index$index$index$index", 
-                        textAlign: TextAlign.left, 
-                        style: TextStyle(
-                          backgroundColor: Colors.cyan
-                        ),
-                      ),
-                    ),
-                    
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  color: Colors.yellow,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                              "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
-                              "Số bản tiếng Việt: $index\n"
-                              "Lý do: em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ.", 
-                              textAlign: TextAlign.left, 
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(backgroundColor: Colors.cyan),),
-                      SizedBox(
-                        height: 30,
-                        child: Text(
-                          "Tinh trang: Da xong", 
-                          textAlign: TextAlign.center, 
-                          style: TextStyle(backgroundColor: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          child: Container(
+            // margin: EdgeInsets.all(5),
+            padding: EdgeInsets.only(left: 7),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: colors[index],
+                  width: 5
+                )
               )
-            ],
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Loai yeu cau: Giấy chứng nhận", 
+                          textAlign: TextAlign.left, 
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          "Tinh trang: Da xong", 
+                          textAlign: TextAlign.left, 
+                          maxLines: 2,
+                        ),
+                        Text(
+                          "Le phi: ${index}0.000", 
+                          textAlign: TextAlign.left, 
+                          maxLines: 1,
+                        ),
+                        Text(
+                          "${index+1}-09-2023 02:11:46", 
+                          textAlign: TextAlign.left, 
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 5,),
+                  Expanded(
+                    flex: 5,
+                    child: Text(
+                      "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
+                      "Số bản tiếng Việt: $index\n"
+                      "Lý do: em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ.", 
+                      textAlign: TextAlign.left, 
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 5,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
           onTap: (){
             showDialog(
@@ -131,15 +153,56 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             );
           },
         );
-       },
+      },
+    );
+  }
+
+  Container buildFilterButton(String? selectedStatus) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      height: 35,
+      width: 90,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.all(Radius.circular(5))
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          iconSize: 13,
+          elevation: 0,
+          // focusColor: Colors.transparent,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 12
+          ),
+          // isDense: true,
+          isExpanded: true,
+          
+          value: selectedStatus,
+          icon: Icon(Icons.filter_alt_outlined),
+          items: requestStatus
+            .map((status) => DropdownMenuItem<String>(
+              value: status,
+              child: Text(status)
+            )).toList(), 
+          onChanged: (status) => setState(() { 
+            setSelectedStatus(status);
+            debugPrint("Change button to $status");
+            debugPrint(selectedStatus);
+          }),
+        ),
+      ),
     );
   }
 
   AlertDialog buildRequestInfoDialog(BuildContext context, int index) {
     debugPrint("Tap row $index");
     return AlertDialog(
+      elevation: 0,
       title: Text(
-        "Thong tin yeu cau",
+        "Chi tiet yeu cau",
         style: TextStyle(
           fontWeight: FontWeight.bold
         ),
