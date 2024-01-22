@@ -22,6 +22,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: buildAppBar(),
         body: manageRequestScreenBody(requestStatus, selectedStatus),
       ),
@@ -50,7 +51,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   Widget manageRequestScreenBody(List<String> listStatus, String? selectedStatus) {
 
     //Random color for test
-    List myColors = [Colors.red, Colors.green, Colors.grey];
+    List myColors = [Colors.red, Colors.green, Colors.orangeAccent];
     List colors = <Color>[];
     for(int i=0; i < 20; i++) {
       colors.add(myColors[Random().nextInt(3)]);
@@ -73,87 +74,108 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   ListView buildRequestListView(List<dynamic> colors) {
     return ListView.separated(
       itemCount: 20,
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
-      padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-      itemBuilder: (BuildContext context, int index) { 
+      padding: EdgeInsets.all(10),
+      separatorBuilder: (context, index) => SizedBox(height: 10,),
+      itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           child: Container(
-            // margin: EdgeInsets.all(5),
-            padding: EdgeInsets.only(left: 7),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: colors[index],
-                  width: 5
-                )
-              )
+            padding: EdgeInsets.fromLTRB(0, 8, 20, 8),
+             decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 1.5,
+                  offset: Offset(0, 0.5), // changes position of shadow
+                ),
+              ],
             ),
             child: IntrinsicHeight(
-              child: Row(
+              child: Row( 
                 mainAxisSize: MainAxisSize.max,
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    width: 6,
+                    decoration: BoxDecoration(
+                      color: colors[index],
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
+                    ),
+                  ),
+                  SizedBox(width: 15,),
                   Expanded(
-                    flex: 2,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Loai yeu cau: Giấy chứng nhận", 
-                          textAlign: TextAlign.left, 
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          "Tinh trang: Da xong", 
-                          textAlign: TextAlign.left, 
-                          maxLines: 2,
-                        ),
-                        Text(
-                          "Le phi: ${index}0.000", 
-                          textAlign: TextAlign.left, 
+                          "Giấy chứng nhận",
                           maxLines: 1,
-                        ),
-                        Text(
-                          "${index+1}-09-2023 02:11:46", 
-                          textAlign: TextAlign.left, 
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
                           style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+                        SizedBox(height: 5,),
+                        Text(
+                          "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
+                          "Số bản tiếng Việt: $index\n"
+                          "Lý do: em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ.",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                        SizedBox(height: 8,),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.calendar_month,
+                                    size: 20,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text("30-09-2023 02:11:46"),
+                                ],
+                              )
+                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    Icons.money,
+                                    size: 20,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text("${index}00.000")
+                                ],
+                              )
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(width: 5,),
-                  Expanded(
-                    flex: 5,
-                    child: Text(
-                      "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
-                      "Số bản tiếng Việt: $index\n"
-                      "Lý do: em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ.", 
-                      textAlign: TextAlign.left, 
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 5,
-                    ),
-                  )
                 ],
               ),
             ),
           ),
-          onTap: (){
+          onTap: () {
             showDialog(
               context: context, 
               builder: (context) => buildRequestInfoDialog(context, index)
             );
           },
         );
-      },
+      }
     );
   }
 
@@ -165,27 +187,29 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.all(Radius.circular(5))
+        borderRadius: BorderRadius.all(Radius.circular(8))
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
+          icon: Icon(Icons.arrow_drop_down),
           padding: EdgeInsets.symmetric(horizontal: 8),
-          iconSize: 13,
+          iconSize: 14,
           elevation: 0,
           // focusColor: Colors.transparent,
           style: TextStyle(
             color: Colors.black,
             fontSize: 12
           ),
-          // isDense: true,
           isExpanded: true,
           
           value: selectedStatus,
-          icon: Icon(Icons.filter_alt_outlined),
           items: requestStatus
             .map((status) => DropdownMenuItem<String>(
               value: status,
-              child: Text(status)
+              child: Align(
+                child: Text(status),
+                alignment: Alignment.center,
+              )
             )).toList(), 
           onChanged: (status) => setState(() { 
             setSelectedStatus(status);
@@ -214,17 +238,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Ma",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                    ), 
-                  flex: 1,
+                    ),
                   ),
                 Expanded(
-                  child: Text("2710$index"), 
                   flex: 3,
+                  child: Text("2710$index"),
                 )
               ],
             ),
@@ -232,18 +256,18 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Sinh vien",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text(
-                    "Nguyen Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van $index"), 
                   flex: 3,
+                  child: Text(
+                    "Nguyen Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van $index"),
                 )
               ],
             ),
@@ -251,17 +275,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Loai yeu cau",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("Giay chung nhan"), 
                   flex: 3,
+                  child: Text("Giay chung nhan"),
                 )
               ],
             ),
@@ -269,15 +293,16 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Yeu cau",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
+                  flex: 3,
                   child: Text(
                     "Loại GCN: Hoãn nghĩa vụ quân sự\n"
                     "Số bản tiếng Việt: 1\n"
@@ -287,8 +312,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                     "và chưa tốt nghiệp, nên em mong muốn được nhận giấy hoãn nghĩa vụ quân sự từ phía trường "
                     "để em nộp cho địa phương để có thể hoàn thành nốt chương trình học còn dang dở và tốt nghiệp xong ạ. "
                     "Nếu được thì em có thể nhận bản mềm qua hòm thư được không ạ Em xin cảm ơn!"
-                  ), 
-                  flex: 3,
+                  ),
                 )
               ],
             ),
@@ -296,17 +320,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Tep dinh kem",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("----------------"), 
                   flex: 3,
+                  child: Text("----------------"),
                 )
               ],
             ),
@@ -314,17 +338,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Giay to can nop",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("Khong"), 
                   flex: 3,
+                  child: Text("Khong"),
                 )
               ],
             ),
@@ -332,17 +356,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Tinh trang",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),  
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("Da xong"), 
                   flex: 3,
+                  child: Text("Da xong"),
                 )
               ],
             ),
@@ -350,17 +374,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Le phi",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),  
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("10.000"), 
                   flex: 3,
+                  child: Text("10.000"),
                 )
               ],
             ),
@@ -368,17 +392,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Noi xu ly",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("Phòng Công tác Sinh viên"), 
                   flex: 3,
+                  child: Text("Phòng Công tác Sinh viên"),
                 )
               ],
             ),
@@ -386,17 +410,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Ngay tao",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("30-09-2023 02:11:46"), 
                   flex: 3,
+                  child: Text("30-09-2023 02:11:46"),
                 )
               ],
             ),
@@ -404,17 +428,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     "Ngay nhan",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
-                  ), 
-                  flex: 1,
+                  ),
                   ),
                 Expanded(
-                  child: Text("-------"), 
                   flex: 3,
+                  child: Text("-------"),
                 )
               ],
             ),

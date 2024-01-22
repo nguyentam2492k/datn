@@ -1,3 +1,4 @@
+import 'package:datn/screens/create_request_screen/create_requet_screen.dart';
 import 'package:datn/screens/manage_request/manage_request_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
     return Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(context),
-      floatingActionButton: buidAddButton(), 
+      floatingActionButton: buidAddButton(context), 
       body: homeScreenBody(),
       drawer: buildDrawer(context),
     );
@@ -50,13 +51,20 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
     );
   }
 
-  FloatingActionButton buidAddButton() {
+  FloatingActionButton buidAddButton(BuildContext context) {
     return FloatingActionButton.extended(
-      onPressed: () => debugPrint('Tao yeu cau'),
       icon: const Icon(Icons.add),
       label: Text('Tạo yêu cầu'),
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
+      onPressed: () {
+        Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => CreateRequestScreen()
+                )
+              );
+      },
     );
   }
 
@@ -141,6 +149,10 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
           UserAccountsDrawerHeader(
             accountName: Text("18021116"), 
             accountEmail: Text("18021116@vnu.edu.vn"),
+            currentAccountPicture: Image(
+              image: AssetImage('assets/icons/moon.jpg'),
+              fit: BoxFit.contain,
+            ),
             decoration: BoxDecoration(
               color: Color(0xFF000980),
             ),
@@ -148,6 +160,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
           ListTile(
             title: Text('Xử lý yêu cầu'),
             leading: const Icon(Icons.contact_page),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               Navigator.push(
                 context, 
@@ -160,13 +173,20 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
           ListTile(
             title: Text('Tạo yêu cầu'),
             leading: const Icon(Icons.note_add_rounded),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => CreateRequestScreen()
+                )
+              );
             },
           ),
           ListTile(
             title: Text('Hỗ trợ'),
             leading: Icon(Icons.help),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               debugPrint("Open Ho tro Page");
             },
