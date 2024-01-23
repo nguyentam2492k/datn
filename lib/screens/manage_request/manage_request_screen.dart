@@ -11,11 +11,13 @@ class ManageRequestScreen extends StatefulWidget {
 }
 
 class ManageRequestScreenState extends State<ManageRequestScreen> {
-  List<String> requestStatus = ["Tat ca", "Dang xu ly", "Da xong", "Da huy"];
-  String? selectedStatus = "Tat ca";
+  List<String> requestStatus = ["Tất cả", "Đang xử lý", "Đã xong", "Đã huỷ"];
+  String? selectedStatus;
 
-  void setSelectedStatus(String? value) {
-    selectedStatus = value;
+  @override
+  void initState() {
+    super.initState();
+    selectedStatus = requestStatus[0];
   }
 
   @override
@@ -31,15 +33,15 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   AppBar buildAppBar() {
     return AppBar(
-      title: Text("Xử lý yêu cầu"),
+      title: const Text("Xử lý yêu cầu"),
       centerTitle: true,
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         color: Colors.black,
         fontSize: 20,
         fontWeight: FontWeight.bold
       ),
       elevation: 0,
-      shape: Border(
+      shape: const Border(
         bottom: BorderSide(
           color: Colors.grey,
           width: 0.3,
@@ -52,12 +54,10 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
     //Random color for test
     List myColors = [Colors.red, Colors.green, Colors.orangeAccent];
-    List colors = <Color>[];
+    List<Color> colors = [];
     for(int i=0; i < 20; i++) {
       colors.add(myColors[Random().nextInt(3)]);
     }
-
-    debugPrint(selectedStatus);
     
     return Stack(
       children: [
@@ -71,15 +71,15 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  ListView buildRequestListView(List<dynamic> colors) {
+  ListView buildRequestListView(List<Color> colors) {
     return ListView.separated(
       itemCount: 20,
-      padding: EdgeInsets.all(10),
-      separatorBuilder: (context, index) => SizedBox(height: 10,),
+      padding: const EdgeInsets.all(10),
+      separatorBuilder: (context, index) => const SizedBox(height: 10,),
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           child: Container(
-            padding: EdgeInsets.fromLTRB(0, 8, 20, 8),
+            padding: const EdgeInsets.fromLTRB(0, 8, 20, 8),
              decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -87,7 +87,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
                   blurRadius: 1.5,
-                  offset: Offset(0, 0.5), // changes position of shadow
+                  offset: const Offset(0, 0.5), // changes position of shadow
                 ),
               ],
             ),
@@ -97,19 +97,19 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     width: 6,
                     decoration: BoxDecoration(
                       color: colors[index],
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
+                      borderRadius: const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
                     ),
                   ),
-                  SizedBox(width: 15,),
+                  const SizedBox(width: 15,),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Giấy chứng nhận",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -118,7 +118,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 5,),
+                        const SizedBox(height: 5,),
                         Text(
                           "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
                           "Số bản tiếng Việt: $index\n"
@@ -126,12 +126,12 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 4,
                         ),
-                        SizedBox(height: 8,),
+                        const SizedBox(height: 8,),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
+                            const Expanded(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -149,12 +149,12 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.money,
                                     size: 20,
                                     color: Colors.grey,
                                   ),
-                                  SizedBox(width: 5,),
+                                  const SizedBox(width: 5,),
                                   Text("${index}00.000")
                                 ],
                               )
@@ -171,7 +171,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
           onTap: () {
             showDialog(
               context: context, 
-              builder: (context) => buildRequestInfoDialog(context, index)
+              builder: (context) => buildRequestInfoDialog(context, index, colors)
             );
           },
         );
@@ -181,66 +181,89 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   Container buildFilterButton(String? selectedStatus) {
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       height: 35,
       width: 90,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.all(Radius.circular(8))
+        borderRadius: const BorderRadius.all(Radius.circular(8))
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          icon: Icon(Icons.arrow_drop_down),
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          iconSize: 14,
-          elevation: 0,
-          // focusColor: Colors.transparent,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 12
+      child: StatefulBuilder(
+        builder: (BuildContext context, void Function(void Function()) setState) {
+        return DropdownButtonHideUnderline(
+          child: DropdownButton(
+            icon: const Icon(Icons.arrow_drop_down),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            iconSize: 14,
+            elevation: 0,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 12
+            ),
+            isExpanded: true,
+            
+            value: selectedStatus,
+            items: requestStatus
+              .map((status) => DropdownMenuItem<String>(
+                value: status,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(status),
+                )
+              )).toList(), 
+            onChanged: (status) => setState(() { 
+              // setSelectedStatus(status);
+              selectedStatus = status;
+            }),
           ),
-          isExpanded: true,
-          
-          value: selectedStatus,
-          items: requestStatus
-            .map((status) => DropdownMenuItem<String>(
-              value: status,
-              child: Align(
-                child: Text(status),
-                alignment: Alignment.center,
-              )
-            )).toList(), 
-          onChanged: (status) => setState(() { 
-            setSelectedStatus(status);
-            debugPrint("Change button to $status");
-            debugPrint(selectedStatus);
-          }),
-        ),
+        );
+  },
       ),
     );
   }
 
-  AlertDialog buildRequestInfoDialog(BuildContext context, int index) {
-    debugPrint("Tap row $index");
+  AlertDialog buildRequestInfoDialog(BuildContext context, int index, List<Color> colors) {
     return AlertDialog(
       elevation: 0,
-      title: Text(
-        "Chi tiet yeu cau",
-        style: TextStyle(
-          fontWeight: FontWeight.bold
+      titlePadding: const EdgeInsets.symmetric(),
+      title: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+        
+          children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              height: 16,
+              decoration: BoxDecoration(
+                color: colors[index],
+                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))
+              ),
+            ),
+            const SizedBox(height: 18,),
+            const Text(
+              "Chi tiết yêu cầu",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ],
         ),
       ),
+
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
+            const SizedBox(height: 10,),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
-                    "Ma",
+                    "Mã",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -252,13 +275,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
+            const Divider(),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
-                    "Sinh vien",
+                    "Sinh viên",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -271,13 +294,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Loai yeu cau",
+                    "Loại yêu cầu",
                     style: TextStyle(
                         fontWeight: FontWeight.bold
                     ),
@@ -289,13 +312,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Yeu cau",
+                    "Yêu cầu",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -316,13 +339,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Tep dinh kem",
+                    "Tệp đính kèm",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -334,13 +357,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Giay to can nop",
+                    "Giấy tờ cần nộp",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -352,13 +375,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Tinh trang",
+                    "Tình trạng",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),  
@@ -370,13 +393,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Le phi",
+                    "Lệ phí",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),  
@@ -388,13 +411,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Noi xu ly",
+                    "Nơi xử lý",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -406,13 +429,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Ngay tao",
+                    "Ngày tạo",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -424,13 +447,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 )
               ],
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Ngay nhan",
+                    "Ngày nhận",
                     style: TextStyle(
                       fontWeight: FontWeight.bold
                     ),
@@ -447,7 +470,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
       ),
       actions: [
         TextButton(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () => Navigator.pop(context),
         ),
       ],
