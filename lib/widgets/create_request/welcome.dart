@@ -5,8 +5,7 @@ Widget welcomeCreateRequest() {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: const BoxDecoration(
           color: Colors.blue,
           borderRadius: BorderRadius.all(Radius.circular(10))
@@ -21,6 +20,7 @@ Widget welcomeCreateRequest() {
           ),
         ),
       ),
+      const SizedBox(height: 10,),
       RichText(
         textAlign: TextAlign.center,
         text: const TextSpan(
@@ -39,7 +39,8 @@ Widget welcomeCreateRequest() {
                 "và gửi đến phòng chức năng của Trường Đại học Công nghệ. "
                 "Sinh viên/Học viên/NCS phải chịu trách nhiệm và tuân theo những quy định đã đề ra của Trường Đại học Công nghệ.",
                 style: TextStyle(
-                  fontWeight: FontWeight.w500
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black
                 )
             )
           ]

@@ -9,6 +9,7 @@ class Request1Data {
   String vietnameseVersion;
   String englishVersion;
   String reason;
+
   Request1Data({
     required this.certificatation,
     required this.vietnameseVersion,
@@ -56,11 +57,26 @@ class Request1Stated extends State<Request1> {
   late String? selectedCertification;
 
   bool isCertificationValid = false;
-  // bool isReasonValid = false;
-  bool isVietVersionNumberValid = true;
+
+  late int? numberOfVietVer;
+  late int? numberOfEngVer;
 
   bool isFormValid(){
-    return isCertificationValid && isVietVersionNumberValid;
+    int numberOfCopy = 0;
+
+    if (numberOfVietVer != null && numberOfVietVer! >= 0) {
+      numberOfCopy += numberOfVietVer!;
+    }
+
+    if (numberOfEngVer != null && numberOfEngVer! >= 0) {
+      numberOfCopy += numberOfEngVer!;
+    }
+    
+    return 
+      isCertificationValid && 
+      numberOfCopy != 0 && 
+      numberOfVietVer != null && 
+      numberOfEngVer != null;
   }
 
   @override
@@ -73,11 +89,8 @@ class Request1Stated extends State<Request1> {
       englishVersion: '0', 
       reason: '',
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    numberOfVietVer = 1;
+    numberOfEngVer= 0;
   }
 
   @override
@@ -91,7 +104,7 @@ class Request1Stated extends State<Request1> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 60,
+                    height: 70,
                     child: Row(
                       children: [
                         const Expanded(
@@ -99,6 +112,7 @@ class Request1Stated extends State<Request1> {
                           child: Text(
                             "Loại giấy chứng nhận:",
                             style: TextStyle(
+                     
                               fontWeight: FontWeight.bold
                             ),
                           ),
@@ -129,7 +143,7 @@ class Request1Stated extends State<Request1> {
                     ),
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 70,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -150,9 +164,9 @@ class Request1Stated extends State<Request1> {
                           maxValue: 10, 
                           onChanged: (value) {
                             setState(() {
-                              isVietVersionNumberValid = (value != 0) ? true : false;
-                              debugPrint("Số bản tiếng Việt: $value");
+                              numberOfVietVer = value;
                               formData.vietnameseVersion = value.toString();
+                              debugPrint("Số bản tiếng Việt: $value");
                             });
                           }
                         ),
@@ -161,7 +175,7 @@ class Request1Stated extends State<Request1> {
                     ),
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 70,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -183,6 +197,7 @@ class Request1Stated extends State<Request1> {
                           onChanged: (value) {
                             setState(() {
                               debugPrint("Số bản tiếng Anh: $value");
+                              numberOfEngVer = value;
                               formData.englishVersion = value.toString();
                             });
                             
@@ -192,9 +207,9 @@ class Request1Stated extends State<Request1> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10,),
-                  SizedBox(
+                  Container(
                     height: MediaQuery.of(context).size.height * 0.25,
+                    margin: const EdgeInsets.symmetric(vertical: 15),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -228,7 +243,7 @@ class Request1Stated extends State<Request1> {
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
                                   color: Colors.grey,
-                                  width: 0.3,
+                                  width: 0.5,
                                 ),
                               ),
                             ),
@@ -255,7 +270,7 @@ class Request1Stated extends State<Request1> {
             alignment: Alignment.bottomCenter,
             child: SizedBox(
               height: 50,
-              width: MediaQuery.of(context).size.width * 0.8,
+              width: MediaQuery.of(context).size.width * 0.5,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.save),
                 style: ElevatedButton.styleFrom(
@@ -265,9 +280,7 @@ class Request1Stated extends State<Request1> {
                 onPressed: () {
                   if (isFormValid() && _formKey.currentState!.validate()) {
                     debugPrint("Yeu cau: ${formData.toMap().toString()}");
-                    // debugPrint("Lưu form");
                   } else {
-                    // return null;
                   }
                 }, 
                 label: const Text("Gửi yêu cầu"),

@@ -38,7 +38,7 @@ class NumericStepButton extends StatefulWidget {
 
 class _NumericStepButtonState extends State<NumericStepButton> {
 
-  late int counter;
+  late int? counter;
   late TextEditingController _controller;
 
   @override
@@ -59,7 +59,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
           width: widget.stepButtonWidth,
           height: widget.stepButtonWidth,
           decoration: BoxDecoration(
-            color: (counter > widget.minValue) ? widget.stepButtonBackgroundColor : Colors.grey,
+            color: (counter != null && counter! > widget.minValue) ? widget.stepButtonBackgroundColor : Colors.grey,
             borderRadius: BorderRadius.all(Radius.circular(widget.stepButtonWidth/2)),
           ),
           child: FittedBox(
@@ -72,8 +72,8 @@ class _NumericStepButtonState extends State<NumericStepButton> {
               iconSize: widget.iconSize,
               onPressed: () {
                 setState(() {
-                  if (counter > widget.minValue) {
-                    counter--;
+                  if (counter != null && counter! > widget.minValue) {
+                    counter = counter! - 1;
                     _controller = TextEditingController(text: counter.toString());
                   } else {
                     return null;
@@ -102,10 +102,10 @@ class _NumericStepButtonState extends State<NumericStepButton> {
             ),
             onChanged: (value) {
                 final intValue = int.tryParse(value);
-                if (intValue is int) {
+                if (intValue is int && intValue >= widget.minValue) {
                   counter = intValue;
                 } else {
-                  counter = widget.initialValue;
+                  counter = null;
                 }
                 setState(() {
                   widget.onChanged(counter);
@@ -121,7 +121,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
           width: widget.stepButtonWidth,
           height: widget.stepButtonWidth,
           decoration: BoxDecoration(
-            color: (counter < widget.maxValue) ? widget.stepButtonBackgroundColor : Colors.grey,
+            color: (counter != null && counter! < widget.maxValue) ? widget.stepButtonBackgroundColor : Colors.grey,
             borderRadius: BorderRadius.all(Radius.circular(widget.stepButtonWidth/2)),
           ),
           child: FittedBox(
@@ -134,10 +134,12 @@ class _NumericStepButtonState extends State<NumericStepButton> {
               iconSize: widget.iconSize,
               onPressed: () {
                 setState(() {
-                  if (counter < widget.maxValue) {
-                    counter++;
+                  if (counter != null && counter! < widget.maxValue) {
+                    counter = counter! + 1;
                     _controller = TextEditingController(text: counter.toString());
-                  } else { }
+                  } else {
+                    return null;
+                  }
                   widget.onChanged(counter);
                 });
               },

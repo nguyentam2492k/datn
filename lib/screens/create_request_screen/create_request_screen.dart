@@ -120,10 +120,11 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     return Container(
           color: Colors.white,
           height: 50,
+          margin: const EdgeInsets.only(bottom: 10),
           child: Row(
             children: [
-              const SizedBox(
-                width: 80, 
+              const Expanded(
+                flex: 1,
                 child: Text(
                   "Yêu cầu:",
                   style: TextStyle(
@@ -132,6 +133,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
                 ),
               ),
               Expanded(
+                flex: 4,
                 child: ElevatedButton.icon(
                   
                   icon: const Icon(Icons.arrow_drop_down),
@@ -159,6 +161,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
           height: 0.3,
           color: Colors.grey,
         ),
+        const SizedBox(height: 10,),
         Expanded(
           child: Builder(builder: (BuildContext context) {
             if (selectedItem != null) {
