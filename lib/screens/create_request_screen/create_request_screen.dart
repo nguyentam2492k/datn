@@ -1,6 +1,8 @@
 import 'package:datn/widgets/create_request/request_1.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
+import 'package:datn/widgets/create_request/welcome.dart';
+import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:flutter/material.dart';
 
 class CreateRequestScreen extends StatefulWidget {
@@ -37,36 +39,34 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     "XN điểm rèn luyện",
     "Đánh giá Rèn luyện"
     ];
-  List<Widget> requestWidgets = [
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
-    request1(),
-    request2(),
-    request3(),
+  final List<Widget> requestWidgets = [
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
+    const Request1(),
+    const Request2(),
+    const Request3(),
   ];
-  late List<bool> isChecked;
   late String? selectedItem;
 
   @override
   void initState() {
     super.initState();
-    isChecked = List.filled(requests.length, false);
     selectedItem = null;
   }
 
@@ -155,12 +155,9 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          height: 40,
-          child: Text(
-            selectedItem ?? "Welcome",
-            textAlign: TextAlign.center,
-          ),
+        Container(
+          height: 0.3,
+          color: Colors.grey,
         ),
         Expanded(
           child: Builder(builder: (BuildContext context) {
@@ -168,10 +165,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
               int index = requests.indexOf(selectedItem!);
               return requestWidgets[index];
             } else {
-              return Container(
-                color: Colors.cyan,
-                child: const Text("Welcome Widget")
-              );
+              return welcomeCreateRequest();
             }
           },),
         ),
@@ -179,7 +173,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     );
   }
 
-  Future<dynamic> openBottomSheet(String? slectedItem) {
+  Future<dynamic> openBottomSheet(String? selectedItem) {
     String? selectedItemChanged = selectedItem;
 
     return showModalBottomSheet(
@@ -190,59 +184,9 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
         maxHeight: MediaQuery.of(context).size.height * 0.75,
       ),
       builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, void Function(void Function()) setState) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: ListView.separated(
-                      itemCount: requests.length,
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          textColor: selectedItemChanged == requests[index] ? Colors.blue : Colors.black,
-                          iconColor: selectedItemChanged == requests[index] ? Colors.blue : Colors.black,
-                          title: Text(
-                            requests[index],
-                            textScaler: selectedItemChanged == requests[index] ? const TextScaler.linear(1.1) : const TextScaler.linear(1),
-                            style: TextStyle(
-                              fontWeight: selectedItemChanged == requests[index] ? FontWeight.bold : FontWeight.normal,
-                            ),
-                          ),
-                          trailing: const Icon(Icons.keyboard_arrow_right),
-                          onTap: (){
-                            selectedItemChanged = requests[index];
-                            Navigator.pop(context, selectedItemChanged);
-                          },
-                        );
-                      },
-                    )
-                  ),
-                ),
-                Container(
-                  height: 60,
-                  margin: const EdgeInsets.all(10),
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                    ),
-                    onPressed: (){
-                      Navigator.pop(context, selectedItemChanged);
-                    },
-                    child: const Text("Cancel"),
-                  )
-                ),
-              ],
-            );
-          }
+        return BottomSheetWithList(
+          list: requests,
+          selectedItem: selectedItemChanged,
         );
       },
     );
