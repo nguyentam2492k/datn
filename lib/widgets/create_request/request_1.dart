@@ -6,8 +6,8 @@ import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 
 class Request1Data {
   String certificatation;
-  String vietnameseVersion;
-  String englishVersion;
+  int vietnameseVersion;
+  int englishVersion;
   String reason;
 
   Request1Data({
@@ -17,7 +17,7 @@ class Request1Data {
     required this.reason,
   });
 
-  Map<String, String?> toMap(){
+  Map<String, dynamic> toMap(){
     return {
       'certificatation': certificatation,
       'vietnameseVersion': vietnameseVersion,
@@ -74,7 +74,7 @@ class Request1Stated extends State<Request1> {
     
     return 
       isCertificationValid && 
-      numberOfCopy != 0 && 
+      numberOfCopy > 0 && 
       numberOfVietVer != null && 
       numberOfEngVer != null;
   }
@@ -85,8 +85,8 @@ class Request1Stated extends State<Request1> {
     selectedCertification = null;
     formData = Request1Data(
       certificatation: '', 
-      vietnameseVersion: '1', 
-      englishVersion: '0', 
+      vietnameseVersion: 1, 
+      englishVersion: 0, 
       reason: '',
     );
     numberOfVietVer = 1;
@@ -95,6 +95,13 @@ class Request1Stated extends State<Request1> {
 
   @override
   Widget build(BuildContext context) {
+
+    void sendFormData() {
+      formData.vietnameseVersion = numberOfVietVer!;
+      formData.englishVersion = numberOfEngVer!;
+      debugPrint("Yeu cau: ${formData.toMap().toString()}");
+    }
+
     return Form(
       key: _formKey,
       child: Column(
@@ -165,8 +172,6 @@ class Request1Stated extends State<Request1> {
                           onChanged: (value) {
                             setState(() {
                               numberOfVietVer = value;
-                              formData.vietnameseVersion = value.toString();
-                              debugPrint("Số bản tiếng Việt: $value");
                             });
                           }
                         ),
@@ -196,11 +201,8 @@ class Request1Stated extends State<Request1> {
                           maxValue: 10,
                           onChanged: (value) {
                             setState(() {
-                              debugPrint("Số bản tiếng Anh: $value");
                               numberOfEngVer = value;
-                              formData.englishVersion = value.toString();
                             });
-                            
                           }
                         ),
                       ),
@@ -278,10 +280,7 @@ class Request1Stated extends State<Request1> {
                   foregroundColor: Colors.white
                 ),
                 onPressed: () {
-                  if (isFormValid() && _formKey.currentState!.validate()) {
-                    debugPrint("Yeu cau: ${formData.toMap().toString()}");
-                  } else {
-                  }
+                  (isFormValid() && _formKey.currentState!.validate()) ? sendFormData() : null;
                 }, 
                 label: const Text("Gửi yêu cầu"),
               ),
