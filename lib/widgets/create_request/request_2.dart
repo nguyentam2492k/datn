@@ -84,12 +84,23 @@ class Request2State extends State<Request2> {
     return FormBuilder(
       key: _request2FormKey,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const Text(
+                    "Sinh viên tích chọn loại bảng điểm, bằng tiếng Việt "
+                    "hoặc tiếng Anh, chọn tất cả các kỳ hoặc từng kỳ, "
+                    "hệ điểm 4 hay hệ điểm 10; đến Phòng 104-E3 nhận bảng điểm "
+                    "sau 15h chiều thứ Tư và thứ Sáu hàng tuần.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Divider(thickness: 0.4,),
+                  const SizedBox(height: 2,),
                   IntrinsicHeight(
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -127,7 +138,7 @@ class Request2State extends State<Request2> {
                                   },
                                 ),
                               ),
-                              const Divider(),
+                              const Divider(thickness: 0.4,),
                               Expanded(
                                 child: FormBuilderCheckboxGroup(
                                   name: 'term_number', 

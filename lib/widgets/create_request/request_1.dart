@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 
@@ -110,8 +108,19 @@ class Request1Stated extends State<Request1> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const Text(
+                    "Sinh viên kích chọn loại giấy thích hợp theo yêu cầu, "
+                    "số bản bằng tiếng Việt hoặc tiếng Anh; Giấy giới thiệu thực "
+                    "tập cần ghi rõ tên công ty, thời gian thực tập. "
+                    "đến Phòng 104-E3 nhận kết quả sau 01 ngày làm việc.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Divider(thickness: 0.4,),
                   SizedBox(
-                    height: 70,
+                    height: 65,
                     child: Row(
                       children: [
                         const Expanded(
