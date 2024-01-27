@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:file_picker/file_picker.dart';
@@ -286,36 +285,40 @@ class Request3State extends State<Request3> {
                                             children: [
                                               const SizedBox(width: 2,),
                                               Expanded(
-                                                child: TextButton.icon(
-                                                  icon: const Icon(Icons.attach_file, size: 14,), 
-                                                  label: Text(
-                                                    files[index].name,
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: TextButton.icon(
+                                                    icon: const Icon(Icons.attach_file, size: 14,), 
+                                                    label: Text(
+                                                      files[index].name,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.left,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400
+                                                      ),
                                                     ),
-                                                  ),
-                                                  style: OutlinedButton.styleFrom(
-                                                    padding: const EdgeInsets.only(left: 3),
-                                                    side: const BorderSide(
-                                                      color: Colors.transparent,
+                                                    style: OutlinedButton.styleFrom(
+                                                      padding: const EdgeInsets.only(left: 3),
+                                                      side: const BorderSide(
+                                                        color: Colors.transparent,
+                                                      ),
                                                     ),
+                                                    onPressed: () async {
+                                                      OpenResult result;
+                                                      try {
+                                                        result = await OpenFile.open(
+                                                          files[index].path,
+                                                        );
+                                                        setState(() {
+                                                          debugPrint("type=${result.type}  message=${result.message}");
+                                                        });
+                                                      } catch (error) {
+                                                        debugPrint(error.toString());
+                                                      }
+                                                    }, 
                                                   ),
-                                                  onPressed: () async {
-                                                    OpenResult result;
-                                                    try {
-                                                      result = await OpenFile.open(
-                                                        files[index].path,
-                                                      );
-                                                      setState(() {
-                                                        debugPrint("type=${result.type}  message=${result.message}");
-                                                      });
-                                                    } catch (error) {
-                                                      debugPrint(error.toString());
-                                                    }
-                                                  }, 
                                                 ),
                                               ),
                                               SizedBox(
