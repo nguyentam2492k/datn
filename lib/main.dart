@@ -1,5 +1,6 @@
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +21,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+         GlobalMaterialLocalizations.delegate
+       ],
+       supportedLocales: const [
+         Locale('en'),
+         Locale('vi')
+       ],
       home: SafeArea(
           child: HomeScreen()
         ),

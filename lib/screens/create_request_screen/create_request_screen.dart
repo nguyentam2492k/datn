@@ -161,14 +161,16 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
           height: 0.3,
           color: Colors.grey,
         ),
-        const SizedBox(height: 10,),
         Expanded(
           child: Builder(builder: (BuildContext context) {
             if (selectedItem != null) {
               int index = requests.indexOf(selectedItem!);
               return requestWidgets[index];
             } else {
-              return welcomeCreateRequest();
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: welcomeCreateRequest(),
+              );
             }
           },),
         ),

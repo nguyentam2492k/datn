@@ -1,12 +1,14 @@
+import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request1Data {
   String certificatation;
   int vietnameseVersion;
   int englishVersion;
-  String reason;
+  String? reason;
 
   Request1Data({
     required this.certificatation,
@@ -35,9 +37,7 @@ class Request1 extends StatefulWidget {
 }
 
 class Request1Stated extends State<Request1> {
-  final _formKey = GlobalKey<FormState>();
-
-  late final Request1Data formData;
+  final _formKey = GlobalKey<FormBuilderState>();
 
   List<String> certificationList = [
     "Chứng nhận Sinh viên /HV/NCS", 
@@ -58,6 +58,7 @@ class Request1Stated extends State<Request1> {
 
   late int? numberOfVietVer;
   late int? numberOfEngVer;
+  late String? reason;
 
   bool isFormValid(){
     int numberOfCopy = 0;
@@ -81,12 +82,6 @@ class Request1Stated extends State<Request1> {
   void initState() {
     super.initState();
     selectedCertification = null;
-    formData = Request1Data(
-      certificatation: '', 
-      vietnameseVersion: 1, 
-      englishVersion: 0, 
-      reason: '',
-    );
     numberOfVietVer = 1;
     numberOfEngVer= 0;
   }
@@ -95,12 +90,17 @@ class Request1Stated extends State<Request1> {
   Widget build(BuildContext context) {
 
     void sendFormData() {
-      formData.vietnameseVersion = numberOfVietVer!;
-      formData.englishVersion = numberOfEngVer!;
+      Request1Data formData = Request1Data(
+        certificatation: selectedCertification!, 
+        vietnameseVersion: numberOfVietVer!, 
+        englishVersion: numberOfEngVer!, 
+        reason: reason,
+      );
+
       debugPrint("Yeu cau: ${formData.toMap().toString()}");
     }
 
-    return Form(
+    return FormBuilder(
       key: _formKey,
       child: Column(
         children: [
@@ -108,6 +108,7 @@ class Request1Stated extends State<Request1> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const SizedBox(height: 10,),
                   const Text(
                     "Sinh viên kích chọn loại giấy thích hợp theo yêu cầu, "
                     "số bản bằng tiếng Việt hoặc tiếng Anh; Giấy giới thiệu thực "
@@ -133,6 +134,7 @@ class Request1Stated extends State<Request1> {
                             ),
                           ),
                         ),
+                        const SizedBox(width: 5,),
                         Expanded(
                           flex: 4,
                           child: ElevatedButton.icon(
@@ -148,7 +150,6 @@ class Request1Stated extends State<Request1> {
                               if (data != null) {
                                 setState(() {
                                   selectedCertification = data;
-                                  formData.certificatation = data;
                                   isCertificationValid = true;
                                 });
                               }
@@ -172,6 +173,7 @@ class Request1Stated extends State<Request1> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 5,),
                       Expanded(
                         flex: 4,
                         child: NumericStepButton(
@@ -202,6 +204,7 @@ class Request1Stated extends State<Request1> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 5,),
                       Expanded(
                         flex: 4,
                         child: NumericStepButton(
@@ -220,10 +223,9 @@ class Request1Stated extends State<Request1> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.25,
-                    margin: const EdgeInsets.symmetric(vertical: 15),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Expanded(
                           flex: 1,
@@ -234,30 +236,12 @@ class Request1Stated extends State<Request1> {
                             ),
                           ),
                         ),
+                        const SizedBox(width: 5,),
                         Expanded(
                           flex: 4,
-                          child: TextFormField(
+                          child: CustomFormBuilderTextField(
+                            name: 'reason',
                             maxLines: 100,
-                            style: const TextStyle(
-                              fontSize: 15,
-                            ),
-                            decoration: InputDecoration(
-                              
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  width: 0.3,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty ) {
                                 return "Điền đầy đủ thông tin!";
@@ -265,7 +249,7 @@ class Request1Stated extends State<Request1> {
                               return null;
                             },
                             onChanged: (value) {
-                              formData.reason = value;
+                              reason = value;
                               setState(() {});
                             },
                           ),

@@ -1,3 +1,4 @@
+import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -38,8 +39,6 @@ class Request2State extends State<Request2> {
 
   final GlobalKey<FormBuilderState> _request2FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   late int? numberOfVietVer;
   late int? numberOfEngVer;
 
@@ -55,7 +54,7 @@ class Request2State extends State<Request2> {
     }
     
     return 
-      numberOfCopy > 0 && 
+      numberOfCopy > 0 &&
       numberOfVietVer != null && 
       numberOfEngVer != null;
   }
@@ -70,15 +69,15 @@ class Request2State extends State<Request2> {
   @override
   Widget build(BuildContext context) {
 
+  Map<String, dynamic> formData = {};
+
     void sendFormData() {
-      if (_request2FormKey.currentState!.saveAndValidate()) {
-        formData.addAll(_request2FormKey.currentState!.value);
-        formData.addAll({
-          'quantity_viet': numberOfVietVer,
-          'quantity_eng': numberOfEngVer,
-        });
-        debugPrint(formData.toString());
-      }
+      formData.addAll(_request2FormKey.currentState!.value);
+      formData.addAll({
+        'quantity_viet': numberOfVietVer,
+        'quantity_eng': numberOfEngVer,
+      });
+      debugPrint(formData.toString());
     }
 
     return FormBuilder(
@@ -89,6 +88,7 @@ class Request2State extends State<Request2> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const SizedBox(height: 10,),
                   const Text(
                     "Sinh viên tích chọn loại bảng điểm, bằng tiếng Việt "
                     "hoặc tiếng Anh, chọn tất cả các kỳ hoặc từng kỳ, "
@@ -263,10 +263,9 @@ class Request2State extends State<Request2> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.25,
-                    margin: const EdgeInsets.symmetric(vertical: 15),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Expanded(
                           flex: 1,
@@ -280,29 +279,9 @@ class Request2State extends State<Request2> {
                         const SizedBox(width: 10,),
                         Expanded(
                           flex: 4,
-                          child: FormBuilderTextField(
+                          child: CustomFormBuilderTextField(
                             name: "reason",
                             maxLines: 100,
-                            style: const TextStyle(
-                              fontSize: 15,
-                            ),
-                            decoration: InputDecoration(
-                              
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  width: 0.3,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty ) {
                                 return "Điền đầy đủ thông tin!";
@@ -322,23 +301,23 @@ class Request2State extends State<Request2> {
             ),
           ),
           Align(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            height: 50,
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.save),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                foregroundColor: Colors.white
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.save),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
+                  foregroundColor: Colors.white
+                ),
+                onPressed: () { 
+                  (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
+                }, 
+                label: const Text("Gửi yêu cầu"),
               ),
-              onPressed: () { 
-                (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
-              }, 
-              label: const Text("Gửi yêu cầu"),
             ),
-          ),
-        )
+          )
         ],
       ),
     );
