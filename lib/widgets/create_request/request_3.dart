@@ -3,6 +3,7 @@ import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:open_file/open_file.dart';
 
@@ -187,8 +188,7 @@ class Request3State extends State<Request3> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: IntrinsicHeight(
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -209,9 +209,8 @@ class Request3State extends State<Request3> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
+                                SizedBox(
                                   height: 45,
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
                                   child: Row(
                                     children: [
                                       OutlinedButton.icon(
@@ -229,7 +228,9 @@ class Request3State extends State<Request3> {
                                             FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
                                             
                                             if (result != null) {
-                                              files.addAll(result.files);
+                                              Set<PlatformFile> fileSet = Set.from(files);
+                                              fileSet.addAll(result.files);
+                                              files = fileSet.toList();
                                               for (var file in files) {
                                                 debugPrint("${file.name}\n${file.size}");
                                               }
@@ -263,25 +264,19 @@ class Request3State extends State<Request3> {
                                 ),
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                    child: GridView.builder(
-                                      itemCount: files.length,
-                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2, 
-                                        mainAxisSpacing: 10,
-                                        crossAxisSpacing: 10,
-                                        mainAxisExtent: 30,
-                                      ),
-                                      shrinkWrap: true,
-                                      itemBuilder: (BuildContext context, int index) {
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Wrap(
+                                      spacing: 6,
+                                      runSpacing: 6,
+                                      children: files.map((file) {
                                         return Container(
+                                          constraints: const BoxConstraints(maxHeight: 30, maxWidth: 135),
                                           alignment: Alignment.centerLeft,
                                           decoration: BoxDecoration(
                                             borderRadius: const BorderRadius.all(Radius.circular(5)),
                                             border: Border.all(color: Colors.grey),
                                           ),
                                           child: Row(
-                                            mainAxisSize: MainAxisSize.max,
                                             children: [
                                               const SizedBox(width: 2,),
                                               Expanded(
@@ -290,7 +285,7 @@ class Request3State extends State<Request3> {
                                                   child: TextButton.icon(
                                                     icon: const Icon(Icons.attach_file, size: 14,), 
                                                     label: Text(
-                                                      files[index].name,
+                                                      file.name,
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                       textAlign: TextAlign.left,
@@ -309,7 +304,7 @@ class Request3State extends State<Request3> {
                                                       OpenResult result;
                                                       try {
                                                         result = await OpenFile.open(
-                                                          files[index].path,
+                                                          file.path,
                                                         );
                                                         setState(() {
                                                           debugPrint("type=${result.type}  message=${result.message}");
@@ -328,7 +323,7 @@ class Request3State extends State<Request3> {
                                                   child: IconButton(
                                                     icon: const Icon(Icons.close),
                                                     onPressed: (){
-                                                      files.removeAt(index);
+                                                      files.removeAt(files.indexOf(file));
                                                       setState(() {});
                                                     }, 
                                                   ),
@@ -337,7 +332,7 @@ class Request3State extends State<Request3> {
                                             ],
                                           ),
                                         );
-                                      },
+                                      }).toList()
                                     ),
                                   )
                                 ),
