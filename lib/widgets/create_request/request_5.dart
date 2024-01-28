@@ -1,0 +1,205 @@
+import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+class Request5 extends StatefulWidget {
+  const Request5({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return Request5State();
+  }
+}
+
+class Request5State extends State<Request5> {
+
+  final GlobalKey<FormBuilderState> _request5FormKey = GlobalKey<FormBuilderState>();
+
+  DateTime currentDate = DateTime.now();
+
+  void sendFormData() {
+    _request5FormKey.currentState!.saveAndValidate() ? debugPrint(_request5FormKey.currentState!.value.toString()) : null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _request5FormKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const SizedBox(height: 10,),
+                  const Text(
+                    "Sinh viên theo dõi thông báo của Nhà trường vào mỗi "
+                    "học kỳ và tạo yêu cầu vào đúng thời hạn cho phép.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Divider(thickness: 0.4,),
+                  Row(
+                    children: [
+                      const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Học kỳ:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: CustomFormBuilderTextField(
+                          name: 'semester',
+                          initialValue: (currentDate.month > 6) ? "2" : "1",
+                          validator: (value) {
+                            if (value == null || value.isEmpty ) {
+                              return "Điền đầy đủ thông tin!";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      const Expanded(
+                        flex: 2,
+                        child: SizedBox(),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Năm học:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: CustomFormBuilderTextField(
+                          name: 'year',
+                          initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
+                          validator: (value) {
+                            if (value == null || value.isEmpty ) {
+                              return "Điền đầy đủ thông tin!";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      const Expanded(
+                        flex: 2,
+                        child: SizedBox(),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Đến ngày:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: CustomFormBuilderDateTimePicker(
+                          name: 'until_date',
+                          validator: (value) {
+                            if (value == null) {
+                              return "Chọn ngày chính xác";
+                            }
+                            return null;
+                          },
+                        )
+                      ),
+                      const Expanded(
+                        flex: 2,
+                        child: SizedBox(),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10,),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Lý do:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: CustomFormBuilderTextField(
+                            name: "reason",
+                            maxLines: 100,
+                            validator: (value) {
+                              if (value == null || value.isEmpty ) {
+                                return "Điền đầy đủ thông tin!";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.save),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white
+                  ),
+                  onPressed: () {
+                    sendFormData();
+                    setState(() {});
+                  }, 
+                  label: const Text("Gửi yêu cầu"),
+                ),
+              ),
+            )
+        ],
+      ),
+    );
+  }
+}
