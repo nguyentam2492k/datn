@@ -3,6 +3,7 @@ import 'package:datn/widgets/create_request/request_2.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
 import 'package:datn/widgets/create_request/request_4.dart';
 import 'package:datn/widgets/create_request/request_5.dart';
+import 'package:datn/widgets/create_request/request_6.dart';
 import 'package:datn/widgets/create_request/welcome.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request3(),
     const Request4(),
     const Request5(),
-    const Request3(),
+    const Request6(),
     const Request1(),
     const Request2(),
     const Request3(),
