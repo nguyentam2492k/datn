@@ -9,6 +9,7 @@ class CustomFormBuilderTextField extends FormBuilderTextField {
     super.maxLines,
     super.validator,
     super.onChanged,
+    super.initialValue,
 
     super.style = const TextStyle(fontSize: 14),
     super.decoration = const InputDecoration(
