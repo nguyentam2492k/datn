@@ -262,12 +262,11 @@ class Request2State extends State<Request2> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.25,
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     child: CustomTextFieldRowWidget(
                       labelText: "Lý do:", 
                       name: "reason", 
-                      maxLines: 100,
+                      maxLines: 5,
                       validator: (value) {
                         if (value == null || value.isEmpty ) {
                           return "Điền đầy đủ thông tin!";

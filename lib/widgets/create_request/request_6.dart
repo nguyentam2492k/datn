@@ -118,22 +118,19 @@ class Request6State extends State<Request6> {
                     ],
                   ),
                   const SizedBox(height: 10,),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: CustomTextFieldRowWidget(
-                      labelText: "Lý do:",
-                      name: 'reason',
-                      maxLines: 100,
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    ),
+                  CustomTextFieldRowWidget(
+                    labelText: "Lý do:",
+                    name: 'reason',
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                 ],
               ),

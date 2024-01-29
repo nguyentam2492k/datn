@@ -46,10 +46,13 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
         children: [
           Expanded(
             flex: 1,
-            child: Text(
-              widget.labelText,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Text(
+                widget.labelText,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold
+                ),
               ),
             ),
           ),
@@ -114,7 +117,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Wrap(
                       spacing: 6,
                       runSpacing: 6,

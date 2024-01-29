@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -124,21 +123,18 @@ class Request3State extends State<Request3> {
                     ],
                   ),
                   const SizedBox(height: 10,),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: CustomTextFieldRowWidget(
-                      labelText: "Lý do", 
-                      name: "reason", 
-                      maxLines: 100,
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      }, 
-                      onChanged: (value) { setState(() {
-                      }); },
-                    ),
+                  CustomTextFieldRowWidget(
+                    labelText: "Lý do", 
+                    name: "reason", 
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    }, 
+                    onChanged: (value) { setState(() {
+                    }); },
                   ),
                   const SizedBox(height: 5,),
                   CustomUploadFileRowWidget(
