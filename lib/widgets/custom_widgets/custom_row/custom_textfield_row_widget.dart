@@ -7,7 +7,7 @@ class CustomTextFieldRowWidget extends StatefulWidget {
   final int maxLines;
   final String? initialValue;
   final bool isShort;
-  final FormFieldValidator<String>? validator;
+  final FormFieldValidator<String?>? validator;
   final ValueChanged<String?>? onChanged;
 
   const CustomTextFieldRowWidget({

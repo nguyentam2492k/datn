@@ -127,7 +127,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                           alignment: Alignment.centerLeft,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: Colors.grey, width: 0.5),
                           ),
                           child: Row(
                             children: [
