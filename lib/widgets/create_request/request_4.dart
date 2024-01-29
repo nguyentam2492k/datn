@@ -1,4 +1,4 @@
-import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -43,134 +43,67 @@ class Request4State extends State<Request4> {
                     ),
                   ),
                   const Divider(thickness: 0.4,),
-                  Row(
-                    children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Text(
-                          "Học phần xin xem lại:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: CustomFormBuilderTextField(
-                          name: 'subject_review',
-                          validator: (value) {
-                            if (value == null || value.isEmpty ) {
-                              return "Điền đầy đủ thông tin!";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                        ),
-                      )
-                    ],
+                  CustomTextFieldRowWidget(
+                    labelText: "Học phần xin xem lại:", 
+                    name: 'subject_review',
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                   const SizedBox(height: 10,),
-                  Row(
-                    children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Text(
-                          "Học kỳ:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: CustomFormBuilderTextField(
-                          name: 'semester',
-                          initialValue: (currentDate.month > 6) ? "2" : "1",
-                          validator: (value) {
-                            if (value == null || value.isEmpty ) {
-                              return "Điền đầy đủ thông tin!";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      const Expanded(
-                        flex: 2,
-                        child: SizedBox(),
-                      )
-                    ],
+                  CustomTextFieldRowWidget(
+                    labelText: "Học kỳ:", 
+                    name: 'semester',
+                    initialValue: (currentDate.month > 6) ? "2" : "1",
+                    isShort: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                   const SizedBox(height: 10,),
-                  Row(
-                    children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Text(
-                          "Năm học:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: CustomFormBuilderTextField(
-                          name: 'year',
-                          initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
-                          validator: (value) {
-                            if (value == null || value.isEmpty ) {
-                              return "Điền đầy đủ thông tin!";
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      const Expanded(
-                        flex: 2,
-                        child: SizedBox(),
-                      )
-                    ],
+                  CustomTextFieldRowWidget(
+                    labelText: "Năm học:", 
+                    name: 'year',
+                    initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
+                    isShort: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                   const SizedBox(height: 10,),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Expanded(
-                          flex: 1,
-                          child: Text(
-                            "Lý do:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: CustomFormBuilderTextField(
-                            name: "reason",
-                            maxLines: 100,
-                            validator: (value) {
-                              if (value == null || value.isEmpty ) {
-                                return "Điền đầy đủ thông tin!";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                      ],
+                    child: CustomTextFieldRowWidget(
+                      labelText: "Lý do:",
+                      name: 'reason',
+                      maxLines: 100,
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return "Điền đầy đủ thông tin!";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {});
+                      },
                     ),
                   ),
                 ],
