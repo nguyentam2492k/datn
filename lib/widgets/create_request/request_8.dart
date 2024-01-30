@@ -66,19 +66,21 @@ class Request8State extends State<Request8> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 5,),
-                  TextButton(
-                    child: const Text(
-                      "Mẫu đơn",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: InkWell(
+                      child: const Text(
+                        "Mẫu đơn",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
+                        ),
                       ),
+                      onTap: (){debugPrint("Tap Mau don");},
                     ),
-                    onPressed: (){}
                   ),
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
