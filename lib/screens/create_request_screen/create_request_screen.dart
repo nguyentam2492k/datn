@@ -4,6 +4,8 @@ import 'package:datn/widgets/create_request/request_11.dart';
 import 'package:datn/widgets/create_request/request_12.dart';
 import 'package:datn/widgets/create_request/request_13.dart';
 import 'package:datn/widgets/create_request/request_14.dart';
+import 'package:datn/widgets/create_request/request_15.dart';
+import 'package:datn/widgets/create_request/request_16.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
 import 'package:datn/widgets/create_request/request_4.dart';
@@ -65,8 +67,8 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request12(),
     const Request13(),
     const Request14(),
-    const Request3(),
-    const Request1(),
+    const Request15(),
+    const Request16(),
     const Request2(),
     const Request3(),
     const Request1(),
