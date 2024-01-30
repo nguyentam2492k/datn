@@ -10,7 +10,10 @@ class CustomFormBuilderDropdown extends FormBuilderDropdown {
     super.onChanged,
     super.initialValue,
     
-    super.style = const TextStyle(fontSize: 14),
+    super.style = const TextStyle(
+      fontSize: 14,
+      color: Colors.black,
+    ),
     super.icon = const Icon(Icons.keyboard_arrow_down),
     super.decoration = const InputDecoration(
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
