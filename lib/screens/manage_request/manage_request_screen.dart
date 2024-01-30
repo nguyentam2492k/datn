@@ -88,7 +88,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
                   blurRadius: 1.5,
-                  offset: const Offset(0, 0.5),
+                  offset: const Offset(0, 0.5), // changes position of shadow
                 ),
               ],
             ),
@@ -142,13 +142,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                                     color: Colors.grey,
                                   ),
                                   SizedBox(width: 5,),
-                                  Expanded(
-                                    child: Text(
-                                      "30-09-2023 02:11:46",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ),
+                                  Text("30-09-2023 02:11:46"),
                                 ],
                               )
                             ),
@@ -162,13 +156,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                                     color: Colors.grey,
                                   ),
                                   const SizedBox(width: 5,),
-                                  Expanded(
-                                    child: Text(
-                                      "${index}00.000000000000000000000",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  )
+                                  Text("${index}00.000")
                                 ],
                               )
                             ),

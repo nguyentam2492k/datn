@@ -132,7 +132,6 @@ class Request6State extends State<Request6> {
                       setState(() {});
                     },
                   ),
-                  const SizedBox(height: 10,),
                 ],
               ),
             )
