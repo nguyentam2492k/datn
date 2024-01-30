@@ -65,29 +65,29 @@ class Request9State extends State<Request9> {
                     ),
                   ),
                   const Divider(thickness: 0.4,),
-                    CustomTextFieldRowWidget(
-                      labelText: "Lý do:",
-                      name: 'reason',
-                      maxLines: 5,
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    ),
-                    const SizedBox(height: 5,),
-                    CustomUploadFileRowWidget(
-                      files: files, 
-                      isFileAdded: isFileAdded, 
-                      onChanged: (List<PlatformFile> value) { 
-                        files = value;
-                        setState(() {});
-                      }, 
-                    )
+                  CustomTextFieldRowWidget(
+                    labelText: "Lý do:",
+                    name: 'reason',
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 5,),
+                  CustomUploadFileRowWidget(
+                    files: files, 
+                    isFileAdded: isFileAdded, 
+                    onChanged: (List<PlatformFile> value) { 
+                      files = value;
+                      setState(() {});
+                    }, 
+                  )
                 ],
               ),
             ),

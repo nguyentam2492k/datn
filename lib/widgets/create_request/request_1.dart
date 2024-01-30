@@ -37,7 +37,8 @@ class Request1 extends StatefulWidget {
 }
 
 class Request1Stated extends State<Request1> {
-  final _formKey = GlobalKey<FormBuilderState>();
+  
+  final GlobalKey<FormBuilderState> _request1FormKey = GlobalKey<FormBuilderState>();
 
   List<String> certificationList = [
     "Chứng nhận Sinh viên /HV/NCS", 
@@ -101,7 +102,7 @@ class Request1Stated extends State<Request1> {
     }
 
     return FormBuilder(
-      key: _formKey,
+      key: _request1FormKey,
       child: Column(
         children: [
           Expanded(
@@ -255,7 +256,7 @@ class Request1Stated extends State<Request1> {
                   foregroundColor: Colors.white
                 ),
                 onPressed: () {
-                  (isFormValid() && _formKey.currentState!.validate()) ? sendFormData() : null;
+                  (isFormValid() && _request1FormKey.currentState!.validate()) ? sendFormData() : null;
                 }, 
                 label: const Text("Gửi yêu cầu"),
               ),

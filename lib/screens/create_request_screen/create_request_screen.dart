@@ -1,4 +1,5 @@
 import 'package:datn/widgets/create_request/request_1.dart';
+import 'package:datn/widgets/create_request/request_10.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
 import 'package:datn/widgets/create_request/request_4.dart';
@@ -55,7 +56,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request7(),
     const Request8(),
     const Request9(),
-    const Request1(),
+    const Request10(),
     const Request2(),
     const Request3(),
     const Request1(),
