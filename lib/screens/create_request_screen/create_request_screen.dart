@@ -1,6 +1,17 @@
 import 'package:datn/widgets/create_request/request_1.dart';
+import 'package:datn/widgets/create_request/request_10.dart';
+import 'package:datn/widgets/create_request/request_11.dart';
+import 'package:datn/widgets/create_request/request_12.dart';
+import 'package:datn/widgets/create_request/request_13.dart';
+import 'package:datn/widgets/create_request/request_14.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
+import 'package:datn/widgets/create_request/request_4.dart';
+import 'package:datn/widgets/create_request/request_5.dart';
+import 'package:datn/widgets/create_request/request_6.dart';
+import 'package:datn/widgets/create_request/request_7.dart';
+import 'package:datn/widgets/create_request/request_8.dart';
+import 'package:datn/widgets/create_request/request_9.dart';
 import 'package:datn/widgets/create_request/welcome.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:flutter/material.dart';
@@ -43,17 +54,17 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request1(),
     const Request2(),
     const Request3(),
-    const Request1(),
-    const Request2(),
-    const Request3(),
-    const Request1(),
-    const Request2(),
-    const Request3(),
-    const Request1(),
-    const Request2(),
-    const Request3(),
-    const Request1(),
-    const Request2(),
+    const Request4(),
+    const Request5(),
+    const Request6(),
+    const Request7(),
+    const Request8(),
+    const Request9(),
+    const Request10(),
+    const Request11(),
+    const Request12(),
+    const Request13(),
+    const Request14(),
     const Request3(),
     const Request1(),
     const Request2(),

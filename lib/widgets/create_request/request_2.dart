@@ -1,4 +1,4 @@
-import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -262,38 +262,20 @@ class Request2State extends State<Request2> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.25,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Expanded(
-                          flex: 1,
-                          child: Text(
-                            "Lý do:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10,),
-                        Expanded(
-                          flex: 4,
-                          child: CustomFormBuilderTextField(
-                            name: "reason",
-                            maxLines: 100,
-                            validator: (value) {
-                              if (value == null || value.isEmpty ) {
-                                return "Điền đầy đủ thông tin!";
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                      ],
+                    child: CustomTextFieldRowWidget(
+                      labelText: "Lý do:", 
+                      name: "reason", 
+                      maxLines: 5,
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return "Điền đầy đủ thông tin!";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {});
+                      },                    
                     ),
                   ),
                 ],

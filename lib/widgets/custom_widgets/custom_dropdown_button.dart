@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class CustomFormBuilderTextField extends FormBuilderTextField {
-
-  CustomFormBuilderTextField({
+class CustomFormBuilderDropdown extends FormBuilderDropdown {
+  CustomFormBuilderDropdown({
     super.key, 
     required super.name, 
-    super.maxLines,
+    required super.items,
     super.validator,
     super.onChanged,
     super.initialValue,
-
+    
     super.style = const TextStyle(fontSize: 14),
+    super.icon = const Icon(Icons.keyboard_arrow_down),
     super.decoration = const InputDecoration(
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       focusedBorder: OutlineInputBorder(
@@ -38,5 +38,4 @@ class CustomFormBuilderTextField extends FormBuilderTextField {
       ),
     ),
   });
-
 }

@@ -1,23 +1,24 @@
-import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class Request3 extends StatefulWidget {
-  const Request3({super.key});
-  
+class Request8 extends StatefulWidget {
+  const Request8({super.key});
+
   @override
   State<StatefulWidget> createState() {
-    return Request3State();
+    return Request8State();
   }
-
 }
 
-class Request3State extends State<Request3> {
+class Request8State extends State<Request8> {
 
-  final GlobalKey<FormBuilderState> _request3FormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _request8FormKey = GlobalKey<FormBuilderState>();
+
+  List<String> monthFee = ['960000đ', '3000000đ', '3500000đ', '4200000đ'];
 
   Map<String, dynamic> formData = {};
 
@@ -29,23 +30,23 @@ class Request3State extends State<Request3> {
   Widget build(BuildContext context) {
 
     bool isFormValid() {
-      if (_request3FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (_request8FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
         return true;
       }
     return false;
     }
 
     void sendFormData() {
-      formData.addAll(_request3FormKey.currentState!.value);
+    formData.addAll(_request8FormKey.currentState!.value);
       
-      // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-      List<String> listFiles = files.map((file) => file.name).toList();
-      formData['file'] = listFiles;
-      debugPrint(formData.toString());
-    }
-
+    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
+    List<String> listFiles = files.map((file) => file.name).toList();
+    formData['file'] = listFiles;
+    debugPrint(formData.toString());
+  }
+    
     return FormBuilder(
-      key: _request3FormKey,
+      key: _request8FormKey,
       child: Column(
         children: [
           Expanded(
@@ -54,20 +55,38 @@ class Request3State extends State<Request3> {
                 children: [
                   const SizedBox(height: 10,),
                   const Text(
-                    "Sinh viên điền đầy đủ thông tin bên dưới, "
-                    "đính kèm bản scan giấy xác nhận các lý do "
-                    "đã nêu trong phần lý do (giấy khám bệnh…), "
-                    "sau đó bấm Gửi yêu cầu để nộp bàn gốc cho "
-                    "phòng 104-E3 trong vòng 05 ngày kể từ ngày thi.",
+                    "Sinh viên : - Ghi rõ lý do; - Chọn mức học phí "
+                    "theo thác của mình; - Cập nhật hồ sơ "
+                    "(Thông tin về CCCD/CMND; ngày nhập học; ,..) "
+                    "trước khi thực hiện yêu cầu này. Sinh viên tải mẫu đơn, "
+                    "điền đầy đủ thông tin, scan và đính kèm vào phần bên dưới, "
+                    "đến Phòng 104-E3 nhận kết quả sau 01 ngày làm việc.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: InkWell(
+                      child: const Text(
+                        "Mẫu đơn",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
+                        ),
+                      ),
+                      onTap: (){debugPrint("Tap Mau don");},
+                    ),
+                  ),
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
-                    labelText: "Môn học:", 
-                    name: "subject", 
+                    labelText: "Lý do:",
+                    name: 'reason',
+                    maxLines: 5,
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -76,29 +95,16 @@ class Request3State extends State<Request3> {
                     },
                     onChanged: (value) {
                       setState(() {});
-                    }
-                  ),
-                  const SizedBox(height: 10,),
-                  CustomTextFieldRowWidget(
-                    labelText: "Giảng viên giảng dạy:", 
-                    name: "lecturer", 
-                    validator: (value) {
-                      if (value == null || value.isEmpty ) {
-                        return "Điền đầy đủ thông tin!";
-                      }
-                      return null;
                     },
-                    onChanged: (value) {
-                      setState(() {});
-                    }
                   ),
                   const SizedBox(height: 10,),
                   Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       const Expanded(
                         flex: 1,
                         child: Text(
-                          "Ngày thi:",
+                          "Học phí(đ) theo tháng",
                           style: TextStyle(
                             fontWeight: FontWeight.bold
                           ),
@@ -106,35 +112,28 @@ class Request3State extends State<Request3> {
                       ),
                       Expanded(
                         flex: 2,
-                        child: CustomFormBuilderDateTimePicker(
-                          name: 'exam_date',
+                        child: CustomFormBuilderDropdown(
+                          name: 'month_fee',
+                          initialValue: monthFee[0],
+                          items: monthFee
+                            .map((fee) => DropdownMenuItem(
+                              value: fee, 
+                              child: Text(fee),
+                            ))
+                            .toList(),
                           validator: (value) {
-                            if (value == null) {
-                              return "Chọn ngày chính xác";
+                            if (value == null || value.isEmpty) {
+                              return "Chọn học phí";
                             }
                             return null;
                           },
-                        )
+                        ),
                       ),
                       const Expanded(
                         flex: 2,
-                        child: SizedBox(),
+                        child: SizedBox()
                       )
                     ],
-                  ),
-                  const SizedBox(height: 10,),
-                  CustomTextFieldRowWidget(
-                    labelText: "Lý do", 
-                    name: "reason", 
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value == null || value.isEmpty ) {
-                        return "Điền đầy đủ thông tin!";
-                      }
-                      return null;
-                    }, 
-                    onChanged: (value) { setState(() {
-                    }); },
                   ),
                   const SizedBox(height: 5,),
                   CustomUploadFileRowWidget(
@@ -147,7 +146,7 @@ class Request3State extends State<Request3> {
                   )
                 ],
               ),
-            ),
+            )
           ),
           Align(
             alignment: Alignment.bottomCenter,
