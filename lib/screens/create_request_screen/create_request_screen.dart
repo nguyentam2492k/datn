@@ -8,6 +8,7 @@ import 'package:datn/widgets/create_request/request_15.dart';
 import 'package:datn/widgets/create_request/request_16.dart';
 import 'package:datn/widgets/create_request/request_17.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
+import 'package:datn/widgets/create_request/request_20.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
 import 'package:datn/widgets/create_request/request_4.dart';
 import 'package:datn/widgets/create_request/request_5.dart';
@@ -73,7 +74,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request17(),
     const Request3(),
     const Request1(),
-    const Request2(),
+    const Request20(),
     const Request3(),
   ];
   late String? selectedItem;
