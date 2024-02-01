@@ -50,6 +50,7 @@ class CustomFormBuilderDateRangePicker extends FormBuilderDateRangePicker {
     required super.firstDate,
     required super.lastDate,
     required super.validator,
+    super.initialValue,
 
     super.locale = const Locale('vi', 'VI'),
     super.style = const TextStyle(
