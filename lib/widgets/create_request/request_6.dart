@@ -1,4 +1,4 @@
-import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -48,14 +48,28 @@ class Request6State extends State<Request6> {
                   const Divider(thickness: 0.4,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Loại hồ sơ mượn",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
+                        child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Loại hồ sơ mượn:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
                           ),
-                        ),
                       ),
                       Expanded(
                         flex: 4,
@@ -83,6 +97,7 @@ class Request6State extends State<Request6> {
                   CustomTextFieldRowWidget(
                     labelText: "Hồ sơ khác:",
                     name: 'other_document',
+                    isImportant: false,
                     validator: (value) {
                       if (!_request6FormKey.currentState!.fields['document_type']!.validate() && (value == null || value.isEmpty )) {
                         return "Điền hồ sơ khác nếu cần";
@@ -96,15 +111,30 @@ class Request6State extends State<Request6> {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Thời gian mượn:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child:RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Thời gian mượn:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(

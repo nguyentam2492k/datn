@@ -30,7 +30,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
         )
       ),
       title: const Image(
-        image: AssetImage('assets/icons/uet.png'),
+        image: AssetImage('assets/images/uet.png'),
         fit: BoxFit.contain,
         height: 40,
       ),
@@ -150,7 +150,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
             accountName: Text("18021116"), 
             accountEmail: Text("18021116@vnu.edu.vn"),
             currentAccountPicture: Image(
-              image: AssetImage('assets/icons/moon.jpg'),
+              image: AssetImage('assets/images/uet.png'),
               fit: BoxFit.contain,
             ),
             decoration: BoxDecoration(

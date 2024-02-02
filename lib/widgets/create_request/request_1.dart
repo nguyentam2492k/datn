@@ -125,14 +125,27 @@ class Request1Stated extends State<Request1> {
                     height: 65,
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 1,
-                          child: Text(
-                            "Loại giấy chứng nhận:",
-                            style: TextStyle(
-                     
-                              fontWeight: FontWeight.bold
-                            ),
+                          child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Loại giấy chứng nhận:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
                           ),
                         ),
                         const SizedBox(width: 5,),

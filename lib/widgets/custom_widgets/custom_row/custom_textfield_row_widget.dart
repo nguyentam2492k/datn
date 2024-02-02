@@ -7,7 +7,9 @@ class CustomTextFieldRowWidget extends StatefulWidget {
   final int maxLines;
   final String? initialValue;
   final bool isShort;
+  final bool isImportant;
   final TextInputType? keyboardType;
+  final String? hintText;
   final FormFieldValidator<String?>? validator;
   final ValueChanged<String?>? onChanged;
 
@@ -17,10 +19,12 @@ class CustomTextFieldRowWidget extends StatefulWidget {
     required this.name, 
     this.maxLines = 1, 
     this.isShort = false,
+    this.isImportant = true,
     this.validator,
     this.onChanged, 
     this.initialValue, 
     this.keyboardType,
+    this.hintText,
   });
 
   @override
@@ -39,13 +43,28 @@ class CustomTextFieldRowWidgetState extends State<CustomTextFieldRowWidget> {
       children: [
         Expanded(
           flex: 1,
-          child: Text(
-            widget.labelText,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: widget.labelText,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
+                  ),
+                ),
+                TextSpan(
+                  text: widget.isImportant ? " *" : '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red
+                  ),
+                ),
+              ]
+            )
+          )
         ),
+        const SizedBox(width: 4,),
         Expanded(
           flex: widget.isShort ? 2 : 4,
           child: CustomFormBuilderTextField(

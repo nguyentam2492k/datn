@@ -110,6 +110,7 @@ class Request8State extends State<Request8> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDropdown(

@@ -95,15 +95,30 @@ class Request3State extends State<Request3> {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Ngày thi:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
+                        child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Ngày thi:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
                           ),
-                        ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDateTimePicker(

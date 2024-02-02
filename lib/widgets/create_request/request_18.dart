@@ -1,12 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'package:datn/model/district.dart';
-import 'package:datn/model/province.dart';
-import 'package:datn/model/ward.dart';
-import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
-import 'package:datn/widgets/custom_widgets/custom_row/custom_address_row_widget.dart';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+import 'package:datn/constants/constant_value.dart';
+import 'package:datn/model/province.dart';
+import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/custom_address_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 
 class Request18 extends StatefulWidget {
   const Request18({super.key});
@@ -21,207 +28,835 @@ class Request18State extends State<Request18> {
 
   final GlobalKey<FormBuilderState> _request18FormKey = GlobalKey<FormBuilderState>();
 
+  late Image avatarImage;
+  
+  Map<String, dynamic> formData = {};
+
+  late List<PlatformFile> files;
+  late bool isFileAdded;
+
+  ValueNotifier<List<PlatformFile>> filesChanged = ValueNotifier([]);
+
   List<Province> provinces = [];
-  List<District> districts = [];
-  List<Ward> wards = [];
 
-  String selectedProvince = '';
-  String selectedDistrict = '';
-  String selectedWard = '';
-
-  Future getAddressData() async {
+  Future<List<Province>> getData() async {
     var response = await rootBundle.loadString('assets/data/dvhcvn.json');
     var jsonData = jsonDecode(response)['data'] as List;
     provinces = jsonData.map((provinceJson) => Province.fromJson(provinceJson)).toList();
-    return;
+    return provinces;
+  }
+
+  bool isFormValid() {
+    if (_request18FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      filesChanged.value = List.from(files);
+      return true;
+    }
+    filesChanged.value = List.empty();
+    return false;
+  }
+
+  void sendFormData() {
+    formData.addAll(_request18FormKey.currentState!.value);
+      
+    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
+    List<String> listFiles = files.map((file) => file.name).toList();
+    formData['file'] = listFiles;
+    debugPrint(formData.toString());
   }
 
   @override
   void initState() {
     super.initState();
-    getAddressData();
-    selectedProvince = '';
-    selectedDistrict = '';
-    selectedWard = '';
+    // getData();
+    files = [];
+    isFileAdded = true;
+    avatarImage = Image.asset("assets/images/moon.jpg");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(avatarImage.image, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return 
-    FutureBuilder(
-      future: getAddressData(),
-      builder: (context, snapshot) {
+
+    return FutureBuilder(
+      future: getData(),
+      builder:(context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return 
-          FormBuilder(
+          return FormBuilder(
             key: _request18FormKey,
-            child: CustomAddressRowWidget(
-              labelText: "Dia chi",
-              provinceName: 'province', 
-              districtName: 'district', 
-              wardName: 'ward', 
-              selectedProvince: selectedProvince, 
-              selectedDistrict: selectedDistrict, 
-              selectedWard: selectedWard, 
-              provinces: provinces, 
-              districts: districts, 
-              wards: wards,
-              provinceChanged: (value) {
-                var provinceIndex = provinces.indexWhere((element) => element.id == _request18FormKey.currentState!.fields['province']!.value);
-                selectedProvince = _request18FormKey.currentState!.fields['province']!.value;
-                selectedDistrict = '';
-                selectedWard = '';
-                districts = provinces[provinceIndex].districts!;
-                debugPrint(districts.length.toString());
-                // didUpdateWidget(widget);
-                // _request18FormKey.currentState!.fields['district']!.didChange("a");
-                setState(() {
-                });
-              },
-              districtChanged: (value) {
-                var districtIndex = districts.indexWhere((element) => element.id == _request18FormKey.currentState!.fields['district']!.value);
-                selectedDistrict = _request18FormKey.currentState!.fields['district']!.value;
-                selectedWard = '';
-                wards = districts[districtIndex].wards!;
-                debugPrint(wards.length.toString());
-                setState(() {
-                });
-              },
-              wardChanged: (value) {
-                selectedWard = _request18FormKey.currentState!.fields['ward']!.value;
-                debugPrint(value);
-                // setState(() {
-                // });
-              },
-              ),
-            // child: Wrap(
-            //   spacing: 4,
-            //   runSpacing: 4,
-            //   children: [
-            //     Container(
-            //       constraints: BoxConstraints(maxWidth: 200),
-            //       child: CustomFormBuilderDropdown(
-            //         name: 'province',
-            //         initialValue: selectedProvince,
-            //         items: provinces
-            //           .map((province) => DropdownMenuItem(
-            //             value: province.id, 
-            //             child: Text(province.name!),
-            //           ))
-            //           .toList(),
-            //         validator: (value) {
-            //           if (value == null || value.isEmpty) {
-            //             return "Chọn Tỉnh/Thành phố";
-            //           }
-            //           return null;
-            //         },
-            //         onChanged: (value) {
-            //           var provinceIndex = provinces.indexWhere((element) => element.id == _request18FormKey.currentState!.fields['province']!.value);
-            //           selectedProvince = _request18FormKey.currentState!.fields['province']!.value;
-            //           selectedDistrict = '';
-            //           selectedWard = '';
-            //           districts = provinces[provinceIndex].districts!;
-            //           debugPrint(districts.length.toString());
-            //           // didUpdateWidget(widget);
-            //           // _request18FormKey.currentState!.fields['district']!.didChange("a");
-            //           setState(() {
-            //           });
-            //         },
-            //         decoration: InputDecoration(
-            //           // prefixIcon:Padding(
-            //           //   padding: const EdgeInsets.all(8.0),
-            //           //   child: Text("Tỉnh/TP: "),
-            //           // ),
-            //           labelText: "Tỉnh/TP",
-            //           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      
-            //           focusedBorder: OutlineInputBorder(
-            //             borderRadius: BorderRadius.all(Radius.circular(10)),
-            //             borderSide: BorderSide(
-            //               width: 0.5,
-            //               color: Colors.grey,
-            //             ),
-            //           ),
-            //           enabledBorder: OutlineInputBorder(
-            //             borderRadius: BorderRadius.all(Radius.circular(10)),
-            //             borderSide: BorderSide(
-            //               color: Colors.grey,
-            //               width: 0.5,
-            //             ),
-            //           ),
-            //           errorBorder: OutlineInputBorder(
-            //             borderSide: BorderSide(color: Colors.red),
-            //             borderRadius: BorderRadius.all(Radius.circular(10)),
-            //           ),
-            //           focusedErrorBorder: OutlineInputBorder(
-            //             borderSide: BorderSide(color: Colors.red),
-            //             borderRadius: BorderRadius.all(Radius.circular(10)),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Container(
-            //       constraints: BoxConstraints(maxWidth: 200),
-            //       child: CustomFormBuilderDropdown(
-            //         name: 'district',
-            //         initialValue: selectedDistrict,
-            //         items: districts
-            //           .map((district) => DropdownMenuItem(
-            //             value: district.id, 
-            //             child: Text(district.name!),
-            //           ))
-            //           .toList(),
-            //         validator: (value) {
-            //           if (value == null || value.isEmpty) {
-            //             return "Chọn Quận/Huyện/Thị xã";
-            //           }
-            //           return null;
-            //         },
-            //         onChanged: (value) {
-            //           var districtIndex = districts.indexWhere((element) => element.id == _request18FormKey.currentState!.fields['district']!.value);
-            //           selectedDistrict = _request18FormKey.currentState!.fields['district']!.value;
-            //           selectedWard = '';
-            //           wards = districts[districtIndex].wards!;
-            //           debugPrint(wards.length.toString());
-            //           setState(() {
-            //           });
-            //         },
-            //       ),
-            //     ),
-            //     Container(
-            //       constraints: BoxConstraints(maxWidth: 200),
-            //       child: CustomFormBuilderDropdown(
-            //         name: 'ward',
-            //         initialValue: selectedWard,
-            //         items: wards
-            //           .map((ward) => DropdownMenuItem(
-            //             value: ward.id, 
-            //             child: Text(ward.name!),
-            //           ))
-            //           .toList(),
-            //         validator: (value) {
-            //           if (value == null || value.isEmpty) {
-            //             return "Chọn Xã/Phường";
-            //           }
-            //           return null;
-            //         },
-            //         onChanged: (value) {
-            //           selectedWard = _request18FormKey.currentState!.fields['ward']!.value;
-            //           debugPrint(value);
-            //           // setState(() {
-            //           // });
-            //         },
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 15,),
+                        SizedBox(
+                          height: 180,
+                          width: 120,
+                          child: Image(
+                            image: avatarImage.image,
+                            fit: BoxFit.cover,
+                          )
+                        ),
+                        const SizedBox(height: 10,),
+                        ExpansionTile(
+                          shape: const Border(),
+                          tilePadding: EdgeInsetsDirectional.zero,
+                          initiallyExpanded: true,
+                          title: const Text(
+                            "Thông tin cá nhân",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          children: [
+                            personalAddressWidget(),
+                            const SizedBox(height: 20,),
+                            personalIdentifyCardWidget(),
+                            const SizedBox(height: 20,),
+                            personalContactWidget(),
+                            const SizedBox(height: 20,),
+                            personalOtherInformation(),
+                            const SizedBox(height: 20,),
+                            admissionCodeInformation(),
+                            const SizedBox(height: 20,),
+                            admissionDateInformation(),
+                            const SizedBox(height: 20,),
+                            healthInsuranceWidget(),
+                            const SizedBox(height: 5,)
+                          ]
+                        ),
+                        const Divider(thickness: 0.4,),
+                        ExpansionTile(
+                          shape: const Border(),
+                          tilePadding: EdgeInsetsDirectional.zero,
+                          initiallyExpanded: true,
+                          title: const Text(
+                            "Thông tin gia đình",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          children: [
+                            const SizedBox(height: 10,),
+                            householdInformation(),
+                            const Divider(thickness: 0.5,),
+                            fatherInformation(),
+                            const Divider(thickness: 0.5,),
+                            motherInformation(),
+                            const Divider(thickness: 0.5,),
+                            mailingAddressInformation(),
+                            const SizedBox(height: 5,)
+                          ],
+                        ),
+                        const Divider(thickness: 0.4,),
+                        familyTypeInformation(),
+                        const SizedBox(height: 15,),
+                        feeInformation(),
+                        const SizedBox(height: 15,),
+                        uploadFile(),
+                      ],
+                    )
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: saveButton(context),
+                )
+              ],
+            ),
           );
-        } else {
-          return Center(
-              child: CircularProgressIndicator(),
-            );
+        } 
+        else {
+          return const Center(child: CircularProgressIndicator());
         }
       },
+    );
+  }
+
+  BoxConstraints shortConstraints = const BoxConstraints(maxWidth: 150, maxHeight: 45);
+  BoxConstraints mediumConstraints = const BoxConstraints(maxWidth: 230, maxHeight: 45);
+  TextStyle customTextStyle = const TextStyle(
+    fontSize: 13,
+    color: Colors.black,
+  );
+
+  InputDecoration customDecoration({String? labelText, String? hintText, bool? isDatePicker}) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: const TextStyle(
+        fontSize: 13,
+        color: Colors.grey,
+        fontWeight: FontWeight.normal,
+      ),
+      hintMaxLines: 1,
+      hintText: hintText,
+      hintStyle: const TextStyle(
+        fontSize: 13,
+        color: Colors.grey,
+        fontWeight: FontWeight.normal
+      ),
+      errorStyle: const TextStyle(
+        fontSize: 10,
+        height: 0.3
+      ),
+      suffixIcon: isDatePicker ?? false ? const Icon(Icons.calendar_month_outlined, size: 17,) : null,
+      suffixIconColor: Colors.grey,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(
+          width: 0.5,
+          color: Colors.grey,
+        ),
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(
+          color: Colors.grey,
+          width: 0.5,
+        ),
+      ),
+      errorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      focusedErrorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+    );
+  }
+
+  Widget personalAddressWidget() {
+    return Column(
+      children: [
+        const SizedBox(height: 10,),
+        CustomAddressRowWidget(
+          formKey: _request18FormKey,
+          labelText: "Nơi khai sinh:",
+          provinceName: 'tinh_khaisinh', 
+          districtName: 'huyen_khaisinh', 
+          wardName: 'xa_khaisinh',
+          provinces: provinces,
+        ),
+        const SizedBox(height: 15,),
+        CustomAddressRowWidget(
+          formKey: _request18FormKey,
+          labelText: "Hộ khẩu thường chú:", 
+          provinceName: 'tinh_thuongtru', 
+          districtName: 'huyen_thuongtru', 
+          wardName: 'xa_thuongtru',
+          provinces: provinces, 
+        )
+      ],
+    );
+  }
+
+  Widget personalIdentifyCardWidget() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: RichText(
+            text: const TextSpan(
+              children: [
+                TextSpan(
+                  text: "CMND/CCCD:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
+                  ),
+                ),
+                TextSpan(
+                  text: " *",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red
+                  ),
+                ),
+              ]
+            )
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Container(
+                constraints: mediumConstraints,
+                child: CustomFormBuilderTextField(
+                  name: 'identify_id',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty ) {
+                      return "Điền đầy đủ thông tin!";
+                    }
+                    return null;
+                  },
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Số CMND/CCCD *"),
+                ),
+              ),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDateTimePicker(
+                  name: 'identify_date',
+                  validator: (value) {
+                    if (value == null) {
+                      return "Chọn ngày chính xác";
+                    }
+                    return null;
+                  },
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Ngày cấp *", isDatePicker: true),
+                ),
+              ),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDropdown(
+                  name: 'identify_address',
+                  items: provinces
+                    .map((province) => DropdownMenuItem(
+                      value: province.name, 
+                      child: Text(
+                        province.name!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                    .toList(),
+                  // validator: widget.provinceValidator,
+                  // onChanged: widget.provinceChanged,
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Tỉnh/Tp"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget personalContactWidget() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Thông tin liên hệ:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderTextField(
+                  name: 'phone_contact',
+                  keyboardType: TextInputType.phone,
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Số điện thoại"),
+                ),
+              ),
+              Container(
+                constraints: mediumConstraints,
+                child: CustomFormBuilderTextField(
+                  name: 'email_contact',
+                  keyboardType: TextInputType.emailAddress,
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Email"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget personalOtherInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Khác:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDropdown(
+                  name: 'ethnicity',
+                  items: ConstantValue.ethnics
+                    .map((ethnic) => DropdownMenuItem(
+                      value: ethnic, 
+                      child: Text(
+                        ethnic,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                    .toList(),
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Dân tộc"),
+                ),
+              ),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDropdown(
+                  name: 'religion',
+                  items: ConstantValue.religions
+                    .map((religion) => DropdownMenuItem(
+                      value: religion, 
+                      child: Text(
+                        religion,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                    .toList(),
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Tôn giáo"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]
+    );
+  }
+
+  Widget admissionCodeInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Mã xét tuyển:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Container(
+            constraints: shortConstraints,
+            child: CustomFormBuilderDropdown(
+              name: 'admission_code',
+              items: ConstantValue.admissionCodes
+                .map((admissionCode) => DropdownMenuItem(
+                  value: admissionCode, 
+                  child: Text(
+                    admissionCode,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ))
+                .toList(),
+              style: customTextStyle,
+              decoration: customDecoration(hintText: "Chọn mã xét tuyển"),
+            ),
+          ),
+        ),
+      ]
+    );
+  }
+
+  Widget admissionDateInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Ngày nhập trường:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 2,
+          child: Container(
+            constraints: shortConstraints,
+            child: CustomFormBuilderDateTimePicker(
+              name: 'admission_date',
+              style: customTextStyle,
+              decoration: customDecoration(hintText: "Chọn ngày", isDatePicker: true),
+            ),
+          ),
+        ),
+        const Expanded(flex: 2, child: SizedBox())
+      ]
+    );
+  }
+
+  Widget healthInsuranceWidget() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Mã bảo hiểm y tế:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Tooltip(
+            message: "Nhập đủ cả phần chữ và phần số",
+            child: CustomFormBuilderTextField(
+              name: 'health_insurance_id',
+              style: customTextStyle,
+              decoration: customDecoration(labelText: "Mã bảo hiểm y tế"),
+            ),
+          ),
+        )
+      ]
+    );
+  }
+
+  Widget householdInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Thông tin chủ hộ:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomFormBuilderTextField(
+                name: 'household_name',
+                keyboardType: TextInputType.name,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Họ và tên"),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDateTimePicker(
+                  name: 'household_birthdate',
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
+                ),
+              ),
+              const SizedBox(height: 5,),
+              FormBuilderChoiceChip(
+                name: "household_gender", 
+                spacing: 5,
+                shape: const StadiumBorder(side: BorderSide(color: Colors.grey, width: 0.5)),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  prefixIcon:Text(
+                    "Giới tính:  ",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF3F3F3F),
+                    ),
+                  ),
+                  prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                ),
+                backgroundColor: Colors.transparent,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                options: ConstantValue.genders
+                  .map((gender) => FormBuilderChipOption(
+                      value: gender,
+                      child: SizedBox(
+                        width: 50,
+                        child: Center(
+                          child: Text(
+                            gender,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF3F3F3F),
+                            ),
+                          )
+                        ),
+                      ),
+                    ))
+                  .toList()
+              ),
+              const SizedBox(height: 5,),
+              CustomFormBuilderTextField(
+                name: 'relative_with_household',
+                keyboardType: TextInputType.name,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Quan hệ Sinh viên-Chủ hộ"),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget fatherInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Thông tin của Bố:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomFormBuilderTextField(
+                name: 'father_name',
+                keyboardType: TextInputType.name,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Họ và tên"),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDateTimePicker(
+                  name: 'father_birthdate',
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
+                ),
+              ),
+              const SizedBox(height: 10,),
+              CustomFormBuilderTextField(
+                name: 'father_phone',
+                keyboardType: TextInputType.phone,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Số điện thoại"),
+              ),
+              const SizedBox(height: 10,),
+              CustomFormBuilderTextField(
+                name: 'father_job',
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Nghề nghiệp"),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget motherInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Thông tin của Mẹ:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomFormBuilderTextField(
+                name: 'mother_name',
+                keyboardType: TextInputType.name,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Họ và tên"),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                constraints: shortConstraints,
+                child: CustomFormBuilderDateTimePicker(
+                  name: 'mother_birthdate',
+                  style: customTextStyle,
+                  decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
+                ),
+              ),
+              const SizedBox(height: 10,),
+              CustomFormBuilderTextField(
+                name: 'mother_phone',
+                keyboardType: TextInputType.phone,
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Số điện thoại"),
+              ),
+              const SizedBox(height: 10,),
+              CustomFormBuilderTextField(
+                name: 'mother_job',
+                style: customTextStyle,
+                decoration: customDecoration(labelText: "Nghề nghiệp"),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget mailingAddressInformation() {
+    return const Tooltip(
+      message: "Ghi rõ số nhà, tổ dân phố/thôn/xóm, xã/phường, quận/huyện, tỉnh/TP",
+      child: CustomTextFieldRowWidget(
+        name: "mailing_address",
+        labelText: "Địa chỉ nhận thư của gia đình:", 
+        maxLines: 3,
+        isImportant: false,
+      ),
+    );
+  }
+
+  Widget familyTypeInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Thuộc diện:",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: FormBuilderCheckboxGroup(
+            name: 'student_types', 
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              isCollapsed: true,
+            ),
+            options: ConstantValue.studentTypes
+              .map((type) => FormBuilderFieldOption(
+                value: type,
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 150),
+                  child: Text(type)
+                ),
+              ))
+              .toList(),
+          ),
+        ),
+      ]
+    ); 
+  }
+
+  Widget feeInformation() {
+    return Row(
+      children: [
+        const Expanded(
+          flex: 1,
+          child: Text(
+            "Học phí (miễn/giảm):",
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        const SizedBox(width: 4,),
+        Expanded(
+          flex: 4,
+          child: FormBuilderRadioGroup(
+            name: 'fee_types', 
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              isCollapsed: true,
+            ),
+            options: ConstantValue.feeTypes
+              .map((type) => FormBuilderFieldOption(
+                value: type,
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 150),
+                  child: Text(type)
+                ),
+              ))
+              .toList(),
+          ),
+        ),
+      ]
+    ); 
+  }
+
+  Widget uploadFile() {
+    return ValueListenableBuilder(
+      valueListenable: filesChanged,
+      builder: (context, myFiles, child) {
+        return CustomUploadFileRowWidget(
+          files: myFiles,
+          isFileAdded: isFileAdded,
+          onChanged: (value) {
+            filesChanged.value = List.from(value);
+            files = filesChanged.value;
+          }, 
+        );
+      },
+    );
+  }
+
+  Widget saveButton(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.save),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white
+        ),
+        onPressed: () {
+          isFileAdded = files.isEmpty ? false : true;
+          isFormValid() ? sendFormData() : null;
+          // setState(() {});
+        }, 
+        label: const Text("Gửi yêu cầu"),
+      ),
     );
   }
 }

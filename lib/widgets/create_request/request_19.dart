@@ -1,4 +1,4 @@
-import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -101,13 +101,27 @@ class Request19State extends State<Request19> {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Thời gian thuê:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Thời gian thuê:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
                       const SizedBox(width: 4,),
@@ -137,73 +151,33 @@ class Request19State extends State<Request19> {
                   const CustomTextFieldRowWidget(
                     labelText: "Đối tượng ưu tiên:", 
                     name: "doituonguutien", 
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty ) {
-                    //     return "Điền đầy đủ thông tin!";
-                    //   }
-                    //   return null;
-                    // },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // }
+                    isImportant: false,
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Địa chỉ thường trú:", 
                     name: "address", 
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty ) {
-                    //     return "Điền đầy đủ thông tin!";
-                    //   }
-                    //   return null;
-                    // },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // }
+                    isImportant: false,
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Điện thoại liên hệ:", 
                     name: "phone_contact", 
+                    isImportant: false,
                     keyboardType: TextInputType.phone,
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty ) {
-                    //     return "Điền đầy đủ thông tin!";
-                    //   }
-                    //   return null;
-                    // },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // }
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Email:", 
                     name: "email", 
+                    isImportant: false,
                     keyboardType: TextInputType.emailAddress,
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty ) {
-                    //     return "Điền đầy đủ thông tin!";
-                    //   }
-                    //   return null;
-                    // },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // }
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Khi cần liên hệ (báo tin cho):", 
                     name: "khicanbaotin", 
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty ) {
-                    //     return "Điền đầy đủ thông tin!";
-                    //   }
-                    //   return null;
-                    // },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // }
+                    isImportant: false,
                   ),
                   const SizedBox(height: 5,),
                   const Divider(thickness: 0.4,),

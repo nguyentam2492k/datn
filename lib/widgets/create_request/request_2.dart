@@ -105,14 +105,28 @@ class Request2State extends State<Request2> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 1,
-                          child: Text(
-                            "Kỳ:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          )
+                          child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Kỳ:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
+                          ),
                         ),
                         Expanded(
                           flex: 4,

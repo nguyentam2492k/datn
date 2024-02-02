@@ -1,4 +1,4 @@
-import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -85,15 +85,30 @@ class Request11State extends State<Request11> {
                   const Divider(thickness: 0.4,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Thời gian nghỉ:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Thời gian nghỉ:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(

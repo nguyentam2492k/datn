@@ -1,29 +1,36 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class CustomFormBuilderTextField extends StatefulWidget {
-    final String name; 
-    final int? maxLines;
-    final FormFieldValidator<String?>? validator;
-    final ValueChanged<String?>? onChanged;
-    final String? initialValue;
-    final bool enabled;
-    final TextInputType? keyboardType;
-    final TextStyle? style;
-    final InputDecoration decoration;
+class CustomFormBuilderDateRangePicker extends StatefulWidget {
+  final String name; 
+  final FormFieldValidator<DateTimeRange?>? validator;
+  final ValueChanged<DateTimeRange?>? onChanged;
+  final DateTimeRange? initialValue;
+  final DateTime firstDate;
+  final DateTime lastDate;
+  final Locale? locale;
+  final TextStyle? style;
+  final InputDecoration decoration;
 
-  const CustomFormBuilderTextField({
+  const CustomFormBuilderDateRangePicker({
     super.key, 
     required this.name, 
-    this.maxLines = 1, 
     this.validator, 
     this.onChanged, 
     this.initialValue, 
-    this.enabled = true, 
-    this.keyboardType, 
-    this.style = const TextStyle(fontSize: 14), 
+    required this.firstDate, 
+    required this.lastDate, 
+    this.locale, 
+    this.style = const TextStyle(
+      fontSize: 14,
+      color: Colors.black
+    ),
     this.decoration = const InputDecoration(
-      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      contentPadding: EdgeInsets.all(10),
+      hintText: "Chọn thời gian",
+      suffixIcon: Icon(Icons.calendar_month_outlined, size: 20,),
+      suffixIconColor: Colors.grey,
       errorStyle: TextStyle(
         fontSize: 10,
         height: 0.3
@@ -55,28 +62,24 @@ class CustomFormBuilderTextField extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return CustomFormBuilderTextFieldState();
+    return CustomFormBuilderDateRangePickerState();
   }
   
 }
 
-class CustomFormBuilderTextFieldState extends State<CustomFormBuilderTextField> {
-
-  BoxConstraints constraints = const BoxConstraints(maxHeight: 45);
-
+class CustomFormBuilderDateRangePickerState extends State<CustomFormBuilderDateRangePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: widget.maxLines == 1 ? constraints : null,
-      child: FormBuilderTextField(
-        name: widget.name,
-        maxLines: widget.maxLines,
+      constraints: const BoxConstraints(maxHeight: 45),
+      child: FormBuilderDateRangePicker(
+        name: widget.name, 
+        firstDate: widget.firstDate, 
+        lastDate: widget.lastDate,
         initialValue: widget.initialValue,
-        enabled: widget.enabled,
-        keyboardType: widget.keyboardType,
+        locale: widget.locale,
         style: widget.style,
         decoration: widget.decoration,
-
         validator: widget.validator,
         onChanged: widget.onChanged,
       ),

@@ -64,13 +64,27 @@ class Request17State extends State<Request17> {
                   const Divider(thickness: 0.4,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Tuyến buýt đăng ký:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Tuyến buýt đăng ký:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
                       Expanded(

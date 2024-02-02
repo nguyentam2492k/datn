@@ -13,8 +13,8 @@ class CustomUploadFileRowWidget extends StatefulWidget {
     super.key, 
     this.labelText = "Tệp đính kèm:",
     required this.files,
-    required this.onChanged, 
     required this.isFileAdded, 
+    required this.onChanged, 
   });
 
   @override
@@ -28,15 +28,12 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
   
   List<PlatformFile> files = [];
 
-  late bool isFileAdded = true;
-
   @override
-  void didUpdateWidget(covariant CustomUploadFileRowWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     files = widget.files;
-    isFileAdded = widget.isFileAdded;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
@@ -48,14 +45,30 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Text(
-                widget.labelText,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold
-                ),
-              ),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: widget.labelText,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black
+                      ),
+                    ),
+                    const TextSpan(
+                      text: " *",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red
+                      ),
+                    ),
+                    
+                  ]
+                )
+              )
             ),
           ),
+          const SizedBox(width: 4,),
           Expanded(
             flex: 4,
             child: Column(
@@ -98,7 +111,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         },
                       ),
                       Visibility(
-                        visible: !isFileAdded,
+                        visible: !widget.isFileAdded,
                         child: Container(
                           height: 30,
                           alignment: Alignment.centerLeft,
@@ -106,8 +119,9 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                           child: const Text(
                             "Thêm tệp đính kèm",
                             style: TextStyle(
-                              color: Color(0xFFCF0202),
-                              fontSize: 12
+                              color: Color.fromARGB(222, 207, 2, 2),
+                              fontSize: 10,
+                              height: 0.3
                             ),
                           ),
                         ),
@@ -159,9 +173,9 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                                         result = await OpenFile.open(
                                           file.path,
                                         );
-                                        setState(() {
+                                        // setState(() {
                                           debugPrint("type=${result.type}  message=${result.message}");
-                                        });
+                                        // });
                                       } catch (error) {
                                         debugPrint(error.toString());
                                       }
