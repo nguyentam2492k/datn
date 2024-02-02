@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,6 @@ class Request17 extends StatefulWidget {
 class Request17State extends State<Request17> {
 
   final GlobalKey<FormBuilderState> _request17FormKey = GlobalKey<FormBuilderState>();
-
-  final List<String> busChoices = [
-    "Một tuyến",
-    "Liên tuyến bình thường (không đi tuyến 54)",
-    "Liên tuyến và tuyến 54 (tất cả các tuyến)",
-  ];
 
   void sendFormData() {
     _request17FormKey.currentState!.saveAndValidate() ? debugPrint(_request17FormKey.currentState?.value.toString()) : null;
@@ -93,7 +88,7 @@ class Request17State extends State<Request17> {
                           children: [
                             FormBuilderRadioGroup(
                               name: 'tuyen', 
-                              initialValue: busChoices[0],
+                              initialValue: ConstantList.busChoices[0],
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 isCollapsed: true,
@@ -101,14 +96,14 @@ class Request17State extends State<Request17> {
                               onChanged: (value) {
                                 // _request17FormKey.currentState!.fields['mottuyen']!.reset();
                                 // FocusScope.of(context).unfocus();
-                                if (_request17FormKey.currentState!.fields['tuyen']!.value != busChoices[0]) {
+                                if (_request17FormKey.currentState!.fields['tuyen']!.value != ConstantList.busChoices[0]) {
                                   _request17FormKey.currentState!.fields['mottuyen']!.reset();
                                   FocusScope.of(context).unfocus();
                                 }
                               },
                               options: [
                                 FormBuilderFieldOption(
-                                  value: busChoices[0],
+                                  value: ConstantList.busChoices[0],
                                   child: Row(
                                     children: [
                                       const Expanded(
@@ -121,7 +116,7 @@ class Request17State extends State<Request17> {
                                         child: CustomFormBuilderTextField(
                                           name: "mottuyen",
                                           validator: (value) {
-                                            if (_request17FormKey.currentState!.fields['tuyen']!.value == busChoices[0] && (value == null || value.isEmpty)) {
+                                            if (_request17FormKey.currentState!.fields['tuyen']!.value == ConstantList.busChoices[0] && (value == null || value.isEmpty)) {
                                               return "Nhập số tuyến";
                                             }
                                             return null;
@@ -134,8 +129,8 @@ class Request17State extends State<Request17> {
                                     ],
                                   ),
                                 ),
-                                FormBuilderFieldOption(value: busChoices[1]),
-                                FormBuilderFieldOption(value: busChoices[2]),
+                                FormBuilderFieldOption(value: ConstantList.busChoices[1]),
+                                FormBuilderFieldOption(value: ConstantList.busChoices[2]),
                               ],
                             )
                           ],

@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/widgets/manage_request/request_information_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -12,13 +13,13 @@ class ManageRequestScreen extends StatefulWidget {
 }
 
 class ManageRequestScreenState extends State<ManageRequestScreen> {
-  List<String> requestStatus = ["Tất cả", "Đang xử lý", "Đã xong", "Đã huỷ"];
+  
   String? selectedStatus;
 
   @override
   void initState() {
     super.initState();
-    selectedStatus = requestStatus[0];
+    selectedStatus = ConstantList.requestStatus[0];
   }
 
   @override
@@ -27,7 +28,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: buildAppBar(),
-        body: manageRequestScreenBody(requestStatus, selectedStatus),
+        body: manageRequestScreenBody(ConstantList.requestStatus, selectedStatus),
       ),
     );
   }
@@ -217,7 +218,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
               isExpanded: true,
               
               value: selectedStatus,
-              items: requestStatus
+              items: ConstantList.requestStatus
                 .map((status) => DropdownMenuItem<String>(
                   value: status,
                   child: Align(

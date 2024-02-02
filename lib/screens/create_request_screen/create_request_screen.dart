@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/widgets/create_request/request_1.dart';
 import 'package:datn/widgets/create_request/request_10.dart';
 import 'package:datn/widgets/create_request/request_11.dart';
@@ -33,29 +34,7 @@ class CreateRequestScreen extends StatefulWidget {
 }
 
 class CreateRequestScreenState extends State<CreateRequestScreen> {
-  List<String> requests = [
-    "Giấy chứng nhận", 
-    "Cấp bảng điểm", 
-    "Đề nghị Hoãn thi", 
-    "Xem lại bài thi", 
-    "Hoãn nộp học phí", 
-    "Mượn hồ sơ", 
-    "XN trợ cấp xã hội", 
-    "XN vay vốn ngân hàng", 
-    "Cấp lại thẻ sinh viên", 
-    "CN tốt nghiệp tạm thời", 
-    "Nghỉ học có thời hạn", 
-    "Tiếp tục học", 
-    "Xin thôi học", 
-    "Xác nhận đi nước ngoài", 
-    "Chứng nhận còn nợ môn", 
-    "XN nhận miễn giảm HP", 
-    "Đề nghị làm vé xe buýt",
-    "Cập nhật hồ sơ",
-    "Đề nghị thuê nhà ở",
-    "XN điểm rèn luyện",
-    "Đánh giá Rèn luyện"
-    ];
+
   final List<Widget> requestWidgets = [
     const Request1(),
     const Request2(),
@@ -181,7 +160,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
         Expanded(
           child: Builder(builder: (BuildContext context) {
             if (selectedItem != null) {
-              int index = requests.indexOf(selectedItem!);
+              int index = ConstantList.requests.indexOf(selectedItem!);
               return requestWidgets[index];
             } else {
               return Padding(
@@ -207,7 +186,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
       ),
       builder: (context) {
         return BottomSheetWithList(
-          list: requests,
+          list: ConstantList.requests,
           selectedItem: selectedItemChanged,
         );
       },

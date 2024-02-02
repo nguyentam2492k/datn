@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
@@ -40,19 +41,6 @@ class Request1Stated extends State<Request1> {
   
   final GlobalKey<FormBuilderState> _request1FormKey = GlobalKey<FormBuilderState>();
 
-  List<String> certificationList = [
-    "Chứng nhận Sinh viên /HV/NCS", 
-    "Sinh viên nhiệm vụ chiến lược", 
-    "Học bổng (Điền chi tiết tên học bổng, năm nhận vào ô Lý do bên dưới)", 
-    "Mất thẻ sinh viên (Dùng để tham gia các hoạt động và học tập trong trường)", 
-    "Kê khai thuế thu nhập", 
-    "Hoãn nghĩa vụ quân sự", 
-    "Đăng ký ở KTX", 
-    "Xin Visa", 
-    "Chưa hoàn thành khóa học (Dùng để tham gia các hoạt động và học tập tại trường)", 
-    "Giấy giới thiệu thực tập (Giấy giới thiệu thực tập)", 
-    "Loại khác (Điền chi tiết yêu cầu giấy chứng nhận vào ô Lý do bên dưới)", 
-    ];
   late String? selectedCertification;
 
   bool isCertificationValid = false;
@@ -292,7 +280,7 @@ class Request1Stated extends State<Request1> {
       ),
       builder: (context) {
         return BottomSheetWithList(
-          list: certificationList,
+          list: ConstantList.certificationList,
           selectedItem: selectedItemChanged,
         );
       },

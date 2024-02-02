@@ -1,4 +1,4 @@
-class ConstantValue {
+class ConstantList {
   static List<String> religions = [
     'Không tôn giáo',
     'Công giáo',
@@ -72,6 +72,30 @@ class ConstantValue {
     'Rơ măm'
   ];
 
+  static List<String> requests = [
+    "Giấy chứng nhận", 
+    "Cấp bảng điểm", 
+    "Đề nghị Hoãn thi", 
+    "Xem lại bài thi", 
+    "Hoãn nộp học phí", 
+    "Mượn hồ sơ", 
+    "XN trợ cấp xã hội", 
+    "XN vay vốn ngân hàng", 
+    "Cấp lại thẻ sinh viên", 
+    "CN tốt nghiệp tạm thời", 
+    "Nghỉ học có thời hạn", 
+    "Tiếp tục học", 
+    "Xin thôi học", 
+    "Xác nhận đi nước ngoài", 
+    "Chứng nhận còn nợ môn", 
+    "XN nhận miễn giảm HP", 
+    "Đề nghị làm vé xe buýt",
+    "Cập nhật hồ sơ",
+    "Đề nghị thuê nhà ở",
+    "XN điểm rèn luyện",
+    "Đánh giá Rèn luyện"
+    ];
+
   static List<String> admissionCodes = [
     "CN1 - Công nghệ Thông tin",
     "CN10 - Công nghệ nông nghiệp",
@@ -89,6 +113,13 @@ class ConstantValue {
     "CN7 - Công nghệ hàng không vũ trụ",
     "CN8 - Khoa học máy tính",
     "CN9 - Công nghệ kỹ thuật điện tử viễn thông"
+  ];
+
+  static List<String> requestStatus = [
+    "Tất cả", 
+    "Đang xử lý", 
+    "Đã xong", 
+    "Đã huỷ"
   ];
 
   static List<String> genders = [
@@ -112,5 +143,47 @@ class ConstantValue {
     'Không miễn giảm',
     'Giảm học phí',
     'Miễn học phí'
+  ];
+
+  static List<String> certificationList = [
+    "Chứng nhận Sinh viên /HV/NCS", 
+    "Sinh viên nhiệm vụ chiến lược", 
+    "Học bổng (Điền chi tiết tên học bổng, năm nhận vào ô Lý do bên dưới)", 
+    "Mất thẻ sinh viên (Dùng để tham gia các hoạt động và học tập trong trường)", 
+    "Kê khai thuế thu nhập", 
+    "Hoãn nghĩa vụ quân sự", 
+    "Đăng ký ở KTX", 
+    "Xin Visa", 
+    "Chưa hoàn thành khóa học (Dùng để tham gia các hoạt động và học tập tại trường)", 
+    "Giấy giới thiệu thực tập (Giấy giới thiệu thực tập)", 
+    "Loại khác (Điền chi tiết yêu cầu giấy chứng nhận vào ô Lý do bên dưới)", 
+    ];
+
+  static List<String> termTypes = [
+    "Tất cả",
+    "Từng kỳ",
+  ];
+
+  static List<String> termNumbers = [
+    "Học kỳ 1",
+    "Học kỳ 2",
+    "Học kỳ 3",
+    "Học kỳ 4",
+    "Học kỳ 5",
+    "Học kỳ 6",
+    "Học kỳ 7",
+    "Học kỳ 8",
+    "Học kỳ 9",
+  ];
+
+  static List<String> transcriptTypes = [
+    "Chữ hệ số 4",
+    "Số hệ số 10",
+  ];
+
+  static List<String> busChoices = [
+    "Một tuyến",
+    "Liên tuyến bình thường (không đi tuyến 54)",
+    "Liên tuyến và tuyến 54 (tất cả các tuyến)",
   ];
 }

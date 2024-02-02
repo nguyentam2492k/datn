@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'package:datn/constants/constant_value.dart';
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/model/province.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
@@ -416,7 +416,7 @@ class Request18State extends State<Request18> {
                 constraints: shortConstraints,
                 child: CustomFormBuilderDropdown(
                   name: 'ethnicity',
-                  items: ConstantValue.ethnics
+                  items: ConstantList.ethnics
                     .map((ethnic) => DropdownMenuItem(
                       value: ethnic, 
                       child: Text(
@@ -434,7 +434,7 @@ class Request18State extends State<Request18> {
                 constraints: shortConstraints,
                 child: CustomFormBuilderDropdown(
                   name: 'religion',
-                  items: ConstantValue.religions
+                  items: ConstantList.religions
                     .map((religion) => DropdownMenuItem(
                       value: religion, 
                       child: Text(
@@ -474,7 +474,7 @@ class Request18State extends State<Request18> {
             constraints: shortConstraints,
             child: CustomFormBuilderDropdown(
               name: 'admission_code',
-              items: ConstantValue.admissionCodes
+              items: ConstantList.admissionCodes
                 .map((admissionCode) => DropdownMenuItem(
                   value: admissionCode, 
                   child: Text(
@@ -602,7 +602,7 @@ class Request18State extends State<Request18> {
                 ),
                 backgroundColor: Colors.transparent,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                options: ConstantValue.genders
+                options: ConstantList.genders
                   .map((gender) => FormBuilderChipOption(
                       value: gender,
                       child: SizedBox(
@@ -773,7 +773,7 @@ class Request18State extends State<Request18> {
               border: InputBorder.none,
               isCollapsed: true,
             ),
-            options: ConstantValue.studentTypes
+            options: ConstantList.studentTypes
               .map((type) => FormBuilderFieldOption(
                 value: type,
                 child: Container(
@@ -809,7 +809,7 @@ class Request18State extends State<Request18> {
               border: InputBorder.none,
               isCollapsed: true,
             ),
-            options: ConstantValue.feeTypes
+            options: ConstantList.feeTypes
               .map((type) => FormBuilderFieldOption(
                 value: type,
                 child: Container(

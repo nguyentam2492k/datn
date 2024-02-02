@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter/material.dart';
@@ -14,28 +15,6 @@ class Request2 extends StatefulWidget {
 }
 
 class Request2State extends State<Request2> {
-
-  final List<String> termTypes = [
-    "Tất cả",
-    "Từng kỳ",
-  ];
-
-  final List<String> termNumbers = [
-    "Học kỳ 1",
-    "Học kỳ 2",
-    "Học kỳ 3",
-    "Học kỳ 4",
-    "Học kỳ 5",
-    "Học kỳ 6",
-    "Học kỳ 7",
-    "Học kỳ 8",
-    "Học kỳ 9",
-  ];
-
-  final List<String> transcriptTypes = [
-    "Chữ hệ số 4",
-    "Số hệ số 10",
-  ];
 
   final GlobalKey<FormBuilderState> _request2FormKey = GlobalKey<FormBuilderState>();
 
@@ -141,8 +120,8 @@ class Request2State extends State<Request2> {
                                     isCollapsed: true,
                                   ),
                                   name: 'term_type', 
-                                  initialValue: termTypes[0],
-                                  options: termTypes
+                                  initialValue: ConstantList.termTypes[0],
+                                  options: ConstantList.termTypes
                                   .map((termType) => FormBuilderFieldOption(value: termType))
                                   .toList(),
                                   onChanged: (value) {
@@ -160,14 +139,14 @@ class Request2State extends State<Request2> {
                                     border: InputBorder.none,
                                     isCollapsed: true,
                                   ),
-                                  enabled: _request2FormKey.currentState?.fields['term_type']?.value == termTypes[1],
+                                  enabled: _request2FormKey.currentState?.fields['term_type']?.value == ConstantList.termTypes[1],
                                   validator: (value) {
-                                    if (_request2FormKey.currentState?.fields['term_type']?.value == termTypes[1] && (value == null || value.isEmpty)) {
+                                    if (_request2FormKey.currentState?.fields['term_type']?.value == ConstantList.termTypes[1] && (value == null || value.isEmpty)) {
                                       return "Chọn kỳ mong muốn";
                                     }
                                     return null;
                                   },
-                                  options: termNumbers
+                                  options: ConstantList.termNumbers
                                     .map((termNumber) => FormBuilderFieldOption(value: termNumber))
                                     .toList(),
                                 ),
@@ -200,11 +179,11 @@ class Request2State extends State<Request2> {
                               isCollapsed: true,
                             ),
                             name: 'transcript_type', 
-                            initialValue: transcriptTypes[0],
+                            initialValue: ConstantList.transcriptTypes[0],
                             // validator: (value) {
                               
                             // },
-                            options: transcriptTypes
+                            options: ConstantList.transcriptTypes
                             .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
                             .toList(),
                           ),
