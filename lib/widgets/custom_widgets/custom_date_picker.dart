@@ -27,6 +27,11 @@ class CustomFormBuilderDateTimePicker extends StatefulWidget {
     this.decoration = const InputDecoration(
       contentPadding: EdgeInsets.all(10),
       hintText: "Chọn ngày",
+      hintStyle: TextStyle(
+        fontSize: 13,
+        color: Colors.grey,
+        fontWeight: FontWeight.normal
+      ),
       suffixIcon: Icon(Icons.calendar_month_outlined, size: 20,),
       suffixIconColor: Colors.grey,
       errorStyle: TextStyle(

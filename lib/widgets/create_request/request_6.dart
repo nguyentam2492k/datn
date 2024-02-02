@@ -78,6 +78,10 @@ class Request6State extends State<Request6> {
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             isCollapsed: true,
+                            errorStyle: TextStyle(
+                              fontSize: 10,
+                              height: 0.3
+                            ),
                           ),
                           validator: (value) {
                             var otherDocument = _request6FormKey.currentState!.fields['other_document']!.value;

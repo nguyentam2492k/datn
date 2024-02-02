@@ -29,6 +29,11 @@ class CustomFormBuilderDateRangePicker extends StatefulWidget {
     this.decoration = const InputDecoration(
       contentPadding: EdgeInsets.all(10),
       hintText: "Chọn thời gian",
+      hintStyle: TextStyle(
+        fontSize: 13,
+        color: Colors.grey,
+        fontWeight: FontWeight.normal
+      ),
       suffixIcon: Icon(Icons.calendar_month_outlined, size: 20,),
       suffixIconColor: Colors.grey,
       errorStyle: TextStyle(
@@ -77,7 +82,7 @@ class CustomFormBuilderDateRangePickerState extends State<CustomFormBuilderDateR
         firstDate: widget.firstDate, 
         lastDate: widget.lastDate,
         initialValue: widget.initialValue,
-        locale: widget.locale,
+        locale: widget.locale ?? const Locale("vi","VI"),
         style: widget.style,
         decoration: widget.decoration,
         validator: widget.validator,

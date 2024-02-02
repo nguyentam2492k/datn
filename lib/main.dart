@@ -22,10 +22,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       localizationsDelegates: const [
-         GlobalMaterialLocalizations.delegate
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
        ],
        supportedLocales: const [
-         Locale('en'),
          Locale('vi')
        ],
       home: SafeArea(

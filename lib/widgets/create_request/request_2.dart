@@ -138,6 +138,10 @@ class Request2State extends State<Request2> {
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     isCollapsed: true,
+                                    errorStyle: TextStyle(
+                                      fontSize: 10,
+                                      height: 0.3
+                                    ),
                                   ),
                                   enabled: _request2FormKey.currentState?.fields['term_type']?.value == ConstantList.termTypes[1],
                                   validator: (value) {

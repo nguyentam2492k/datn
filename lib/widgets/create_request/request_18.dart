@@ -70,7 +70,7 @@ class Request18State extends State<Request18> {
     // getData();
     files = [];
     isFileAdded = true;
-    avatarImage = Image.asset("assets/images/moon.jpg");
+    avatarImage = Image.asset("assets/images/uet.png");
   }
 
   @override
@@ -132,7 +132,7 @@ class Request18State extends State<Request18> {
                             const SizedBox(height: 5,)
                           ]
                         ),
-                        const Divider(thickness: 0.4,),
+                        const Divider(thickness: 0.5,),
                         ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
@@ -156,11 +156,26 @@ class Request18State extends State<Request18> {
                             const SizedBox(height: 5,)
                           ],
                         ),
-                        const Divider(thickness: 0.4,),
-                        familyTypeInformation(),
-                        const SizedBox(height: 15,),
-                        feeInformation(),
-                        const SizedBox(height: 15,),
+                        const Divider(thickness: 0.5,),
+                        ExpansionTile(
+                          shape: const Border(),
+                          tilePadding: EdgeInsetsDirectional.zero,
+                          initiallyExpanded: true,
+                          title: const Text(
+                            "Thông tin khác",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          children: [
+                            familyTypeInformation(),
+                            const SizedBox(height: 15,),
+                            feeInformation(),
+                            const SizedBox(height: 15,),
+                          ],
+                        ),
+                        const Divider(thickness: 0.5,),
                         uploadFile(),
                       ],
                     )
@@ -829,6 +844,7 @@ class Request18State extends State<Request18> {
       valueListenable: filesChanged,
       builder: (context, myFiles, child) {
         return CustomUploadFileRowWidget(
+          labelText: "Cập nhật Ảnh thẻ(01 ảnh, jpg, 4x6):",
           files: myFiles,
           isFileAdded: isFileAdded,
           onChanged: (value) {
