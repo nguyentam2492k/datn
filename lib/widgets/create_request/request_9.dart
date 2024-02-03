@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,17 +51,10 @@ class Request9State extends State<Request9> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Chú ý: Sinh viên (nhập học từ, sau 2018) "
-                    "làm thẻ tích hợp cần vào mục Cập nhật hồ sơ "
-                    "để cập nhật Ảnh thẻ và thông tin về CMTND trước khi thực hiện mục này ;"
-                    "-Sinh viên điền đầy đủ thông tin về Ngành học, "
-                    "Khoa, Lớp trong phần Lý do, đính kèm 01 ảnh 3x4 "
-                    "(tên file ảnh ghi Họ tên - không dấu); đến Phòng "
-                    "104-E3 để nộp lệ phí sau 03 ngày đăng ký Online; "
-                    "Khi làm xong, Phòng CTSV sẽ báo cho sinh viên đến nhận",
+                  Text(
+                    ConstantString.request9Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

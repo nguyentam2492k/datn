@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +36,10 @@ class Request5State extends State<Request5> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên theo dõi thông báo của Nhà trường vào mỗi "
-                    "học kỳ và tạo yêu cầu vào đúng thời hạn cho phép.",
+                  Text(
+                    ConstantString.request5Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

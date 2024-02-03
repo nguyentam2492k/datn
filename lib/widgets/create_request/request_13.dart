@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,16 +51,10 @@ class Request13State extends State<Request13> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn, điền đầy đủ thông tin, "
-                    "xin ý kiến của phụ huynh, xác nhận của chính quyền địa phương, "
-                    "xin ý kiến của Ban chủ nhiệm khoa, scan đơn và "
-                    "đính kèm vào yêu cầu; Sinh viên mang bản gốc "
-                    "hồ sơ lên phòng 104-E3 để nộp và hoàn thành các "
-                    "khoản kinh phí (trong thời gian 03 ngày kể từ ngày tạo yêu cầu). "
-                    "Sau 05 ngày sinh viên lên nhận Quyết định và rút hồ sơ.",
+                  Text(
+                    ConstantString.request13Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

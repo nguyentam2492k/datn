@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -51,14 +52,10 @@ class Request7State extends State<Request7> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn bên dưới, điền đầy đủ thông tin "
-                    "và đính kèm bản scan các giấy tờ xác nhận được hưởng trợ cấp. "
-                    "Chú ý: nộp hồ sơ theo đúng thời hạn mà Nhà trường thông báo "
-                    "vào đầu mỗi học kỳ. Sinh viên phải nộp bản gốc hồ sơ cho "
-                    "Phòng 104-E3 trong vòng 05 ngày sau ngày nộp Online ",
+                  Text(
+                    ConstantString.request7Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

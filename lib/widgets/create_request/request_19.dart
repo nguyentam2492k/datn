@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -51,11 +52,10 @@ class Request19State extends State<Request19> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ thông tin, đính kèm minh chứng "
-                    "(nếu thuộc diện ưu tiên); chuẩn bị ảnh 3x4 để dán đơn khi xác nhận.",
+                  Text(
+                    ConstantString.request19Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +33,10 @@ class Request17State extends State<Request17> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ, chính xác thông tin; chuẩn bị "
-                    "02 ảnh 2x3 để dán vào đơn, lấy dấu gáp lai của Trường.",
+                  Text(
+                    ConstantString.request17Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

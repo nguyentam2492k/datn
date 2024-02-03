@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter/material.dart';
@@ -65,11 +66,10 @@ class Request15State extends State<Request15> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ thông tin, đến Phòng 104-E3 "
-                    "nhận kết quả sau 15h chiều thứ Tư và thứ Sáu hàng tuần.",
+                  Text(
+                    ConstantString.request15Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

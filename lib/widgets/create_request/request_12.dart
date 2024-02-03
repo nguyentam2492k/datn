@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,12 +51,10 @@ class Request12State extends State<Request12> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn, điền đầy đủ thông tin, "
-                    "scan và đính kèm vào yêu cầu, sinh viên đến "
-                    "nhận Quyết định tiếp tục học sau 05 ngày gửi hồ sơ.",
+                  Text(
+                    ConstantString.request12Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

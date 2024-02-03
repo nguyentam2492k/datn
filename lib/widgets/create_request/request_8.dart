@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -54,15 +55,10 @@ class Request8State extends State<Request8> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên : - Ghi rõ lý do; - Chọn mức học phí "
-                    "theo thác của mình; - Cập nhật hồ sơ "
-                    "(Thông tin về CCCD/CMND; ngày nhập học; ,..) "
-                    "trước khi thực hiện yêu cầu này. Sinh viên tải mẫu đơn, "
-                    "điền đầy đủ thông tin, scan và đính kèm vào phần bên dưới, "
-                    "đến Phòng 104-E3 nhận kết quả sau 01 ngày làm việc.",
+                  Text(
+                    ConstantString.request8Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

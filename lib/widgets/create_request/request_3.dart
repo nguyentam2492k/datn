@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -53,14 +54,10 @@ class Request3State extends State<Request3> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ thông tin bên dưới, "
-                    "đính kèm bản scan giấy xác nhận các lý do "
-                    "đã nêu trong phần lý do (giấy khám bệnh…), "
-                    "sau đó bấm Gửi yêu cầu để nộp bàn gốc cho "
-                    "phòng 104-E3 trong vòng 05 ngày kể từ ngày thi.",
+                  Text(
+                    ConstantString.request3Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

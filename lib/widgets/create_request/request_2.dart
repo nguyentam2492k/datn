@@ -1,4 +1,5 @@
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +69,10 @@ class Request2State extends State<Request2> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tích chọn loại bảng điểm, bằng tiếng Việt "
-                    "hoặc tiếng Anh, chọn tất cả các kỳ hoặc từng kỳ, "
-                    "hệ điểm 4 hay hệ điểm 10; đến Phòng 104-E3 nhận bảng điểm "
-                    "sau 15h chiều thứ Tư và thứ Sáu hàng tuần.",
+                  Text(
+                    ConstantString.request2Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),

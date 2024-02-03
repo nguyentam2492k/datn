@@ -1,4 +1,5 @@
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
@@ -98,13 +99,10 @@ class Request1Stated extends State<Request1> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên kích chọn loại giấy thích hợp theo yêu cầu, "
-                    "số bản bằng tiếng Việt hoặc tiếng Anh; Giấy giới thiệu thực "
-                    "tập cần ghi rõ tên công ty, thời gian thực tập. "
-                    "đến Phòng 104-E3 nhận kết quả sau 01 ngày làm việc.",
+                  Text(
+                    ConstantString.request1Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
                   ),

@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/widgets/custom_widgets/custom_row/text_row.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +72,7 @@ class Request18State extends State<Request18> {
     // getData();
     files = [];
     isFileAdded = true;
-    avatarImage = Image.asset("assets/images/uet.png");
+    avatarImage = Image.asset("assets/images/avatar.jpg");
   }
 
   @override
@@ -94,16 +96,18 @@ class Request18State extends State<Request18> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        const SizedBox(height: 15,),
-                        SizedBox(
-                          height: 180,
-                          width: 120,
-                          child: Image(
-                            image: avatarImage.image,
-                            fit: BoxFit.cover,
-                          )
+                        const SizedBox(height: 10,),
+                        Text(
+                          ConstantString.request18Note,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18
+                          ),
                         ),
                         const SizedBox(height: 10,),
+                        studentInformation(),
+                        const Divider(thickness: 0.5,),
                         ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
@@ -247,6 +251,63 @@ class Request18State extends State<Request18> {
         borderSide: BorderSide(color: Colors.red),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
+    );
+  }
+
+  Widget studentInformation() {
+    return Row(
+      children: [
+        Container(
+          width: 100,
+          height: 150,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 1)
+          ),
+          child: Image.network(
+             "https://picsum.photos/id/143/320/480",
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return const Center(
+                child: Icon(Icons.image_not_supported_outlined, size: 30, color: Colors.grey,)
+              );
+            },
+          ),
+        ),
+        const Expanded(
+          flex: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextRow(
+                labelText: "Họ và tên:",
+                text: "Nguyễn Văn A",
+              ),
+              CustomTextRow(
+                labelText: "Mã sinh viên:",
+                text: "12345678",
+              ),
+              CustomTextRow(
+                labelText: "Ngày sinh:",
+                text: "10/10/2020",
+              ),
+              CustomTextRow(
+                labelText: "Giới tính:",
+                text: "Nam",
+              ),
+              CustomTextRow(
+                labelText: "Khoá:",
+                text: "QH-2023-I/CQ",
+              ),
+            ],
+          )
+        )
+      ],
     );
   }
 

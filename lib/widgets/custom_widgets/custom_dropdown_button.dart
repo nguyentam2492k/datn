@@ -66,7 +66,7 @@ class CustomFormBuilderDropdownState extends State<CustomFormBuilderDropdown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxHeight: 45),
+      constraints: const BoxConstraints(maxHeight: 45),
       child: FormBuilderDropdown(
         name: widget.name, 
         initialValue: widget.initialValue,

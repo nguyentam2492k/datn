@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,18 +51,10 @@ class Request14State extends State<Request14> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên làm đơn theo mẫu và kèm theo thư mời do tổ chức, "
-                    "cá nhân trong, ngoài nước gửi, trong đó phải nêu rõ mục đích, "
-                    "thời gian và các khoản tài chính (nếu do phía đối tác chi trả) "
-                    "liên quan mà sinh viên đi nước ngoài được hưởng như vé máy bay, "
-                    "tiền ăn, ở, sinh hoạt phí…scan và đính kèm vào yêu cầu. "
-                    "Hồ sơ được giải quyết chậm nhất sau 05 ngày (không kể thứ Bảy, "
-                    "Chủ nhật) kể từ ngày nhận hồ sơ. Sau 10 ngày kể từ ngày về nước "
-                    "sinh viên phải hoàn thành việc nộp báo cáo theo mẫu cho Nhà trường. "
-                    "Báo cáo nộp tại Văn phòng Khoa 01 bản và Phòng 104-E3 01 bản.",
+                  Text(
+                    ConstantString.request14Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
