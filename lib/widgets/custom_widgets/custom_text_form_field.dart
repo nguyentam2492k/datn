@@ -24,6 +24,8 @@ class CustomFormBuilderTextField extends StatefulWidget {
     this.style = const TextStyle(fontSize: 14), 
     this.decoration = const InputDecoration(
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      filled: true,
+      fillColor: Colors.white,
       errorStyle: TextStyle(
         fontSize: 10,
         height: 0.3
@@ -76,7 +78,6 @@ class CustomFormBuilderTextFieldState extends State<CustomFormBuilderTextField> 
         keyboardType: widget.keyboardType,
         style: widget.style,
         decoration: widget.decoration,
-
         validator: widget.validator,
         onChanged: widget.onChanged,
       ),

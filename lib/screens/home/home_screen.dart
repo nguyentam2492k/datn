@@ -1,5 +1,6 @@
 import 'package:datn/screens/create_request_screen/create_request_screen.dart';
 import 'package:datn/screens/manage_request/manage_request_screen.dart';
+import 'package:datn/screens/sign_in/sign_in.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.white,
       appBar: buildAppBar(context),
       floatingActionButton: buidAddButton(context), 
       body: homeScreenBody(),
@@ -77,7 +79,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
         border: Border(
           bottom: BorderSide(
             color: Colors.grey,
-            width: 0.3,
+            width: 0.5,
           )
         )
       ),
@@ -200,7 +202,16 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
             child: ElevatedButton.icon(
               onPressed: (){
-                debugPrint("Dang xuat");
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute<void>(
+                //     builder: (BuildContext context) => SignIn()),
+                //   ModalRoute.withName('/'),
+                // );
+                Navigator.pushReplacement(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) => const SignIn(),
+                  ),
+                );
               },
               icon: const Icon(Icons.logout),
               label: const Text("Đăng xuất"),

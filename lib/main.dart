@@ -1,4 +1,5 @@
-import 'package:datn/screens/home/home_screen.dart';
+// import 'package:datn/screens/home/home_screen.dart';
+import 'package:datn/screens/sign_in/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -8,7 +9,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return buildMyApp();
@@ -25,15 +26,15 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-       ],
-       supportedLocales: const [
-         Locale('vi')
-       ],
-      home: SafeArea(
-          child: HomeScreen()
+      ],
+      supportedLocales: const [Locale('vi')],
+      home: Container(
+        color: Colors.white,
+        child: const SafeArea(
+          child: SignIn(),
         ),
+      ),
       debugShowCheckedModeBanner: false,
-  );
+    );
   }
-
 }

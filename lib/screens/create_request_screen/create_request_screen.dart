@@ -68,11 +68,9 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: createRequestScreenBody(),
-      ),
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: createRequestScreenBody(),
     );
   }
 

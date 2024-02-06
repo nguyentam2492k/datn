@@ -24,12 +24,10 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: buildAppBar(),
-        body: manageRequestScreenBody(ConstantList.requestStatus, selectedStatus),
-      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: buildAppBar(),
+      body: manageRequestScreenBody(ConstantList.requestStatus, selectedStatus),
     );
   }
 
@@ -37,6 +35,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     return AppBar(
       title: const Text("Xử lý yêu cầu"),
       centerTitle: true,
+      backgroundColor: Colors.white,
       titleTextStyle: const TextStyle(
         color: Colors.black,
         fontSize: 20,
