@@ -1,22 +1,28 @@
+import 'package:datn/api/api_service.dart';
+import 'package:datn/model/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class LogIn extends StatefulWidget {
+  const LogIn({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return SignInState();
+    return LogInState();
   }
 }
 
-class SignInState extends State<SignIn> {
+class LogInState extends State<LogIn> {
 
-  final GlobalKey<FormBuilderState> _signInFormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormBuilderState> _logInFormKey = GlobalKey<FormBuilderState>();
 
   late bool isShowPassword;
+  late bool isApiCallProcess = false;
+
+  late LoginRequestModel loginRequestModel;
 
   @override
   void initState() {
@@ -25,9 +31,19 @@ class SignInState extends State<SignIn> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    return Stack(
+      children: [
+        uiSetup(context),
+        progressIndicator(),
+      ],
+    );
+  }
+
+  Widget uiSetup(BuildContext context) {
 
     return Scaffold (
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -110,7 +126,7 @@ class SignInState extends State<SignIn> {
                   padding: const EdgeInsets.fromLTRB(35, 10, 20, 10),
                   color: Colors.transparent,
                   child: FormBuilder(
-                    key: _signInFormKey,
+                    key: _logInFormKey,
                     child: AutofillGroup(
                       child: SingleChildScrollView(
                         child: Column(
@@ -133,7 +149,7 @@ class SignInState extends State<SignIn> {
                               name: 'password',
                               style: const TextStyle(fontSize: 15.5, color: Color(0xFF04006C),),
                               obscureText: !isShowPassword,
-                              decoration: decoration("Mật khẩu", Icons.key, isPassword: true),
+                              decoration: decoration("Mật khẩu", Icons.lock_outlined, isPassword: true),
                               autofillHints: const [AutofillHints.password],
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -176,12 +192,37 @@ class SignInState extends State<SignIn> {
                                   ),
                                 ),
                                 onPressed: (){
-                                  if (_signInFormKey.currentState!.saveAndValidate()) {
-                                    TextInput.finishAutofillContext();
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                                        return HomeScreen();
-                                    })); 
-                                    debugPrint(_signInFormKey.currentState?.value.toString());
+                                  FocusScope.of(context).unfocus();
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  if (_logInFormKey.currentState!.saveAndValidate()) {
+                                    setState(() {
+                                      isApiCallProcess = true;
+                                    });
+                                    loginRequestModel = LoginRequestModel(
+                                      username: _logInFormKey.currentState!.fields['username']!.value, 
+                                      password: _logInFormKey.currentState!.fields['password']!.value
+                                    );
+
+                                    APIService apiService = APIService();
+                                    apiService.login(loginRequestModel).then((value) {
+                                      setState(() {
+                                        isApiCallProcess = false;
+                                      });
+                                      if (value.message == null) {
+                                        debugPrint(value.token);
+                                        TextInput.finishAutofillContext();
+                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                                            return HomeScreen();
+                                        })); 
+                                        debugPrint(loginRequestModel.toString());
+                                      } else {
+                                        const snackBar = SnackBar(content: 
+                                          Text("Sai thông tin đăng nhập!"),
+                                          showCloseIcon: true,
+                                        );
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      }
+                                    });
                                   }
                                 }, 
                               ),
@@ -198,6 +239,35 @@ class SignInState extends State<SignIn> {
         ),
       ),
     );
+  }
+  
+  Widget progressIndicator() {
+    return Visibility(
+        visible: isApiCallProcess,
+        child: Stack(
+          children: [
+            const Opacity(
+              opacity: 0.5,
+              child: ModalBarrier(dismissible: false, color: Colors.grey),
+            ),
+            Center(
+              child: Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20)
+                ),
+                child: const Center(child: SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: CircularProgressIndicator()
+                ))
+              )
+            ),
+          ],
+        ),
+      );
   }
 
   InputDecoration decoration(String labelText, IconData icon, {bool isPassword = false}){

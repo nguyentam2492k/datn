@@ -1,5 +1,5 @@
 // import 'package:datn/screens/home/home_screen.dart';
-import 'package:datn/screens/sign_in/sign_in.dart';
+import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       home: Container(
         color: Colors.white,
         child: const SafeArea(
-          child: SignIn(),
+          child: LogIn(),
         ),
       ),
       debugShowCheckedModeBanner: false,

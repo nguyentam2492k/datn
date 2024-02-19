@@ -1,6 +1,6 @@
 import 'package:datn/screens/create_request_screen/create_request_screen.dart';
 import 'package:datn/screens/manage_request/manage_request_screen.dart';
-import 'package:datn/screens/sign_in/sign_in.dart';
+import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -146,6 +146,10 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
   Widget buildDrawer(BuildContext context) {
     return Drawer(
       elevation: 0,
+      shape: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(0),
+        borderSide: BorderSide.none
+      ),
       child: ListView( 
         children: [
           const UserAccountsDrawerHeader(
@@ -209,7 +213,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
                 //   ModalRoute.withName('/'),
                 // );
                 Navigator.pushReplacement(context, MaterialPageRoute<void>(
-                    builder: (BuildContext context) => const SignIn(),
+                    builder: (BuildContext context) => const LogIn(),
                   ),
                 );
               },
