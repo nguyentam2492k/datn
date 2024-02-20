@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -16,12 +17,6 @@ class Request6 extends StatefulWidget {
 class Request6State extends State<Request6> {
 
   final GlobalKey<FormBuilderState> _request6FormKey = GlobalKey<FormBuilderState>();
-  
-  final List<String> documentTypes = [
-    "Học bạ bản chính",
-    "Bằng tốt nghiệp THPT (bản chính)",
-    "Giấy triệu tập"
-  ];
 
   void sendFormData() {
     _request6FormKey.currentState!.saveAndValidate() ? debugPrint(_request6FormKey.currentState?.value.toString()) : null;
@@ -90,7 +85,7 @@ class Request6State extends State<Request6> {
                             }
                             return null;
                           },
-                          options: documentTypes
+                          options: ConstantList.documentTypes
                             .map((documentType) => FormBuilderFieldOption(value: documentType))
                             .toList(),
                         ),

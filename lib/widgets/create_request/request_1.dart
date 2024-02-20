@@ -21,9 +21,9 @@ class Request1Data {
 
   Map<String, dynamic> toMap(){
     return {
-      'certificatation': certificatation,
-      'vietnameseVersion': vietnameseVersion,
-      'englishVersion': englishVersion,
+      'certificate_type': certificatation,
+      'quantity_viet': vietnameseVersion,
+      'quantity_eng': englishVersion,
       'reason': reason,
     };
   }

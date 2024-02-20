@@ -117,7 +117,7 @@ class Request2State extends State<Request2> {
                                     border: InputBorder.none, 
                                     isCollapsed: true,
                                   ),
-                                  name: 'term_type', 
+                                  name: 'semester_type', 
                                   initialValue: ConstantList.termTypes[0],
                                   options: ConstantList.termTypes
                                   .map((termType) => FormBuilderFieldOption(value: termType))
@@ -132,7 +132,7 @@ class Request2State extends State<Request2> {
                               const Divider(thickness: 0.4,),
                               Expanded(
                                 child: FormBuilderCheckboxGroup(
-                                  name: 'term_number', 
+                                  name: 'semester_number', 
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     isCollapsed: true,
