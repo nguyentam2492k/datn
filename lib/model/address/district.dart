@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:datn/model/ward.dart';
+import 'package:datn/model/address/ward.dart';
 
 class District {
   String? id;

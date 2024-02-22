@@ -176,6 +176,12 @@ class ConstantList {
     "Học kỳ 9",
   ];
 
+  static List<String> documentTypes = [
+    "Học bạ bản chính",
+    "Bằng tốt nghiệp THPT (bản chính)",
+    "Giấy triệu tập"
+  ];
+
   static List<String> transcriptTypes = [
     "Chữ hệ số 4",
     "Số hệ số 10",

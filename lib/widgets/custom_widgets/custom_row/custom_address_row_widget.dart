@@ -1,7 +1,7 @@
-import 'package:datn/model/address.dart';
-import 'package:datn/model/district.dart';
-import 'package:datn/model/province.dart';
-import 'package:datn/model/ward.dart';
+import 'package:datn/model/address/address.dart';
+import 'package:datn/model/address/district.dart';
+import 'package:datn/model/address/province.dart';
+import 'package:datn/model/address/ward.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

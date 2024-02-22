@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:datn/constants/constant_list.dart';
-import 'package:datn/model/province.dart';
+import 'package:datn/model/address/province.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_address_row_widget.dart';

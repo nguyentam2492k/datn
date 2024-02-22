@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
