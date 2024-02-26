@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
+Widget requestInforDialog(BuildContext context, int index, Color color) {
   return AlertDialog(
       elevation: 0,
       titlePadding: const EdgeInsets.symmetric(),
@@ -14,7 +14,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
               margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               height: 16,
               decoration: BoxDecoration(
-                color: colors[index],
+                color: color,
                 borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))
               ),
             ),
@@ -52,7 +52,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             Row(
               children: [
                 const Expanded(
@@ -71,7 +71,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -89,7 +89,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -116,7 +116,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -134,7 +134,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -152,7 +152,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -170,7 +170,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -188,7 +188,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -206,7 +206,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(
@@ -224,7 +224,7 @@ Widget requestInforDialog(BuildContext context, int index, List<Color> colors) {
                 )
               ],
             ),
-            const Divider(),
+            const Divider(thickness: 0.4,),
             const Row(
               children: [
                 Expanded(

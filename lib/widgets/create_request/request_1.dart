@@ -1,33 +1,34 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/request/request_type_model.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class Request1Data {
-  String certificatation;
-  int vietnameseVersion;
-  int englishVersion;
-  String? reason;
+// class Request1Data {
+//   String certificatation;
+//   int vietnameseVersion;
+//   int englishVersion;
+//   String? reason;
 
-  Request1Data({
-    required this.certificatation,
-    required this.vietnameseVersion,
-    required this.englishVersion,
-    required this.reason,
-  });
+//   Request1Data({
+//     required this.certificatation,
+//     required this.vietnameseVersion,
+//     required this.englishVersion,
+//     required this.reason,
+//   });
 
-  Map<String, dynamic> toMap(){
-    return {
-      'certificate_type': certificatation,
-      'quantity_viet': vietnameseVersion,
-      'quantity_eng': englishVersion,
-      'reason': reason,
-    };
-  }
-}
+//   Map<String, dynamic> toMap(){
+//     return {
+//       'certificate_type': certificatation,
+//       'quantity_viet': vietnameseVersion,
+//       'quantity_eng': englishVersion,
+//       'reason': reason,
+//     };
+//   }
+// }
 
 class Request1 extends StatefulWidget {
   const Request1({super.key});
@@ -48,7 +49,7 @@ class Request1Stated extends State<Request1> {
 
   late int? numberOfVietVer;
   late int? numberOfEngVer;
-  late String? reason;
+  late String reason;
 
   bool isFormValid(){
     int numberOfCopy = 0;
@@ -80,14 +81,14 @@ class Request1Stated extends State<Request1> {
   Widget build(BuildContext context) {
 
     void sendFormData() {
-      Request1Data formData = Request1Data(
-        certificatation: selectedCertification!, 
-        vietnameseVersion: numberOfVietVer!, 
-        englishVersion: numberOfEngVer!, 
-        reason: reason,
+      Request1Model formData = Request1Model(
+        certificateType: selectedCertification!, 
+        quantityViet: numberOfVietVer.toString(), 
+        quantityEng: numberOfEngVer.toString(), 
+        reason: reason
       );
 
-      debugPrint("Yeu cau: ${formData.toMap().toString()}");
+      debugPrint("Yeu cau: ${formData.toString()}");
     }
 
     return FormBuilder(
@@ -234,7 +235,7 @@ class Request1Stated extends State<Request1> {
                         return null;
                       },
                       onChanged: (value) {
-                        reason = value;
+                        reason = value!;
                         setState(() {});
                       },                    
                     ),

@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
       home: Container(
         color: Colors.white,
         child: SafeArea(
-          // child: LogIn(),
-          child: HomeScreen(),
+          child: LogIn(),
+          // child: HomeScreen(),
         ),
       ),
       debugShowCheckedModeBanner: false,

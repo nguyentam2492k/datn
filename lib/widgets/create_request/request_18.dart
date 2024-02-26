@@ -41,7 +41,7 @@ class Request18State extends State<Request18> {
 
   List<Province> provinces = [];
 
-  Future<List<Province>> getData() async {
+  Future<List<Province>> getAddressData() async {
     var response = await rootBundle.loadString('assets/data/dvhcvn.json');
     var jsonData = jsonDecode(response)['data'] as List;
     provinces = jsonData.map((provinceJson) => Province.fromJson(provinceJson)).toList();
@@ -85,7 +85,7 @@ class Request18State extends State<Request18> {
   Widget build(BuildContext context) {
 
     return FutureBuilder(
-      future: getData(),
+      future: getAddressData(),
       builder:(context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return FormBuilder(

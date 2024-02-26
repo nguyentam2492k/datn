@@ -1,22 +1,24 @@
-import 'dart:convert';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'package:datn/model/user.dart';
 
 class LoginResponseModel {
-  final String? message;
-  final String? token;
+
+  String accessToken;
+  User user;
 
   LoginResponseModel({
-    this.message,
-    this.token,
+    required this.accessToken,
+    required this.user,
   });
 
-  factory LoginResponseModel.fromMap(Map<String, dynamic> map) {
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(
-      message: map['message'],
-      token: map['token'],
+      accessToken: json["accessToken"] as String,
+      user: User.fromJson(json["user"]),
     );
   }
 
-  factory LoginResponseModel.fromJson(String source) => LoginResponseModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class LoginRequestModel {
@@ -30,7 +32,7 @@ class LoginRequestModel {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'username': username.trim(),
+      'email': username.trim(),
       'password': password.trim(),
     };
   }

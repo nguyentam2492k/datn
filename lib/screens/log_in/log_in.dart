@@ -208,16 +208,18 @@ class LogInState extends State<LogIn> {
                                       setState(() {
                                         isApiCallProcess = false;
                                       });
-                                      if (value.message == null) {
-                                        debugPrint(value.token);
+                                      if (value.runtimeType == LoginResponseModel) {
+                                        LoginResponseModel loginResponseData = value as LoginResponseModel;
+                                        debugPrint(loginResponseData.accessToken);
                                         TextInput.finishAutofillContext();
                                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                                            return HomeScreen();
+                                            return HomeScreen(loginResponseData: loginResponseData);
                                         })); 
                                         debugPrint(loginRequestModel.toString());
                                       } else {
-                                        const snackBar = SnackBar(content: 
-                                          Text("Sai thông tin đăng nhập!"),
+                                        var errorMessage = value as String;
+                                        var snackBar = SnackBar(content: 
+                                          Text(errorMessage.replaceAll(RegExp('"'), '')),
                                           showCloseIcon: true,
                                         );
                                         ScaffoldMessenger.of(context).showSnackBar(snackBar);

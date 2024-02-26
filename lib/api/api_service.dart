@@ -49,45 +49,51 @@ class MyData {
 }
 
 class APIService {
-  Future<LoginResponseModel> login(LoginRequestModel loginRequestModel) async{
-    Uri url = Uri(
-      scheme: 'https',
-      host: 'dummyjson.com',
-      path: '/auth/login',
-      // https://dummyjson.com/auth/login
-    );
+
+  static const host = "192.168.1.5";
+
+  Future<dynamic> login(LoginRequestModel loginRequestModel) async{
+    Uri url = Uri.parse("http://$host:3000/login");
+    // Uri url = Uri(
+    //   scheme: 'https',
+    //   host: 'dummyjson.com',
+    //   path: '/auth/login',
+    //   // https://dummyjson.com/auth/login
+    // );
     final response = await http.post(url, body: loginRequestModel.toJson());
-    if(response.statusCode == 200 || response.statusCode == 400) {
-      return LoginResponseModel.fromJson(response.body);
+    // print(response.body);
+    if(response.statusCode == 200) {
+      return LoginResponseModel.fromJson(jsonDecode(response.body));
     } else {
-      return LoginResponseModel(message: "Unknown Error!");
+      // print("Unknown Error!");
+      return response.body;
     }
   }
 
-  Future<List<MyData>> getData() async {
-    List<MyData> listData = List.empty();
+  // Future<List<MyData>> getData() async {
+  //   List<MyData> listData = List.empty();
 
-    Uri url = Uri.parse("http://192.168.1.6:3000/user");
+  //   Uri url = Uri.parse("http://$localhost:3000/user");
 
-    try {
-      var response = await http.get(url);
+  //   try {
+  //     var response = await http.get(url);
 
-      if (response.body.isNotEmpty) {
-        var data = jsonDecode(response.body) as List;
+  //     if (response.body.isNotEmpty) {
+  //       var data = jsonDecode(response.body) as List;
 
-        // debugPrint("Data: $data");
+  //       // debugPrint("Data: $data");
 
-        listData = data.map((jsonData) => MyData.fromJson(jsonData)).toList();
-        return listData;
-      }
-    } catch (e) {
-      debugPrint("GET DATA ERROR: ${e.toString()}");
-    }
-    return [];
-  }
+  //       listData = data.map((jsonData) => MyData.fromJson(jsonData)).toList();
+  //       return listData;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("GET DATA ERROR: ${e.toString()}");
+  //   }
+  //   return [];
+  // }
 
   Future<void> postData(MyData data) async {
-    Uri url = Uri.parse("http://192.168.1.6:3000/user");
+    Uri url = Uri.parse("http://$host:3000/user");
     
     //WITHOUT FILE
     print("POST START");
@@ -136,32 +142,48 @@ class APIService {
     // }
   }
 
-  Future<List<RequestInformation>> getDataTest() async {
+  Future<List<RequestInformation>> getData(String? status, int startIndex, String accessToken, {int limit = 10}) async {
     List<RequestInformation> listData = List.empty();
 
-    Uri url = Uri.parse("http://192.168.1.6:3000/requests");
+    Uri url = Uri();
 
-    var response = await http.get(
-      url,
-      headers: <String, String>{ 
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json;charset=UTF-8'
-      }, 
-    );
+    switch (status) {
+      case "Đã xong":
+        url = Uri.parse("http://$host:3000/requests?status=completed&_start=$startIndex&_limit=$limit");
+        break;
+      case "Đã huỷ":
+        url = Uri.parse("http://$host:3000/requests?status=canceled&_start=$startIndex&_limit=$limit");
+        break;
+      case "Đang xử lý":
+        url = Uri.parse("http://$host:3000/requests?status=processing&_start=$startIndex&_limit=$limit");
+        break;
+      default:
+        url = Uri.parse("http://$host:3000/requests?_start=$startIndex&_limit=$limit");
+        break;
+    }
+    print(url);
 
-    var responseBody = utf8.decode(response.bodyBytes);
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+      var response = await http.get(
+        url,
+        headers: <String, String>{ 
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json;charset=UTF-8',
+          'Authorization': 'Bearer $accessToken'
+        }, 
+      );
+      var responseBody = utf8.decode(response.bodyBytes);
+      if (responseBody.isNotEmpty) {
+        var data = jsonDecode(responseBody) as List;
 
-    // print(responseBody);
-
-    if (responseBody.isNotEmpty) {
-      var data = jsonDecode(responseBody) as List;
-
-      // debugPrint("Data Length: ${data.length}");
-
-      listData = data.map((jsonData) {
-        return RequestInformation.fromJson(jsonData);
-      }).toList();
-      return listData;
+        listData = data.map((jsonData) {
+          return RequestInformation.fromJson(jsonData);
+        }).toList();
+        return listData;
+      }
+    } catch (e) {
+      debugPrint("GET DATA ERROR: ${e.toString()}");
     }
     return [];
   }

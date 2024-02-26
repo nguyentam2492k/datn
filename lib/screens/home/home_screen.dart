@@ -1,10 +1,19 @@
-import 'package:datn/screens/create_request_screen/create_request_screen.dart';
-import 'package:datn/screens/manage_request/manage_request_screen.dart';
-import 'package:datn/screens/log_in/log_in.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:datn/model/login_model.dart';
 import 'package:flutter/material.dart';
 
+import 'package:datn/screens/create_request_screen/create_request_screen.dart';
+import 'package:datn/screens/log_in/log_in.dart';
+import 'package:datn/screens/manage_request/manage_request_screen.dart';
+
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+
+  final LoginResponseModel loginResponseData;
+
+  HomeScreen({
+    super.key,
+    required this.loginResponseData,
+  });
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
@@ -152,12 +161,30 @@ class HomeScreen extends StatelessWidget {
       ),
       child: ListView( 
         children: [
-          const UserAccountsDrawerHeader(
-            accountName: Text("18021116"), 
-            accountEmail: Text("18021116@vnu.edu.vn"),
-            currentAccountPicture: Image(
-              image: AssetImage('assets/images/uet.png'),
-              fit: BoxFit.contain,
+          UserAccountsDrawerHeader(
+            accountName: Text(loginResponseData.user.name), 
+            accountEmail: Text(loginResponseData.user.id),
+            currentAccountPicture: Image.network(
+              loginResponseData.user.image,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeAlign: 2.5, 
+                      color: Colors.white,
+                    )
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return const Center(
+                  child: Icon(Icons.image_not_supported_outlined, size: 30, color: Colors.white70,)
+                );
+              },
             ),
             decoration: BoxDecoration(
               color: Color(0xFF000980),
@@ -171,7 +198,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => const ManageRequestScreen()
+                  builder: (context) => ManageRequestScreen(loginResponseData: loginResponseData,)
                 )
               );
             },
