@@ -1,11 +1,14 @@
+import 'package:datn/function/function.dart';
+import 'package:datn/model/request/request_model.dart';
 import 'package:flutter/material.dart';
 
-Widget requestInforDialog(BuildContext context, int index, Color color) {
+Widget requestInforDialog(BuildContext context, int index, Request requestInfo) {
   return AlertDialog(
       elevation: 0,
       titlePadding: const EdgeInsets.symmetric(),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       title: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 25),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
         
@@ -14,14 +17,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
               margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               height: 16,
               decoration: BoxDecoration(
-                color: color,
+                color: getColor(requestInfo.status),
                 borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))
               ),
             ),
             const SizedBox(height: 18,),
             const Text(
               "Chi tiết yêu cầu",
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold
               ),
@@ -48,7 +51,7 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("2710$index"),
+                  child: Text(requestInfo.id.toString()),
                 )
               ],
             ),
@@ -67,14 +70,15 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    "Nguyen Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van Van $index"),
+                    requestInfo.student,
+                  )
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Loại yêu cầu",
@@ -85,14 +89,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("Giay chung nhan"),
+                  child: Text(requestInfo.requestType),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Yêu cầu",
@@ -104,22 +108,16 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    "Loại GCN: Hoãn nghĩa vụ quân sự\n"
-                    "Số bản tiếng Việt: 1\n"
-                    "Lý do: Do hiện tại địa phương em đang xét tuyển nghĩa vụ quân sự. "
-                    "Trong khi đó, giấy hoãn nghĩa vụ quân sự của trường chỉ có thời hạn 4 năm, "
-                    "mà em chuẩn bị bước sang năm học thứ 5 nhưng vẫn chưa hoàn thành xong chương trình học 4.5 năm của mình "
-                    "và chưa tốt nghiệp, nên em mong muốn được nhận giấy hoãn nghĩa vụ quân sự từ phía trường "
-                    "để em nộp cho địa phương để có thể hoàn thành nốt chương trình học còn dang dở và tốt nghiệp xong ạ. "
-                    "Nếu được thì em có thể nhận bản mềm qua hòm thư được không ạ Em xin cảm ơn!"
-                  ),
+                      getRequestText(requestInfo.info),
+                    ),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Tệp đính kèm",
@@ -130,14 +128,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("----------------"),
+                  child: requestInfo.file != null ? buildListFileWidget(requestInfo.file!) : const Text("----"),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Giấy tờ cần nộp",
@@ -148,14 +146,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("Khong"),
+                  child: Text(requestInfo.documentNeed),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Tình trạng",
@@ -166,14 +164,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("Da xong"),
+                  child: Text(getStatus(requestInfo.status)),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Lệ phí",
@@ -184,14 +182,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("10.000"),
+                  child: Text(requestInfo.fee ?? "----"),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Nơi xử lý",
@@ -202,14 +200,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("Phòng Công tác Sinh viên"),
+                  child: Text(requestInfo.processingPlace),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Ngày tạo",
@@ -220,14 +218,14 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("30-09-2023 02:11:46"),
+                  child: Text(formatDateWithTime(requestInfo.dateCreate)),
                 )
               ],
             ),
             const Divider(thickness: 0.4,),
-            const Row(
+            Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Text(
                     "Ngày nhận",
@@ -238,7 +236,7 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
                   ),
                 Expanded(
                   flex: 3,
-                  child: Text("-------"),
+                  child: Text(requestInfo.dateReceive ?? "----"),
                 )
               ],
             ),
@@ -252,4 +250,63 @@ Widget requestInforDialog(BuildContext context, int index, Color color) {
         ),
       ],
     );
+    
 }
+
+List<String> formatFileName(String fileName) {
+  var strings = fileName.split(".");
+  return strings;
+}
+
+Widget buildListFileWidget(List<String> files) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: files.map((file) {
+        return Container(
+          height: 25,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            border: Border.all(color: const Color(0xFF0037FF), width: 0.5),
+          ),
+          child: FilledButton.icon(
+            icon: Icon(getIcon(file), size: 12, color: const Color(0xFF0037FF),), 
+            label: Text(
+              file,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: Color(0xFF0037FF),
+                fontSize: 11,
+                fontWeight: FontWeight.w400
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              alignment: Alignment.centerLeft,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              side: const BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            onPressed: () async {
+              // OpenResult result;
+              // try {
+              //   result = await OpenFile.open(
+              //     file.path,
+              //   );
+              //   // setState(() {
+              //     debugPrint("type=${result.type}  message=${result.message}");
+              //   // });
+              // } catch (error) {
+              //   debugPrint(error.toString());
+              // }
+              print("Download file: \"$file\"");
+            }, 
+          ),
+        );
+      }).toList()
+    );
+  }

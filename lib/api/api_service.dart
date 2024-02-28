@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:datn/model/request/request_information_model.dart';
+import 'package:datn/model/request/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -54,19 +54,18 @@ class APIService {
 
   Future<dynamic> login(LoginRequestModel loginRequestModel) async{
     Uri url = Uri.parse("http://$host:3000/login");
-    // Uri url = Uri(
-    //   scheme: 'https',
-    //   host: 'dummyjson.com',
-    //   path: '/auth/login',
-    //   // https://dummyjson.com/auth/login
-    // );
-    final response = await http.post(url, body: loginRequestModel.toJson());
-    // print(response.body);
-    if(response.statusCode == 200) {
-      return LoginResponseModel.fromJson(jsonDecode(response.body));
-    } else {
-      // print("Unknown Error!");
-      return response.body;
+    
+    try {
+      final response = await http.post(url, body: loginRequestModel.toJson());
+      // print(response.body);
+      if(response.statusCode == 200) {
+        return LoginResponseModel.fromJson(jsonDecode(response.body));
+      } else {
+        // print("Unknown Error!");
+        return response.body;
+      }
+    } catch (e) {
+      return (e.toString());
     }
   }
 
@@ -142,25 +141,24 @@ class APIService {
     // }
   }
 
-  Future<List<RequestInformation>> getData(String? status, int startIndex, String accessToken, {int limit = 10}) async {
-    List<RequestInformation> listData = List.empty();
+  Future<List<Request>> getData(String? status, int startIndex, String accessToken, String userId, {int limit = 10}) async {
+    List<Request> listData = List.empty();
 
+    String currentStatus;
+    String baseUrl = "http://$host:3000/requests?_sort=id&_order=desc&userId=$userId&_start=$startIndex&_limit=$limit";
     Uri url = Uri();
 
     switch (status) {
       case "Đã xong":
-        url = Uri.parse("http://$host:3000/requests?status=completed&_start=$startIndex&_limit=$limit");
-        break;
+        currentStatus = "&status=completed";
       case "Đã huỷ":
-        url = Uri.parse("http://$host:3000/requests?status=canceled&_start=$startIndex&_limit=$limit");
-        break;
+        currentStatus = "&status=canceled";
       case "Đang xử lý":
-        url = Uri.parse("http://$host:3000/requests?status=processing&_start=$startIndex&_limit=$limit");
-        break;
+        currentStatus = "&status=processing";
       default:
-        url = Uri.parse("http://$host:3000/requests?_start=$startIndex&_limit=$limit");
-        break;
+        currentStatus = "";
     }
+    url = Uri.parse("$baseUrl$currentStatus");
     print(url);
 
     try {
@@ -178,7 +176,7 @@ class APIService {
         var data = jsonDecode(responseBody) as List;
 
         listData = data.map((jsonData) {
-          return RequestInformation.fromJson(jsonData);
+          return Request.fromJson(jsonData);
         }).toList();
         return listData;
       }
@@ -187,4 +185,5 @@ class APIService {
     }
     return [];
   }
+
 }

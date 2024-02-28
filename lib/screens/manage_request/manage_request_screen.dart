@@ -1,16 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:datn/api/api_service.dart';
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/function/function.dart';
 import 'package:datn/model/login_model.dart';
-import 'package:datn/model/request/request_information_model.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/manage_request/request_information_dialog.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ManageRequestScreen extends StatefulWidget {
 
@@ -30,13 +27,20 @@ class ManageRequestScreen extends StatefulWidget {
 class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   static const double loadingIndicatorSize = 20;
+  static const double requestStatusBarHeight = 45;
+  static const int maxLines = 4;
+
+  late ValueNotifier<List<bool>> isExpanded = ValueNotifier([]);
 
   APIService apiService = APIService();
-  ValueNotifier<List<RequestInformation>> listRequest = ValueNotifier([]);
+  ValueNotifier<List<Request>> listRequest = ValueNotifier([]);
   
   String? currentStatus = ConstantList.requestStatus[0];
+  late int selectedStatusIndex;
+
   int currentIndex = 0;
   late String accessToken;
+  late String userId;
 
   bool isLoading = false;
   ScrollController scrollController = ScrollController();
@@ -45,9 +49,12 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   void initState() {
     super.initState();
     accessToken = widget.loginResponseData.accessToken;
+    userId = widget.loginResponseData.user.id;
+    selectedStatusIndex = 0;
     scrollController.addListener(() {
       _handleScroll();
     });
+    // isExpanded = ValueNotifier(List.generate(listRequest.value.length, (index) => false));
   }
 
   @override
@@ -56,7 +63,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildAppBar(),
-      body: manageRequestScreenBody(ConstantList.requestStatus, currentStatus),
+      body: manageRequestScreenBody(),
     );
   }
 
@@ -80,63 +87,18 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  Widget manageRequestScreenBody(List<String> listStatus, String? selectedStatus) {
+  Widget manageRequestScreenBody() {
 
     return Stack(
       children: [
         buildRequestListView(),
-
+    
         Align(
-          alignment: Alignment.topRight,
-          child: buildFilterButton(currentStatus),
+          alignment: Alignment.topCenter,
+          child: buildFilterChips(),
         ),
       ]
     );
-  }
-
-  Color getColor(String status) {
-    switch (status) {
-      case "completed":
-        return Colors.green;
-      case "canceled":
-        return Colors.red;
-      case "processing":
-        return Colors.yellow;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String formatTime(String date) {
-    var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-    var inputDate = inputFormat.parse(date);
-    
-    var outputFormat = DateFormat('dd/MM/yyyy HH:mm');
-    var outputDate = outputFormat.format(inputDate);
-    return outputDate;
-  }
-
-  //NOTE: CHECK WHETHER STRING IS INTEGER OR NOT
-  bool isInteger(String? s) {
-    if (s == null) {
-      return false;
-    }
-    return int.tryParse(s) != null;
-  }
-
-  Future<String> fileToBase64(File file) async {
-    List<int> imageBytes = await file.readAsBytes();
-    return base64Encode(imageBytes);
-  }
-
-  Future<File> imageToFile() async {
-    ByteData bytes = await rootBundle.load('assets/images/uet.png');
-    String tempPath = (await getTemporaryDirectory()).path;
-    File file = File('$tempPath/image.jpg');
-    await file.writeAsBytes(
-      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes)
-    );
-    return file;
   }
 
   void postData(String lastestId) {
@@ -159,15 +121,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     print("LOAD MORE");
     isLoading = true;
     currentIndex += 10;
-    await apiService.getData(currentStatus, currentIndex, accessToken).then((value) async {
+    await apiService.getData(currentStatus, currentIndex, accessToken, userId).then((value) async {
       await Future.delayed(const Duration(seconds: 1));
-      print("ADD-${value.length}");
       listRequest.value.addAll(value);
       listRequest.value = List.from(listRequest.value);
+      
+      // var listTemp = isExpanded.value;
+      isExpanded.value.addAll(List.generate(value.length, (index) => false));
+      isExpanded.value = List.from(isExpanded.value);
       if (value.length == 10) {
         isLoading = false;
       }
-      print(listRequest.value.length);
     });
   }
 
@@ -178,20 +142,24 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   }
 
   Widget buildRequestListView() {
+    currentIndex = 0;
+    isLoading = false;
+
     return FutureBuilder(
-      future: apiService.getData(currentStatus, currentIndex, accessToken), 
+      future: apiService.getData(currentStatus, currentIndex, accessToken, userId), 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done){
+          
           if (snapshot.data!.length < 10) {
             isLoading = true;
           }
 
+          isExpanded.value = List.generate(snapshot.data!.length, (index) => false);
+
           // var listData = snapshot.data!;
 
-          // listRequest.value.addAll(snapshot.data!);
-          listRequest.value.addAll(snapshot.data!);
-          listRequest.value = List.from(listRequest.value);
-          print("Data Length: ${listRequest.value.length}");
+          listRequest.value = List.from(snapshot.data!);
+          // print("Data Length: ${listRequest.value.length}");
 
           // for (var jsonData in listData) {
             // print("${jsonData.id}-${jsonData.info.runtimeType}");
@@ -221,156 +189,43 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             );
           }
 
-          return NotificationListener(
-            // onNotification: _handleScrollNotification,
-            child: ValueListenableBuilder(
-              valueListenable: listRequest,
-              builder: (context, list, child) {
-                print("BUILD");
-                return ListView.separated(
-                  controller: scrollController,
-                  itemCount: list.length + 1,
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
-                  separatorBuilder: (context, index) => const SizedBox(height: 10,),
-                  itemBuilder: (BuildContext context, int index) {
-                    
-                    if (index == list.length) {
-                      return !isLoading
-                        ? Visibility(
-                          visible: !isLoading,
-                          child: const Center(
-                            child: SizedBox(
-                              height: loadingIndicatorSize,
-                              width: loadingIndicatorSize,
-                              child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
-                            ),
-                          )
-                        )
-                        : const Text(
-                            "Đã tải toàn bộ yêu cầu!",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10
-                            ),
-                          );
-                    }
-                    return GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 20, 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 1.5,
-                              offset: const Offset(0, 0.5), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: IntrinsicHeight(
-                          child: Row( 
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(vertical: 10),
-                                width: 7,
-                                decoration: BoxDecoration(
-                                  color: getColor(list[index].status),
-                                  // color: Colors.red,
-                                  borderRadius: const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
-                                ),
-                              ),
-                              const SizedBox(width: 15,),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      list[index].requestType,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5,),
-                                    Text(
-                                      "Yeu cau: Loại GCN: Chứng nhận Sinh viên /HV/NCS\n"
-                                      "Số bản tiếng Việt: $index\n"
-                                      "Lý do: em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ. em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ. em xin giấy chứng nhận sinh viên và giấy hoãn nghĩa vụ quân sự để tạm hoãn lệnh gọi nghĩa vụ quân sự tại địa phương ạ.",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 6,
-                                    ),
-                                    const SizedBox(height: 7,),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              const Icon(
-                                                Icons.calendar_month,
-                                                size: 20,
-                                                color: Colors.grey,
-                                              ),
-                                              const SizedBox(width: 5,),
-                                              Flexible(
-                                                child: Text(
-                                                  formatTime(list[index].dateCreate),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                )
-                                              ),
-                                            ],
-                                          )
-                                        ),
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              const Icon(
-                                                Icons.attach_money_rounded,
-                                                size: 20,
-                                                color: Colors.grey,
-                                              ),
-                                              const SizedBox(width: 5,),
-                                              Flexible(
-                                                child: Text(
-                                                  list[index].fee ?? "----",
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 5,),
-                                            ],
-                                          )
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+          return ValueListenableBuilder(
+            valueListenable: listRequest,
+            builder: (context, list, child) {
+              print("BUILD - ${list.length}");
+
+              return ListView.separated(
+                controller: scrollController,
+                itemCount: list.length + 1,
+                padding: const EdgeInsets.fromLTRB(10, requestStatusBarHeight, 10, 15),
+                separatorBuilder: (context, index) => const SizedBox(height: 10,),
+                itemBuilder: (BuildContext context, int index) {
+                  
+                  if (index == list.length) {
+                    return !isLoading
+                      ? Visibility(
+                        visible: !isLoading,
+                        child: const Center(
+                          child: SizedBox(
+                            height: loadingIndicatorSize,
+                            width: loadingIndicatorSize,
+                            child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
                           ),
-                        ),
-                      ),
-                      onTap: () {
-                        showDialog(
-                          context: context, 
-                          builder: (context) => requestInforDialog(context, index, getColor(list[index].status)),
+                        )
+                      )
+                      : const Text(
+                          "Đã tải toàn bộ yêu cầu!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10
+                          ),
                         );
-                      },
-                    );
                   }
-                );
-              },
-            ),
+                  return listRequestItem(list, index, context);
+                }
+              );
+            },
           );
         } else {
           return const Center(
@@ -385,46 +240,301 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  Container buildFilterButton(String? selectedStatus) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      height: 35,
-      width: 90,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: const BorderRadius.all(Radius.circular(8))
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          icon: const Icon(Icons.arrow_drop_down),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          iconSize: 14,
-          elevation: 0,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 12
-          ),
-          isExpanded: true,
-          
-          value: selectedStatus,
-          items: ConstantList.requestStatus
-            .map((status) => DropdownMenuItem<String>(
-              value: status,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(status),
-              )
-            )).toList(), 
-          onChanged: (status) {
-            // setCurrentStatus(status);
-            listRequest.value = [];
-            currentIndex = 0;
-            isLoading = false;
-            currentStatus = status;
-            setState(() {});
-          },
+  Widget listRequestItem(List<Request> list, int index, BuildContext context) {
+    return GestureDetector(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(0, 8, 20, 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              blurRadius: 1.5,
+              offset: const Offset(0, 0.5), // changes position of shadow
+            ),
+          ],
         ),
+        child: IntrinsicHeight(
+          child: Row( 
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                width: 7,
+                decoration: BoxDecoration(
+                  color: getColor(list[index].status),
+                  // color: Colors.red,
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
+                ),
+              ),
+              const SizedBox(width: 15,),
+              Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: isExpanded,
+                  builder: (BuildContext context, value, Widget? child) {
+                    
+                    var requestText = getRequestText(list[index].info);
+                    
+                    return listRequestItemDetail(list, index, context, requestText, value);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      onTap: () {
+        showDialog(
+          context: context, 
+          builder: (context) => requestInforDialog(context, index, list[index]),
+        );
+      },
+    );
+  }
+
+  Column listRequestItemDetail(List<Request> list, int index, BuildContext context, String requestText, List<bool> value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "#${list[index].id}",
+              style: const TextStyle(
+                color: Colors.grey
+              )
+            ),
+            const SizedBox(width: 7,),
+            Expanded(
+              child: Text(
+                list[index].requestType,
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black
+                )
+              )
+            ),
+            const SizedBox(width: 5,),
+            buildAttachFileButton(list, index, context),
+          ],
+        ),
+        const SizedBox(height: 5,),
+
+        const Text(
+          "Yêu cầu:",
+          style: TextStyle(
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        
+        Text(
+          requestText,
+          overflow: TextOverflow.fade,
+          maxLines: value[index] ? null : 4,
+        ),
+        const SizedBox(height: 1.5,),
+
+        buidExpandedTextButton(requestText, index),
+        const SizedBox(height: 5,),
+
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.calendar_month,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(width: 5,),
+                  Flexible(
+                    child: Text(
+                      formatDateWithTime(list[index].dateCreate),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ),
+                ],
+              )
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Icon(
+                    Icons.attach_money_rounded,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
+                  Flexible(
+                    child: Text(
+                      list[index].fee ?? "----",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  const SizedBox(width: 5,),
+                ],
+              )
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Visibility buildAttachFileButton(List<Request> list, int index, BuildContext context) {
+    return Visibility(
+      visible: list[index].file != null,
+      child: GestureDetector(
+        child: Container(
+          margin: const EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: const ui.Color.fromARGB(255, 252, 252, 252),
+            border: Border.all(color: const Color(0xFF0E6FBE), width: 0.3),
+            borderRadius: BorderRadius.circular(17)
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.file_present_outlined, 
+                color: Color(0xFF0E6FBE), 
+                size: 14,
+              ),
+              const SizedBox(width: 3,),
+              Text(
+                list[index].file != null ? list[index].file!.length.toString() : "0",
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF0E6FBE)
+                ),
+              )
+            ]
+          ),
+        ),
+        onTap: (){
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            builder: (context) {
+              return BottomSheetWithList(
+                title: "Tệp đính kèm",
+                list: list[index].file!,
+                isHaveCancelButton: false,
+                isHaveLeftIcon: true,
+                isHaveRightIcon: true,
+                rightIcon: Icons.file_download_outlined,
+                isListFile: true,
+              );
+            },
+          );
+          print("Open List Files");
+        },
+      ),
+    );
+  }
+
+  Widget buidExpandedTextButton(String requestText, int index) {
+    final span = TextSpan(text: requestText);
+    final tp = TextPainter(
+      text: span, 
+      textDirection: ui.TextDirection.ltr
+    );
+    tp.layout(maxWidth: MediaQuery.of(context).size.width - 75);
+    List<ui.LineMetrics> lines = tp.computeLineMetrics();
+    int numberOfLines = lines.length;
+
+    return Visibility(
+      visible: numberOfLines > 4,
+      child: Center(
+        child: SizedBox(
+          width: 110,
+          height: 18,
+          child: FilledButton.icon(
+            icon: Icon(
+              isExpanded.value[index] ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+              size: 11,
+              color: const Color(0xFF063A76),
+            ),
+            label: Text(
+              isExpanded.value[index] ? "Thu gọn" : "Xem thêm",
+              style: const TextStyle(
+                fontSize: 9.5,
+                color: ui.Color(0xFF063A76),
+              ),
+            ),
+            style: FilledButton.styleFrom(
+              elevation: 0,
+              backgroundColor: Colors.transparent
+            ),
+            onPressed: (){
+              var list = isExpanded.value;
+              list[index] = list[index] ? false : true;
+              isExpanded.value = List.from(list);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildFilterChips() {
+    return SizedBox(
+      height: requestStatusBarHeight,
+      child: ListView.separated(
+        itemCount: ConstantList.requestStatus.length,
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        separatorBuilder: (context, index) => const SizedBox(width: 5,),
+        itemBuilder: (context, index) {
+          return ChoiceChip(
+            // labelPadding: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 8),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            showCheckmark: false,
+            side: const BorderSide(color: Colors.grey, width: 0.5),
+            shape: const StadiumBorder(),
+            label: Text(
+              ConstantList.requestStatus[index],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11.5,
+                color: selectedStatusIndex == index ? Colors.white : Colors.black
+              ),
+            ),
+            selected: selectedStatusIndex == index,
+            selectedColor: Colors.blue,
+            onSelected: (value) {
+              if (index != selectedStatusIndex) {
+                listRequest.value = [];
+                currentIndex = 0;
+                isLoading = false;
+                selectedStatusIndex = value ? index : selectedStatusIndex;
+                currentStatus = ConstantList.requestStatus[index];
+                setState(() {});
+              }
+            },
+          );
+        }, 
       ),
     );
   }

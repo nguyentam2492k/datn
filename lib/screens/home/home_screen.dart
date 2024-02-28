@@ -186,7 +186,7 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFF000980),
             ),
           ),

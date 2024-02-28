@@ -132,75 +132,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: files.map((file) {
-                        return Container(
-                          constraints: const BoxConstraints(maxHeight: 30, maxWidth: 135),
-                          alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Colors.grey, width: 0.5),
-                          ),
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 2,),
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: TextButton.icon(
-                                    icon: const Icon(Icons.attach_file, size: 14,), 
-                                    label: Text(
-                                      file.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400
-                                      ),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.only(left: 3),
-                                      side: const BorderSide(
-                                        color: Colors.transparent,
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      OpenResult result;
-                                      try {
-                                        result = await OpenFile.open(
-                                          file.path,
-                                        );
-                                        // setState(() {
-                                          debugPrint("type=${result.type}  message=${result.message}");
-                                        // });
-                                      } catch (error) {
-                                        debugPrint(error.toString());
-                                      }
-                                    }, 
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 30,
-                                child: FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: (){
-                                      files.removeAt(files.indexOf(file));
-                                      widget.onChanged(files);
-                                    }, 
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList()
-                    ),
+                    child: listFileWidget(),
                   )
                 ),
               ],
@@ -208,6 +140,78 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget listFileWidget() {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: files.map((file) {
+        return Container(
+          constraints: const BoxConstraints(maxHeight: 30, maxWidth: 135),
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            border: Border.all(color: Colors.grey, width: 0.5),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 2,),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.attach_file, size: 14,), 
+                    label: Text(
+                      file.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.only(left: 3),
+                      side: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                    onPressed: () async {
+                      OpenResult result;
+                      try {
+                        result = await OpenFile.open(
+                          file.path,
+                        );
+                        // setState(() {
+                          debugPrint("type=${result.type}  message=${result.message}");
+                        // });
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    }, 
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 30,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: (){
+                      files.removeAt(files.indexOf(file));
+                      widget.onChanged(files);
+                    }, 
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList()
     );
   }
   

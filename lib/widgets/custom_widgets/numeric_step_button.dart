@@ -76,7 +76,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
                     counter = counter! - 1;
                     _controller = TextEditingController(text: counter.toString());
                   } else {
-                    return null;
+                    return ;
                   }
                   widget.onChanged(counter);
                 });
@@ -138,7 +138,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
                     counter = counter! + 1;
                     _controller = TextEditingController(text: counter.toString());
                   } else {
-                    return null;
+                    return ;
                   }
                   widget.onChanged(counter);
                 });

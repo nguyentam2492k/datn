@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 
 class CustomFormBuilderDateRangePicker extends StatefulWidget {
   final String name; 
@@ -83,6 +84,7 @@ class CustomFormBuilderDateRangePickerState extends State<CustomFormBuilderDateR
         lastDate: widget.lastDate,
         initialValue: widget.initialValue,
         locale: widget.locale ?? const Locale("vi","VI"),
+        format: DateFormat('dd/MM/yyyy'),
         style: widget.style,
         decoration: widget.decoration,
         validator: widget.validator,

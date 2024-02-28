@@ -44,6 +44,13 @@ class CustomFormBuilderTextField extends StatefulWidget {
           width: 0.5,
         ),
       ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(
+          color: Color(0xFFD6D6D6),
+          width: 0.3,
+        ),
+      ),
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
         borderRadius: BorderRadius.all(Radius.circular(10)),

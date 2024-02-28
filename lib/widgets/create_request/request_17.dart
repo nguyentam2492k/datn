@@ -18,12 +18,21 @@ class Request17State extends State<Request17> {
 
   final GlobalKey<FormBuilderState> _request17FormKey = GlobalKey<FormBuilderState>();
 
+  late bool isEnable;
+
   void sendFormData() {
     _request17FormKey.currentState!.saveAndValidate() ? debugPrint(_request17FormKey.currentState?.value.toString()) : null;
   }
 
   @override
+  void initState() {
+    super.initState();
+    isEnable = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return FormBuilder(
       key: _request17FormKey,
       child: Column(
@@ -94,12 +103,14 @@ class Request17State extends State<Request17> {
                                 isCollapsed: true,
                               ),
                               onChanged: (value) {
-                                // _request17FormKey.currentState!.fields['mottuyen']!.reset();
-                                // FocusScope.of(context).unfocus();
+                                isEnable = true;
                                 if (_request17FormKey.currentState!.fields['tuyen']!.value != ConstantList.busChoices[0]) {
                                   _request17FormKey.currentState!.fields['mottuyen']!.reset();
                                   FocusScope.of(context).unfocus();
+                                  isEnable = false;
                                 }
+                                setState(() {
+                                });
                               },
                               options: [
                                 FormBuilderFieldOption(
@@ -115,6 +126,7 @@ class Request17State extends State<Request17> {
                                         flex: 2,
                                         child: CustomFormBuilderTextField(
                                           name: "mottuyen",
+                                          enabled: isEnable,
                                           validator: (value) {
                                             if (_request17FormKey.currentState!.fields['tuyen']!.value == ConstantList.busChoices[0] && (value == null || value.isEmpty)) {
                                               return "Nhập số tuyến";
@@ -122,7 +134,6 @@ class Request17State extends State<Request17> {
                                             return null;
                                           },
                                           onChanged: (value) {
-                                            setState(() {});
                                           },
                                         ),
                                       ),

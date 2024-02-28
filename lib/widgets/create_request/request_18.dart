@@ -115,7 +115,7 @@ class Request18State extends State<Request18> {
                           title: const Text(
                             "Thông tin cá nhân",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold
                             ),
                           ),
@@ -144,7 +144,7 @@ class Request18State extends State<Request18> {
                           title: const Text(
                             "Thông tin gia đình",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold
                             ),
                           ),
@@ -168,7 +168,7 @@ class Request18State extends State<Request18> {
                           title: const Text(
                             "Thông tin khác",
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold
                             ),
                           ),

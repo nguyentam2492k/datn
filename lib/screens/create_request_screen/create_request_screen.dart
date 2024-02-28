@@ -184,6 +184,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
       ),
       builder: (context) {
         return BottomSheetWithList(
+          title: "Yêu cầu",
           list: ConstantList.requests,
           selectedItem: selectedItemChanged,
         );

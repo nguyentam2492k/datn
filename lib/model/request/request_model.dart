@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:datn/model/request/request_type_model.dart';
+import 'package:datn/model/request/request_details_model.dart';
 
-class RequestInformation {
-  String id;
+class Request {
+  int id;
   String student;
   String requestType;
   String requestTypeId;
-  dynamic info;
+  RequestDetails info;
   List<String>? file;
   String documentNeed;
   String status;
@@ -16,7 +16,7 @@ class RequestInformation {
   String dateCreate;
   String? dateReceive;
 
-  RequestInformation({
+  Request({
     required this.id,
     required this.student,
     required this.requestType,
@@ -31,21 +31,17 @@ class RequestInformation {
     this.dateReceive,
   });
 
-  factory RequestInformation.fromJson(Map<String, dynamic> json) {
+  factory Request.fromJson(Map<String, dynamic> json) {
 
     String requestTypeId = json["request_type_id"] as String;
-    var info = json["info"];
+    var info = RequestDetails.fromJson(json["info"]);
 
     List<String> toListString(List list) {
       return list.map((item) => item as String).toList();
     }
 
-    if (requestTypeId == "1") {
-      info = Request1Model.fromJson(json["info"]);
-    }
-
-    return RequestInformation(
-      id: json["id"] as String, 
+    return Request(
+      id: json["id"] as int, 
       student: json["student"] as String, 
       requestType: json["request_type"] as String, 
       requestTypeId: requestTypeId,

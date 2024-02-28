@@ -1,4 +1,3 @@
-import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,9 +29,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('vi')],
       home: Container(
         color: Colors.white,
-        child: SafeArea(
+        child: const SafeArea(
           child: LogIn(),
-          // child: HomeScreen(),
         ),
       ),
       debugShowCheckedModeBanner: false,

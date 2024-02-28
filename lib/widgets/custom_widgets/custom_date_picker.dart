@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 
 class CustomFormBuilderDateTimePicker extends StatefulWidget {
   final String name; 
@@ -80,6 +81,7 @@ class CustomFormBuilderDateTimePickerState extends State<CustomFormBuilderDateTi
         initialDate: widget.initialValue,
         inputType: widget.inputType,
         locale: widget.locale,
+        format: DateFormat('dd/MM/yyyy'),
         style: widget.style,
         decoration: widget.decoration,
         validator: widget.validator,
