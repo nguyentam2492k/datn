@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:datn/model/request/file_data_model.dart';
 import 'package:datn/model/request/request_details_model.dart';
 
 class Request {
@@ -8,7 +9,7 @@ class Request {
   String requestType;
   String requestTypeId;
   RequestDetails info;
-  List<String>? file;
+  List<FileData>? file;
   String documentNeed;
   String status;
   String? fee;
@@ -40,13 +41,19 @@ class Request {
       return list.map((item) => item as String).toList();
     }
 
+    List<FileData>? listFiles;
+    if (json['file'] != null) {
+      var listFilesJson = json['file'] as List;
+      listFiles = listFilesJson.map((fileJson) => FileData.fromJson(fileJson)).toList();
+    }
+
     return Request(
       id: json["id"] as int, 
       student: json["student"] as String, 
       requestType: json["request_type"] as String, 
       requestTypeId: requestTypeId,
       info: info, 
-      file: json["file"] != null ? toListString(json["file"]) : null, 
+      file: listFiles, 
       documentNeed: json["document_need"] as String, 
       status: json["status"] as String, 
       fee: json["fee"] as String?, 

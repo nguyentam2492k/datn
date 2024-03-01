@@ -1,9 +1,9 @@
 import 'dart:ui' as ui;
 
-import 'package:datn/api/api_service.dart';
+import 'package:datn/global_variable/globals.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/login_model.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/manage_request/request_information_dialog.dart';
@@ -11,11 +11,8 @@ import 'package:flutter/material.dart';
 
 class ManageRequestScreen extends StatefulWidget {
 
-  final LoginResponseModel loginResponseData;
-
   const ManageRequestScreen({
     super.key,
-    required this.loginResponseData,
   });
   
   @override
@@ -48,8 +45,8 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   @override
   void initState() {
     super.initState();
-    accessToken = widget.loginResponseData.accessToken;
-    userId = widget.loginResponseData.user.id;
+    accessToken = globalLoginResponse!.accessToken;
+    userId = globalLoginResponse!.user.id;
     selectedStatusIndex = 0;
     scrollController.addListener(() {
       _handleScroll();
@@ -435,14 +432,16 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
               maxHeight: MediaQuery.of(context).size.height * 0.5,
             ),
             builder: (context) {
+              List<String> listFileName = list[index].file!.map((item) => item.filename).toList();
               return BottomSheetWithList(
                 title: "Tệp đính kèm",
-                list: list[index].file!,
+                list: listFileName,
                 isHaveCancelButton: false,
                 isHaveLeftIcon: true,
                 isHaveRightIcon: true,
-                rightIcon: Icons.file_download_outlined,
+                rightIcon: Icons.visibility_outlined,
                 isListFile: true,
+                listFile: list[index].file,
               );
             },
           );

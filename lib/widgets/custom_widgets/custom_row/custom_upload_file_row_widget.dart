@@ -1,3 +1,4 @@
+import 'package:datn/function/function.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -99,7 +100,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                               files = fileSet.toList();
                               widget.onChanged(files);
                               for (var file in files) {
-                                debugPrint("${file.name}\n${file.size}");
+                                debugPrint("${file.name}-${file.size}");
                               }
                               debugPrint('Add completed');
                             } else {
@@ -162,7 +163,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(
-                    icon: const Icon(Icons.attach_file, size: 14,), 
+                    icon: Icon(getIcon(file.name), size: 14,), 
                     label: Text(
                       file.name,
                       maxLines: 1,

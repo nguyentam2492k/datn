@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/request/request_details_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 String formatDateWithTime(String dateWithTime) {
@@ -145,4 +147,31 @@ IconData getIcon(String fileName) {
     return Icons.picture_as_pdf_outlined;
   }
   return Icons.text_snippet_outlined;
+}
+
+Future<void> openFileFromUrl(String url, String filename) async {
+  var httpClient = HttpClient();
+
+  var request = await httpClient.getUrl(Uri.parse(url));
+  var response = await request.close();
+  var bytes = await consolidateHttpClientResponseBytes(response);
+
+  final tempDir = await getTemporaryDirectory();
+  File file = await File('${tempDir.path}/$filename').create();
+
+  await file.writeAsBytes(bytes);
+
+  OpenResult result;
+  try {
+    result = await OpenFile.open(
+      file.path,
+    );
+
+    // setState(() {
+      debugPrint("type=${result.type} message=${result.message}");
+    // });
+  } catch (error) {
+    debugPrint(error.toString());
+  }
+  // return file;
 }

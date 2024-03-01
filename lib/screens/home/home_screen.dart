@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login_model.dart';
 import 'package:flutter/material.dart';
 
@@ -8,17 +9,22 @@ import 'package:datn/screens/manage_request/manage_request_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 
-  final LoginResponseModel loginResponseData;
+  // final LoginResponseModel loginResponseData;
+  final LoginResponseModel loginResponse;
 
   HomeScreen({
-    super.key,
-    required this.loginResponseData,
+    super.key, 
+    required this.loginResponse,
+    // required this.loginResponseData,
   });
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
+
+    globalLoginResponse = loginResponse;
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
@@ -162,10 +168,10 @@ class HomeScreen extends StatelessWidget {
       child: ListView( 
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(loginResponseData.user.name), 
-            accountEmail: Text(loginResponseData.user.id),
+            accountName: Text(loginResponse.user.name), 
+            accountEmail: Text(loginResponse.user.id),
             currentAccountPicture: Image.network(
-              loginResponseData.user.image,
+              loginResponse.user.image,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
@@ -198,7 +204,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => ManageRequestScreen(loginResponseData: loginResponseData,)
+                  builder: (context) => const ManageRequestScreen()
                 )
               );
             },
@@ -233,16 +239,18 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
             child: ElevatedButton.icon(
               onPressed: (){
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute<void>(
-                //     builder: (BuildContext context) => SignIn()),
-                //   ModalRoute.withName('/'),
-                // );
-                Navigator.pushReplacement(context, MaterialPageRoute<void>(
-                    builder: (BuildContext context) => const LogIn(),
-                  ),
+                Navigator.pushAndRemoveUntil(
+                  context, 
+                  MaterialPageRoute(builder: (context) {
+                    globalLoginResponse = null;
+                    return const LogIn();
+                  }), 
+                  (route) => false
                 );
+                // Navigator.pushReplacement(context, MaterialPageRoute<void>(
+                //     builder: (BuildContext context) => const LogIn(),
+                //   ),
+                // );
               },
               icon: const Icon(Icons.logout),
               label: const Text("Đăng xuất"),
