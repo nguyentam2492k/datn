@@ -1,8 +1,8 @@
+import 'dart:convert';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:datn/function/function.dart';
 
-class RequestDetails {
+class RequestInformation {
 
   String? quantityViet;
   String? quantityEng;
@@ -31,7 +31,7 @@ class RequestDetails {
   String? untilDate;
 
   //Request 6
-  String? documentType;
+  List<String>? documents;
   String? otherDocument;
   String? borrowDate;
 
@@ -55,7 +55,7 @@ class RequestDetails {
   String? email;
   String? khicanbaotin;
 
-  RequestDetails({
+  RequestInformation({
     this.quantityViet,
     this.quantityEng,
     this.reason,
@@ -71,7 +71,7 @@ class RequestDetails {
     this.semester,
     this.year,
     this.untilDate,
-    this.documentType,
+    this.documents,
     this.otherDocument,
     this.borrowDate,
     this.monthFee,
@@ -88,7 +88,7 @@ class RequestDetails {
     this.khicanbaotin,
   });
 
-  factory RequestDetails.fromJson(Map<String, dynamic> json) {
+  factory RequestInformation.fromJson(Map<String, dynamic> json) {
     List<String> toListString(List list) {
       return list.map((item) => item as String).toList();
     }
@@ -100,7 +100,7 @@ class RequestDetails {
     var absentDate = formatDateRange(json["absent_date"]);
     var rentDate = formatDateRange(json["rent_date"]);
 
-    return RequestDetails(
+    return RequestInformation(
       quantityViet: json['quantity_viet'] as String?,
       quantityEng: json['quantity_eng'] as String?,
       reason: json['reason'] as String?,
@@ -116,7 +116,7 @@ class RequestDetails {
       semester: json['semester'] as String?,
       year: json['year'] as String?,
       untilDate: untilDate,
-      documentType: json['document_type'] as String?,
+      documents: json['documents'] != null ? toListString(json["documents"]) : null,
       otherDocument: json['other_document'] as String?,
       borrowDate: borrowDate,
       monthFee: json['month_fee'] as String?,
@@ -134,4 +134,41 @@ class RequestDetails {
     );
   }
 
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'quantityViet': quantityViet,
+      'quantityEng': quantityEng,
+      'reason': reason,
+      'phoneContact': phoneContact,
+      'certificateType': certificateType,
+      'semesterType': semesterType,
+      'semesterNumber': semesterNumber,
+      'transcriptType': transcriptType,
+      'subject': subject,
+      'lecturer': lecturer,
+      'examDate': examDate,
+      'subjectReview': subjectReview,
+      'semester': semester,
+      'year': year,
+      'untilDate': untilDate,
+      'documentType': documents,
+      'otherDocument': otherDocument,
+      'borrowDate': borrowDate,
+      'monthFee': monthFee,
+      'absentDate': absentDate,
+      'tuyen': tuyen,
+      'mottuyen': mottuyen,
+      'studentAddress': studentAddress,
+      'receivingPlace': receivingPlace,
+      'name': name,
+      'rentDate': rentDate,
+      'doituonguutien': doituonguutien,
+      'permanentAddress': permanentAddress,
+      'email': email,
+      'khicanbaotin': khicanbaotin,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }

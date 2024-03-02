@@ -75,7 +75,7 @@ class ConstantList {
   static List<String> requests = [
     "Giấy chứng nhận", 
     "Cấp bảng điểm", 
-    "Đề nghị Hoãn thi", 
+    "Đề nghị hoãn thi", 
     "Xem lại bài thi", 
     "Hoãn nộp học phí", 
     "Mượn hồ sơ", 
@@ -90,9 +90,9 @@ class ConstantList {
     "Chứng nhận còn nợ môn", 
     "XN nhận miễn giảm HP", 
     "Đề nghị làm vé xe buýt",
-    "Cập nhật hồ sơ",
     "Đề nghị thuê nhà ở",
     "XN điểm rèn luyện",
+    "Cập nhật hồ sơ",
     "Đánh giá Rèn luyện"
     ];
 

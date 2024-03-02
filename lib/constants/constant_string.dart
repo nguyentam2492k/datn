@@ -94,11 +94,11 @@ class ConstantString {
   static String request17Note = "Sinh viên điền đầy đủ, chính xác thông tin; chuẩn bị "
                                 "02 ảnh 2x3 để dán vào đơn, lấy dấu gáp lai của Trường.";
   
-  static String request18Note = "Khai hồ sơ sinh viên";
+  static String request20Note = "Khai hồ sơ sinh viên";
   
-  static String request19Note = "Sinh viên điền đầy đủ thông tin, đính kèm minh chứng "
+  static String request18Note = "Sinh viên điền đầy đủ thông tin, đính kèm minh chứng "
                                 "(nếu thuộc diện ưu tiên); chuẩn bị ảnh 3x4 để dán đơn khi xác nhận.";
   
-  static String request20Note = "Sinh viên điền thông tin: Năm học cần xác nhận (vd: "
+  static String request19Note = "Sinh viên điền thông tin: Năm học cần xác nhận (vd: "
                                 "2021-2022); chương trình đào tạo của mình (Chính quy,..)";
 }

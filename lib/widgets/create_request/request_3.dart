@@ -1,7 +1,7 @@
-import 'dart:io';
-
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
+import 'package:datn/model/request/file_data_model.dart';
 import 'package:datn/services/firebase/firebase_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -45,33 +45,21 @@ class Request3State extends State<Request3> {
     return false;
     }
 
-    bool isListFileOK(List<PlatformFile> listPlatformFile) {
-      bool isFileOK = true;
-      var listFileNull = listPlatformFile.where((element) => element.path == null).toList();
-      for (var platformFile in listPlatformFile) {
-        var file = File(platformFile.path!);
-        if (!file.existsSync()) {
-          isFileOK = false;
-        }
-      }
-      return listFileNull.isEmpty && isFileOK;
-    }
-
     Future<void> sendFormData() async {
       context.loaderOverlay.show();
       
       //TODO: TEST SEND MULTIPLE FILES
 
-      List<String> listUrl = [];
+      List<FileData> listFile = [];
       String child = "files/${globalLoginResponse!.user.id}/33";
 
       // files = testFile;
 
       if (isListFileOK(files)){
-        await firebaseServices.uploadMultipleFileAndGetUrl(child: child, files: files)
+        await firebaseServices.uploadMultipleFile(child: child, files: files)
           .then((value) {
             context.loaderOverlay.hide();
-             CustomSnackBar().showSnackBar(
+            CustomSnackBar().showSnackBar(
               context,
               isError: value.isEmpty,
               text: "Gửi thành công",
@@ -81,9 +69,10 @@ class Request3State extends State<Request3> {
             if (value.isEmpty) {
               return;
             }
-            listUrl = value;
+            listFile = value;
           });
       } else {
+        listFile.clear();
         context.loaderOverlay.hide();
         CustomSnackBar().showSnackBar(
           context,
@@ -91,7 +80,7 @@ class Request3State extends State<Request3> {
           errorText: "File lỗi"
         );
       }
-      print("LIST URL - $listUrl");
+      print("LIST URL - ${listFile.toString()}");
 
       formData.addAll(_request3FormKey.currentState!.value);
       

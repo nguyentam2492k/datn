@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -91,27 +92,27 @@ class APIService {
   //   return [];
   // }
 
-  Future<void> postData(MyData data) async {
-    Uri url = Uri.parse("http://$host:3000/user");
+  // Future<void> postData(MyData data) async {
+  //   Uri url = Uri.parse("http://$host:3000/user");
     
-    //WITHOUT FILE
-    print("POST START");
-    try {
-      final response = await http.post(
-        url, 
-        body: jsonEncode(data.toJson()),
-        headers: <String, String>{ 
-          'Content-Type': 'application/json; charset=UTF-8', 
-        }, 
-      );
-      if(response.statusCode == 201) {
-        print("POST COMPLETED");
-      } else {
-        throw Exception("FAIL TO POST DATA");
-      }
-    } catch (e) {
-      debugPrint("POST ERROR: ${e.toString()}");
-    }
+  //   //WITHOUT FILE
+  //   print("POST START");
+  //   try {
+  //     final response = await http.post(
+  //       url, 
+  //       body: jsonEncode(data.toJson()),
+  //       headers: <String, String>{ 
+  //         'Content-Type': 'application/json; charset=UTF-8', 
+  //       }, 
+  //     );
+  //     if(response.statusCode == 201) {
+  //       print("POST COMPLETED");
+  //     } else {
+  //       throw Exception("FAIL TO POST DATA");
+  //     }
+  //   } catch (e) {
+  //     debugPrint("POST ERROR: ${e.toString()}");
+  //   }
 
     //POST data with FILE but json-server just accept json-data but not accept form-data
     // var request = http.MultipartRequest('POST', url);
@@ -139,10 +140,10 @@ class APIService {
     // } catch (e) {
     //   debugPrint("POST ERROR: ${e.toString()}");
     // }
-  }
+  // }
 
-  Future<List<Request>> getData(String? status, int startIndex, String accessToken, String userId, {int limit = 10}) async {
-    List<Request> listData = List.empty();
+  Future<List<Request>> getData(String? status, int startIndex, String userId, {int limit = 10}) async {
+    List<Request> listData = [];
 
     String currentStatus;
     String baseUrl = "http://$host:3000/requests?_sort=id&_order=desc&userId=$userId&_start=$startIndex&_limit=$limit";
@@ -162,28 +163,61 @@ class APIService {
     print(url);
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
       var response = await http.get(
         url,
         headers: <String, String>{ 
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json;charset=UTF-8',
-          'Authorization': 'Bearer $accessToken'
+          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
         }, 
       );
-      var responseBody = utf8.decode(response.bodyBytes);
-      if (responseBody.isNotEmpty) {
-        var data = jsonDecode(responseBody) as List;
 
-        listData = data.map((jsonData) {
-          return Request.fromJson(jsonData);
-        }).toList();
-        return listData;
+      if (response.statusCode == 200) {
+        var responseBody = utf8.decode(response.bodyBytes);
+
+        if (responseBody.isNotEmpty) {
+          var data = jsonDecode(responseBody) as List;
+          listData = data.map((jsonData) {
+            return Request.fromJson(jsonData);
+          }).toList();
+          return listData;
+        }
+      } else {
+        return [];
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint("GET DATA ERROR: ${e.toString()}");
+      rethrow;
     }
     return [];
+  }
+
+  Future<String?> postData({required Request request, required Map<String, dynamic> requestInfo}) async {
+    Uri url = Uri.parse("http://$host:3000/requests");
+
+    var bodyMap = request.toMap();
+    bodyMap.addAll({"info": requestInfo});
+    
+    try {
+      final response = await http.post(
+        url, 
+        body: jsonEncode(bodyMap),
+        headers: <String, String>{ 
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json;charset=UTF-8',
+          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+        }, 
+      );
+      if(response.statusCode == 201) {
+        return null;
+      } else {
+        print(response.reasonPhrase);
+        return "#${response.statusCode}: ${response.reasonPhrase}";
+      }
+    } catch (e) {
+      return "Other Error";
+      // rethrow;
+    }
   }
 
 }

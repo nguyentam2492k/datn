@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:datn/model/request/file_data_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -24,9 +25,9 @@ class FirebaseServices {
     return fileDownloadUrl;
   }
 
-  Future<List<String>> uploadMultipleFileAndGetUrl({required String child, required List<PlatformFile> files}) async {
+  Future<List<FileData>> uploadMultipleFile({required String child, required List<PlatformFile> files}) async {
     
-    List<String> listUrl = [];
+    List<FileData> listFile = [];
 
     await Future.wait(files.map((platformFile) async {
       var file = File(platformFile.path!);
@@ -36,22 +37,22 @@ class FirebaseServices {
           .then((value) async {
             print("MESSAGE - $value");
             if (value != null) {
-              listUrl.clear();
+              listFile.clear();
               return;
             }
             await getFileUrl(child: child, filename: platformFile.name)
               .then((value) {
-                listUrl.add(value);
+                listFile.add(FileData(filename: platformFile.name, url: value));
               });
           });
       } catch (e) {
-        listUrl.clear();
+        listFile.clear();
       }
     
     })).then((value) {
-      return listUrl;
+      return listFile;
     });
-    return listUrl;
+    return listFile;
   }
 
   Future<String?> uploadFileToFirebaseStorage({required File fileUpload, required String child, required String filename}) async {

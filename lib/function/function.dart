@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:datn/model/request/request_details_model.dart';
+import 'package:datn/model/request/request_information_model.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,37 +90,37 @@ String listToString(List<String> listString) {
   return string.toString().trim();
 }
 
-String getRequestText(RequestDetails requestDetails) {
+String getRequestText(RequestInformation requestInfo) {
   var requestText = StringBuffer();
-  requestDetails.certificateType != null ? requestText.writeln("Loại GCN: ${requestDetails.certificateType}") : null;
-  requestDetails.semesterType != null ? requestText.writeln("Loại kỳ: ${requestDetails.semesterType}") : null;
-  requestDetails.semesterNumber != null ? requestText.writeln("Kỳ: ${listToString(requestDetails.semesterNumber!)}") : null;
-  requestDetails.transcriptType != null ? requestText.writeln("Loại bảng điểm: ${requestDetails.transcriptType}") : null;
-  requestDetails.subject != null ? requestText.writeln("Môn học: ${requestDetails.subject}") : null;
-  requestDetails.lecturer != null ? requestText.writeln("Giảng viên: ${requestDetails.lecturer}") : null;
-  requestDetails.examDate != null ? requestText.writeln("Ngày thi: ${requestDetails.examDate}") : null;
-  requestDetails.subjectReview != null ? requestText.writeln("Học phần: ${requestDetails.subjectReview}") : null;
-  requestDetails.semester != null ? requestText.writeln("Học kỳ: ${requestDetails.semester}") : null;
-  requestDetails.year != null ? requestText.writeln("Năm học: ${requestDetails.year}") : null;
-  requestDetails.untilDate != null ? requestText.writeln("Đến ngày: ${requestDetails.untilDate}") : null;
-  requestDetails.documentType != null ? requestText.writeln("Hồ sơ mượn: ${requestDetails.documentType}") : null;
-  requestDetails.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestDetails.otherDocument}") : null;
-  requestDetails.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestDetails.borrowDate}") : null;
-  requestDetails.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestDetails.absentDate}") : null;
-  requestDetails.tuyen != null ? requestText.writeln("Tuyến đăng ký: ${requestDetails.tuyen}") : null;
-  requestDetails.mottuyen != null ? requestText.writeln("Tuyến số: ${requestDetails.mottuyen}") : null;
-  requestDetails.studentAddress != null ? requestText.writeln("Địa chỉ: ${requestDetails.studentAddress}") : null;
-  requestDetails.name != null ? requestText.writeln("Đơn nguyên: ${requestDetails.name}") : null;
-  requestDetails.rentDate != null ? requestText.writeln("Thời gian thuê: ${requestDetails.rentDate}") : null;
-  requestDetails.doituonguutien != null ? requestText.writeln("Đối tượng ưu tiên: ${requestDetails.doituonguutien}") : null;
-  requestDetails.permanentAddress != null ? requestText.writeln("Địa chỉ thường trú: ${requestDetails.permanentAddress}") : null;
-  requestDetails.phoneContact != null ? requestText.writeln("SĐT: ${requestDetails.phoneContact}") : null;
-  requestDetails.receivingPlace != null ? requestText.writeln("Nơi nộp đơn và nhận thẻ: ${requestDetails.receivingPlace}") : null;
-  requestDetails.email != null ? requestText.writeln("Email: ${requestDetails.email}") : null;
-  requestDetails.khicanbaotin != null ? requestText.writeln("Khi cần liên hệ: ${requestDetails.khicanbaotin}") : null;
-  (requestDetails.quantityViet != null && requestDetails.quantityViet != "0") ? requestText.writeln("Số bản tiếng Việt: ${requestDetails.quantityViet}") : null;
-  (requestDetails.quantityEng != null && requestDetails.quantityEng != "0") ? requestText.writeln("Số bản tiếng Anh: ${requestDetails.quantityEng}") : null;
-  requestDetails.reason != null ? requestText.writeln("Lý do: ${requestDetails.reason}") : null;
+  requestInfo.certificateType != null ? requestText.writeln("Loại GCN: ${requestInfo.certificateType}") : null;
+  requestInfo.semesterType != null ? requestText.writeln("Loại kỳ: ${requestInfo.semesterType}") : null;
+  requestInfo.semesterNumber != null ? requestText.writeln("Kỳ: ${listToString(requestInfo.semesterNumber!)}") : null;
+  requestInfo.transcriptType != null ? requestText.writeln("Loại bảng điểm: ${requestInfo.transcriptType}") : null;
+  requestInfo.subject != null ? requestText.writeln("Môn học: ${requestInfo.subject}") : null;
+  requestInfo.lecturer != null ? requestText.writeln("Giảng viên: ${requestInfo.lecturer}") : null;
+  requestInfo.examDate != null ? requestText.writeln("Ngày thi: ${requestInfo.examDate}") : null;
+  requestInfo.subjectReview != null ? requestText.writeln("Học phần: ${requestInfo.subjectReview}") : null;
+  requestInfo.semester != null ? requestText.writeln("Học kỳ: ${requestInfo.semester}") : null;
+  requestInfo.year != null ? requestText.writeln("Năm học: ${requestInfo.year}") : null;
+  requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
+  requestInfo.documents != null ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
+  requestInfo.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestInfo.otherDocument}") : null;
+  requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
+  requestInfo.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestInfo.absentDate}") : null;
+  requestInfo.tuyen != null ? requestText.writeln("Tuyến đăng ký: ${requestInfo.tuyen}") : null;
+  requestInfo.mottuyen != null ? requestText.writeln("Tuyến số: ${requestInfo.mottuyen}") : null;
+  requestInfo.studentAddress != null ? requestText.writeln("Địa chỉ: ${requestInfo.studentAddress}") : null;
+  requestInfo.name != null ? requestText.writeln("Đơn nguyên: ${requestInfo.name}") : null;
+  requestInfo.rentDate != null ? requestText.writeln("Thời gian thuê: ${requestInfo.rentDate}") : null;
+  requestInfo.doituonguutien != null ? requestText.writeln("Đối tượng ưu tiên: ${requestInfo.doituonguutien}") : null;
+  requestInfo.permanentAddress != null ? requestText.writeln("Địa chỉ thường trú: ${requestInfo.permanentAddress}") : null;
+  requestInfo.phoneContact != null ? requestText.writeln("SĐT: ${requestInfo.phoneContact}") : null;
+  requestInfo.receivingPlace != null ? requestText.writeln("Nơi nộp đơn và nhận thẻ: ${requestInfo.receivingPlace}") : null;
+  requestInfo.email != null ? requestText.writeln("Email: ${requestInfo.email}") : null;
+  requestInfo.khicanbaotin != null ? requestText.writeln("Khi cần liên hệ: ${requestInfo.khicanbaotin}") : null;
+  (requestInfo.quantityViet != null && requestInfo.quantityViet != "0") ? requestText.writeln("Số bản tiếng Việt: ${requestInfo.quantityViet}") : null;
+  (requestInfo.quantityEng != null && requestInfo.quantityEng != "0") ? requestText.writeln("Số bản tiếng Anh: ${requestInfo.quantityEng}") : null;
+  requestInfo.reason != null ? requestText.writeln("Lý do: ${requestInfo.reason}") : null;
   return requestText.toString().trim();
 }
 
@@ -149,7 +151,7 @@ IconData getIcon(String fileName) {
   return Icons.text_snippet_outlined;
 }
 
-Future<void> openFileFromUrl(String url, String filename) async {
+Future<void> openFileFromUrl({required BuildContext context, required String url, required String filename}) async {
   var httpClient = HttpClient();
 
   var request = await httpClient.getUrl(Uri.parse(url));
@@ -167,11 +169,40 @@ Future<void> openFileFromUrl(String url, String filename) async {
       file.path,
     );
 
-    // setState(() {
-      debugPrint("type=${result.type} message=${result.message}");
-    // });
+    switch (result.type) {
+      case ResultType.done:
+        break;
+      case ResultType.fileNotFound:
+        throw "File not found!";
+      case ResultType.noAppToOpen:
+        throw "No app to open!";
+      case ResultType.permissionDenied:
+        throw "Permission denied!";
+      case ResultType.error:
+        throw ResultType.error.name;
+    }
   } catch (error) {
-    debugPrint(error.toString());
+    if (context.mounted) {
+      CustomSnackBar().showSnackBar(
+        context,
+        isError: true,
+        // text: "Gửi thành công",
+        errorText: "LỖI: ${error.toString()}"
+      );
+    }
   }
   // return file;
+}
+
+bool isListFileOK(List<PlatformFile> listPlatformFile) {
+  bool isFileOK = true;
+  var listFileNull = listPlatformFile.where((element) => element.path == null).toList();
+  for (var platformFile in listPlatformFile) {
+    var file = File(platformFile.path!);
+    if (!file.existsSync()) {
+      isFileOK = false;
+      break;
+    }
+  }
+  return listFileNull.isEmpty && isFileOK;
 }

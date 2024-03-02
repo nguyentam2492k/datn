@@ -1,4 +1,5 @@
 import 'package:datn/function/function.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -186,11 +187,28 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         result = await OpenFile.open(
                           file.path,
                         );
-                        // setState(() {
-                          debugPrint("type=${result.type}  message=${result.message}");
-                        // });
+
+                        switch (result.type) {
+                          case ResultType.fileNotFound:
+                            throw "File not found!";
+                          case ResultType.noAppToOpen:
+                            throw "No app to open!";
+                          case ResultType.permissionDenied:
+                            throw "Permission denied!";
+                          case ResultType.error:
+                            throw ResultType.error.name;
+                          case ResultType.done:
+                            break;
+                        }
                       } catch (error) {
-                        debugPrint(error.toString());
+                        if (context.mounted) {
+                          CustomSnackBar().showSnackBar(
+                            context,
+                            isError: true,
+                            // text: "Gửi thành công",
+                            errorText: "LỖI: ${error.toString()}"
+                          );
+                        }
                       }
                     }, 
                   ),

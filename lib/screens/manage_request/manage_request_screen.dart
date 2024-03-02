@@ -56,7 +56,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // apiService.getData();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildAppBar(),
@@ -98,43 +97,30 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  void postData(String lastestId) {
-    imageToFile().then((image) {
-      fileToBase64(image).then((imageBase64)  {
-        print("postData - ${image.uri}");
-        if (isInteger(lastestId)) {
-          final lastestIdInt = int.tryParse(lastestId);
-          print("Lastest ID before POST: $lastestIdInt");
-          int id = lastestIdInt! + 1;
-          apiService.postData(MyData(id: id.toString(), userId: "1", title: "this is test title $id", body: "this is test bodyyyyyyyyyy $id", file: imageBase64));
-        } else {
-          debugPrint("Lastest ID is NOT Integer!");
+  Future<String?> loadRequest() async {
+    print("LOAD");
+    isLoading = true;
+    try {
+      await apiService.getData(currentStatus, currentIndex, userId).then((value) {
+        listRequest.value.addAll(value);
+        listRequest.value = List.from(listRequest.value);
+        
+        isExpanded.value.addAll(List.generate(value.length, (index) => false));
+        isExpanded.value = List.from(isExpanded.value);
+        if (value.length == 10) {
+          currentIndex += 10;
+          isLoading = false;
         }
       });
-    });
-  }
-
-  Future<void> _loadMore() async {
-    print("LOAD MORE");
-    isLoading = true;
-    currentIndex += 10;
-    await apiService.getData(currentStatus, currentIndex, accessToken, userId).then((value) async {
-      await Future.delayed(const Duration(seconds: 1));
-      listRequest.value.addAll(value);
-      listRequest.value = List.from(listRequest.value);
-      
-      // var listTemp = isExpanded.value;
-      isExpanded.value.addAll(List.generate(value.length, (index) => false));
-      isExpanded.value = List.from(isExpanded.value);
-      if (value.length == 10) {
-        isLoading = false;
-      }
-    });
+      return null;
+    } catch (e) {
+      return "Lỗi tải!";
+    }
   }
 
   void _handleScroll() {
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listRequest.value.length % 10 == 0) {
-        _loadMore();
+        loadRequest();
     }
   }
 
@@ -143,47 +129,32 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     isLoading = false;
 
     return FutureBuilder(
-      future: apiService.getData(currentStatus, currentIndex, accessToken, userId), 
+      future: loadRequest(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done){
-          
-          if (snapshot.data!.length < 10) {
-            isLoading = true;
-          }
-
-          isExpanded.value = List.generate(snapshot.data!.length, (index) => false);
-
-          // var listData = snapshot.data!;
-
-          listRequest.value = List.from(snapshot.data!);
-          // print("Data Length: ${listRequest.value.length}");
-
-          // for (var jsonData in listData) {
-            // print("${jsonData.id}-${jsonData.info.runtimeType}");
-            // if (jsonData.file != null) {
-              // for (var file in jsonData.file!) {
-              //   print(file);
-              // }
-            // }
-          // }
-
-          // if (listData.isNotEmpty) {
-          //   postData(listData.last.id);
-          // } else {
-          //   postData("0");
-          // }
-
-          if (snapshot.data!.isEmpty) {
-            return const Center(
+    
+          if (snapshot.data != null) {
+            return Center(
               child: Text(
-                "Chưa có yêu cầu nào!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF7B7B7B),
-                  fontSize: 12
+                snapshot.data!,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: ui.Color(0xFF7E7E7E)
                 ),
               ),
             );
+          }
+          if (listRequest.value.isEmpty) {
+              return const Center(
+                child: Text(
+                  "Chưa có yêu cầu nào!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF7B7B7B),
+                    fontSize: 12
+                  ),
+                ),
+              );
           }
 
           return ValueListenableBuilder(
@@ -272,7 +243,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                   valueListenable: isExpanded,
                   builder: (BuildContext context, value, Widget? child) {
                     
-                    var requestText = getRequestText(list[index].info);
+                    var requestText = getRequestText(list[index].info!);
                     
                     return listRequestItemDetail(list, index, context, requestText, value);
                   },
@@ -307,7 +278,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             const SizedBox(width: 7,),
             Expanded(
               child: Text(
-                list[index].requestType,
+                list[index].requestType ?? "----",
                 maxLines: 1,
                 textAlign: TextAlign.left,
                 style: const TextStyle(
@@ -445,7 +416,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
               );
             },
           );
-          print("Open List Files");
         },
       ),
     );
