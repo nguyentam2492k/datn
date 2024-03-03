@@ -2,6 +2,8 @@ import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/file_data_model.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/firebase/firebase_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -12,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:uuid/v1.dart';
 
 class Request3 extends StatefulWidget {
   const Request3({super.key});
@@ -29,8 +32,6 @@ class Request3State extends State<Request3> {
 
   FirebaseServices firebaseServices = FirebaseServices();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
@@ -40,9 +41,42 @@ class Request3State extends State<Request3> {
 
     bool isFormValid() {
       if (_request3FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+        if (!isListFileOK(files)) {
+          CustomSnackBar().showSnackBar(
+            context,
+            isError: true,
+            errorText: "File lỗi"
+          );
+          return false;
+        }
         return true;
       }
-    return false;
+      return false;
+    }
+
+    Future<void> postDataToApi({required List<FileData> listFileData}) async {
+      APIService apiService = APIService();
+      Map<String, dynamic> formData = {};
+
+      formData.addAll(_request3FormKey.currentState!.value);
+
+      var request = Request(
+        requestTypeId: 1, 
+        status: "processing", 
+        file: listFileData,
+        dateCreate: DateTime.now().toString()
+      );
+
+      await apiService.postData(request: request, requestInfo: formData)
+        .then((value) {
+          context.loaderOverlay.hide();
+          CustomSnackBar().showSnackBar(
+            context,
+            isError: value != null,
+            text: "Gửi thành công",
+            errorText: "LỖI: $value"
+          );
+        });
     }
 
     Future<void> sendFormData() async {
@@ -50,44 +84,24 @@ class Request3State extends State<Request3> {
       
       //TODO: TEST SEND MULTIPLE FILES
 
-      List<FileData> listFile = [];
-      String child = "files/${globalLoginResponse!.user.id}/33";
+      List<FileData> listFileData = [];
+      String child = "files/${globalLoginResponse!.user.id}/${const UuidV1().generate()}";
 
-      // files = testFile;
-
-      if (isListFileOK(files)){
-        await firebaseServices.uploadMultipleFile(child: child, files: files)
-          .then((value) {
+      await firebaseServices.uploadMultipleFile(child: child, files: files)
+        .then((value) async {          
+          if (value.isEmpty) {
             context.loaderOverlay.hide();
             CustomSnackBar().showSnackBar(
               context,
-              isError: value.isEmpty,
-              text: "Gửi thành công",
+              isError: true,
               errorText: "LỖI: Gửi không thành công"
             );
-            // print(value);
-            if (value.isEmpty) {
-              return;
-            }
-            listFile = value;
-          });
-      } else {
-        listFile.clear();
-        context.loaderOverlay.hide();
-        CustomSnackBar().showSnackBar(
-          context,
-          isError: true,
-          errorText: "File lỗi"
-        );
-      }
-      print("LIST URL - ${listFile.toString()}");
-
-      formData.addAll(_request3FormKey.currentState!.value);
+            return;
+          }
+          listFileData = value;
+          await postDataToApi(listFileData: listFileData);
+        });
       
-      // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-      List<String> listFiles = files.map((file) => file.name).toList();
-      formData['file'] = listFiles;
-      debugPrint(formData.toString());
     }
 
     return LoaderOverlay(

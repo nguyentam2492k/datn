@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:datn/global_variable/globals.dart';
@@ -69,78 +68,6 @@ class APIService {
       return (e.toString());
     }
   }
-
-  // Future<List<MyData>> getData() async {
-  //   List<MyData> listData = List.empty();
-
-  //   Uri url = Uri.parse("http://$localhost:3000/user");
-
-  //   try {
-  //     var response = await http.get(url);
-
-  //     if (response.body.isNotEmpty) {
-  //       var data = jsonDecode(response.body) as List;
-
-  //       // debugPrint("Data: $data");
-
-  //       listData = data.map((jsonData) => MyData.fromJson(jsonData)).toList();
-  //       return listData;
-  //     }
-  //   } catch (e) {
-  //     debugPrint("GET DATA ERROR: ${e.toString()}");
-  //   }
-  //   return [];
-  // }
-
-  // Future<void> postData(MyData data) async {
-  //   Uri url = Uri.parse("http://$host:3000/user");
-    
-  //   //WITHOUT FILE
-  //   print("POST START");
-  //   try {
-  //     final response = await http.post(
-  //       url, 
-  //       body: jsonEncode(data.toJson()),
-  //       headers: <String, String>{ 
-  //         'Content-Type': 'application/json; charset=UTF-8', 
-  //       }, 
-  //     );
-  //     if(response.statusCode == 201) {
-  //       print("POST COMPLETED");
-  //     } else {
-  //       throw Exception("FAIL TO POST DATA");
-  //     }
-  //   } catch (e) {
-  //     debugPrint("POST ERROR: ${e.toString()}");
-  //   }
-
-    //POST data with FILE but json-server just accept json-data but not accept form-data
-    // var request = http.MultipartRequest('POST', url);
-
-    // Map<String,String> headers={
-    //   'Content-Type': 'multipart/form-data; charset=UTF-8', 
-    // };
-
-    // request.headers.addAll(headers);
-
-    // request.fields["id"] = data.id;
-    // request.fields["userId"] = data.userId;
-    // request.fields["title"] = data.title;
-    // request.fields["body"] = data.body;
-
-    // request.files.add(http.MultipartFile.fromBytes("file", File(data.file!.path).readAsBytesSync(), filename: (data.file!.path.split("/").last)));
-
-    // try {
-    //   var response = await request.send();
-    //   if(response.statusCode == 201) {
-    //     print("POST COMPLETED");
-    //   } else {
-    //     throw Exception("FAIL TO POST DATA");
-    //   }
-    // } catch (e) {
-    //   debugPrint("POST ERROR: ${e.toString()}");
-    // }
-  // }
 
   Future<List<Request>> getData(String? status, int startIndex, String userId, {int limit = 10}) async {
     List<Request> listData = [];
@@ -215,7 +142,8 @@ class APIService {
         return "#${response.statusCode}: ${response.reasonPhrase}";
       }
     } catch (e) {
-      return "Other Error";
+      // return "Other Error";
+      return e.toString();
       // rethrow;
     }
   }

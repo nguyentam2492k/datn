@@ -21,12 +21,8 @@ class Request1 extends StatefulWidget {
 }
 
 class Request1Stated extends State<Request1> {
-
-  APIService apiService = APIService();
   
   final GlobalKey<FormBuilderState> _request1FormKey = GlobalKey<FormBuilderState>();
-
-  Map<String, dynamic> formData = {};
 
   late String? selectedCertification;
 
@@ -34,7 +30,6 @@ class Request1Stated extends State<Request1> {
 
   late int? numberOfVietVer;
   late int? numberOfEngVer;
-  late String reason;
 
   bool isFormValid(){
     int numberOfCopy = 0;
@@ -66,6 +61,10 @@ class Request1Stated extends State<Request1> {
   Widget build(BuildContext context) {
 
     Future<void> sendFormData() async {
+
+      APIService apiService = APIService();
+      Map<String, dynamic> formData = {};
+
       context.loaderOverlay.show();
       formData.addAll(_request1FormKey.currentState!.value);
       formData.addAll({
@@ -76,6 +75,7 @@ class Request1Stated extends State<Request1> {
 
       var request = Request(
         requestTypeId: 1, 
+        file: null,
         status: "processing", 
         dateCreate: DateTime.now().toString()
       );
@@ -239,11 +239,7 @@ class Request1Stated extends State<Request1> {
                             return "Điền đầy đủ thông tin!";
                           }
                           return null;
-                        },
-                        onChanged: (value) {
-                          reason = value!;
-                          setState(() {});
-                        },                    
+                        },                
                       ),
                     ),
                   ],
@@ -262,7 +258,7 @@ class Request1Stated extends State<Request1> {
                     foregroundColor: Colors.white
                   ),
                   onPressed: () async {
-                    (isFormValid() && _request1FormKey.currentState!.validate()) ? await sendFormData() : null;
+                    (isFormValid() && _request1FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
                   }, 
                   label: const Text("Gửi yêu cầu"),
                 ),

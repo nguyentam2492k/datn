@@ -48,6 +48,7 @@ dependencies:
   firebase_storage: ^11.6.6
   # firebase_app_check: ^0.2.1+14
   loader_overlay: ^4.0.0
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:

@@ -67,6 +67,7 @@ class Request2State extends State<Request2> {
 
       var request = Request(
         requestTypeId: 2, 
+        file: null,
         status: "processing", 
         dateCreate: DateTime.now().toString()
       );
@@ -81,7 +82,6 @@ class Request2State extends State<Request2> {
         );
       });
       
-      debugPrint(formData.toString());
     }
 
     return LoaderOverlay(
@@ -212,9 +212,6 @@ class Request2State extends State<Request2> {
                               ),
                               name: 'transcript_type', 
                               initialValue: ConstantList.transcriptTypes[0],
-                              // validator: (value) {
-                                
-                              // },
                               options: ConstantList.transcriptTypes
                               .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
                               .toList(),

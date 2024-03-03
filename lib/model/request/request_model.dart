@@ -25,7 +25,7 @@ class Request {
     this.requestType,
     required this.requestTypeId,
     this.info,
-    this.file,
+    required this.file,
     this.documentNeed,
     required this.status,
     this.fee,

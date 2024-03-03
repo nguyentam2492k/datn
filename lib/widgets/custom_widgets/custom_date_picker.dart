@@ -86,6 +86,9 @@ class CustomFormBuilderDateTimePickerState extends State<CustomFormBuilderDateTi
         decoration: widget.decoration,
         validator: widget.validator,
         onChanged: widget.onChanged,
+        valueTransformer: (value) {
+          return value.toString();
+        },
       ),
     );
   }

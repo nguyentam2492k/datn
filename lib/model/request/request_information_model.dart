@@ -90,7 +90,9 @@ class RequestInformation {
 
   factory RequestInformation.fromJson(Map<String, dynamic> json) {
     List<String> toListString(List list) {
-      return list.map((item) => item as String).toList();
+      var listString =  list.map((item) => item as String).toList();
+      listString.sort();
+      return listString;
     }
 
     var examDate = formatDate(json['exam_date'] as String?);
