@@ -155,6 +155,9 @@ IconData getIcon(String fileName) {
 }
 
 String getFileNameFromUrl(String url) {
+  if (url.isEmpty) {
+    return "noname";
+  }
   Uri uri = Uri.parse(url);
   String fileName = uri.pathSegments.last.split("/").last;
   return fileName;

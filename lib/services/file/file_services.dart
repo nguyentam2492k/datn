@@ -119,30 +119,41 @@ class FileServices {
     return permissionStatus;
   }
 
-  downloadFileFromUrl(BuildContext buildContext, {required String url}) async {
+  Future<void> downloadFileFromUrl(BuildContext buildContext, {required String url}) async {
 
     var permissionReady = await checkStoragePermission();
 
     if (permissionReady) {
-      await FileDownloader.downloadFile(
-        url: url,
-        name: getFileNameFromUrl(url),
-        onDownloadError: (errorMessage) {
+      try {
+        print(url);
+        await FileDownloader.downloadFile(
+          url: url,
+          name: getFileNameFromUrl(url),
+          onDownloadError: (errorMessage) {
+            CustomSnackBar().showSnackBar(
+              buildContext,
+              isError: true,
+              errorText: "LỖI: $errorMessage",
+            );
+          },
+          onDownloadCompleted: (path) async {
+            showDialog(
+              context: buildContext, 
+              builder: (context) {
+                return fileAlertDialog(parentContext: buildContext, alertContext: context, url: url, path: Uri.decodeComponent(path));
+              },
+            );
+          },
+        );  
+      } catch (error) {
+        if (buildContext.mounted) {
           CustomSnackBar().showSnackBar(
             buildContext,
             isError: true,
-            errorText: "LỖI: $errorMessage",
+            errorText: "LỖI: ${error.toString()}",
           );
-        },
-        onDownloadCompleted: (path) async {
-          showDialog(
-            context: buildContext, 
-            builder: (context) {
-              return fileAlertDialog(parentContext: buildContext, alertContext: context, url: url, path: Uri.decodeComponent(path));
-            },
-          );
-        },
-      );  
+        }
+      }
     } 
   }
 }

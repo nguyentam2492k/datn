@@ -2,6 +2,7 @@ import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
@@ -47,7 +48,7 @@ class Request7State extends State<Request7> {
     }
 
     Future<void> sendFormData() async {
-      context.loaderOverlay.show();
+      context.loaderOverlay.show(progress: "Đang gửi");
 
       var request = Request(
         requestTypeId: 7, 
@@ -81,7 +82,7 @@ class Request7State extends State<Request7> {
       useDefaultLoading: false,
       overlayColor: Colors.transparent,
       overlayWidgetBuilder: (progress) {
-        return const LoadingHud();
+        return LoadingHud(text: progress.toString(),);
       },
       child: FormBuilder(
         key: _request7FormKey,
@@ -112,7 +113,15 @@ class Request7State extends State<Request7> {
                             decorationColor: Colors.blue,
                           ),
                         ),
-                        onTap: (){print("Tap Mau don");},
+                        onTap: () async {
+                          context.loaderOverlay.show(progress: "Đang tải xuống");
+                          await FileServices().downloadFileFromUrl(
+                            context, 
+                            url: ConstantString.request7DocumentUrl
+                          ).then((value) {
+                            context.loaderOverlay.hide();
+                          });
+                        },
                       ),
                     ),
                     const Divider(thickness: 0.4,),
