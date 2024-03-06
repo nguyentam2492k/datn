@@ -2,14 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/request/request_information_model.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 String formatDateWithTime(String dateWithTime) {
@@ -48,7 +45,6 @@ String? formatDateRange(String? dateRange) {
   return "${outputFormat.format(inputFormat.parse(date[0]))} - ${outputFormat.format(inputFormat.parse(date[1]))}";
 }
 
-//NOTE: CHECK WHETHER STRING IS INTEGER OR NOT
 bool isInteger(String? s) {
   if (s == null) {
     return false;
@@ -90,6 +86,12 @@ String listToString(List<String> listString) {
   return string.toString().trim();
 }
 
+List<String> toListString(List list) {
+  var listString =  list.map((item) => item as String).toList();
+  listString.sort();
+  return listString;
+}
+
 String getRequestText(RequestInformation requestInfo) {
   var requestText = StringBuffer();
   requestInfo.certificateType != null ? requestText.writeln("Loại GCN: ${requestInfo.certificateType}") : null;
@@ -106,6 +108,7 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.documents != null ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
   requestInfo.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestInfo.otherDocument}") : null;
   requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
+  requestInfo.monthFee != null ? requestText.writeln("Học phí theo tháng: ${requestInfo.monthFee}") : null;
   requestInfo.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestInfo.absentDate}") : null;
   requestInfo.tuyen != null ? requestText.writeln("Tuyến đăng ký: ${requestInfo.tuyen}") : null;
   requestInfo.mottuyen != null ? requestText.writeln("Tuyến số: ${requestInfo.mottuyen}") : null;
@@ -151,47 +154,10 @@ IconData getIcon(String fileName) {
   return Icons.text_snippet_outlined;
 }
 
-Future<void> openFileFromUrl({required BuildContext context, required String url, required String filename}) async {
-  var httpClient = HttpClient();
-
-  var request = await httpClient.getUrl(Uri.parse(url));
-  var response = await request.close();
-  var bytes = await consolidateHttpClientResponseBytes(response);
-
-  final tempDir = await getTemporaryDirectory();
-  File file = await File('${tempDir.path}/$filename').create();
-
-  await file.writeAsBytes(bytes);
-
-  OpenResult result;
-  try {
-    result = await OpenFile.open(
-      file.path,
-    );
-
-    switch (result.type) {
-      case ResultType.done:
-        break;
-      case ResultType.fileNotFound:
-        throw "File not found!";
-      case ResultType.noAppToOpen:
-        throw "No app to open!";
-      case ResultType.permissionDenied:
-        throw "Permission denied!";
-      case ResultType.error:
-        throw ResultType.error.name;
-    }
-  } catch (error) {
-    if (context.mounted) {
-      CustomSnackBar().showSnackBar(
-        context,
-        isError: true,
-        // text: "Gửi thành công",
-        errorText: "LỖI: ${error.toString()}"
-      );
-    }
-  }
-  // return file;
+String getFileNameFromUrl(String url) {
+  Uri uri = Uri.parse(url);
+  String fileName = uri.pathSegments.last.split("/").last;
+  return fileName;
 }
 
 bool isListFileOK(List<PlatformFile> listPlatformFile) {

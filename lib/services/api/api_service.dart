@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/request_model.dart';
-import 'package:flutter/material.dart';
+import 'package:datn/services/firebase/firebase_services.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:datn/model/login_model.dart';
+import 'package:uuid/v1.dart';
 
 class MyData {
   String id;
@@ -113,7 +115,7 @@ class APIService {
         return [];
       }
     } on Exception catch (e) {
-      debugPrint("GET DATA ERROR: ${e.toString()}");
+      print("GET DATA ERROR: ${e.toString()}");
       rethrow;
     }
     return [];
@@ -142,10 +144,34 @@ class APIService {
         return "#${response.statusCode}: ${response.reasonPhrase}";
       }
     } catch (e) {
-      // return "Other Error";
+      print(e.toString());
       return e.toString();
       // rethrow;
     }
+  }
+
+  Future<void> postDataWithFile({required Request request, required Map<String, dynamic> formData, required List<PlatformFile> files}) async {
+    FirebaseServices firebaseServices = FirebaseServices();
+
+    var uuid = const UuidV1().generate();
+
+    String child = "files/${globalLoginResponse!.user.id}/$uuid";
+
+    await firebaseServices.uploadMultipleFile(child: child, files: files)
+        .then((value) async {          
+          if (value.isEmpty) {
+            throw "Upload file lỗi";
+          }
+          var requestSend = request;
+          requestSend.file = value;
+          await postData(request: requestSend, requestInfo: formData)
+            .then((value) {
+              if (value != null) {
+                firebaseServices.deleteFolder(folderPath: child);
+                throw value;
+              }
+            });
+        });
   }
 
 }

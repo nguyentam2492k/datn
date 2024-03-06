@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/request/file_data_model.dart';
 import 'package:datn/model/request/request_information_model.dart';
 
 class Request {
@@ -10,7 +10,7 @@ class Request {
   String? requestType;
   int requestTypeId;
   RequestInformation? info;
-  List<FileData>? file;
+  List<String>? file;
   String? documentNeed;
   String status;
   String? fee;
@@ -25,10 +25,10 @@ class Request {
     this.requestType,
     required this.requestTypeId,
     this.info,
-    required this.file,
-    this.documentNeed,
+    this.file,
+    required this.documentNeed,
     required this.status,
-    this.fee,
+    required this.fee,
     this.processingPlace,
     required this.dateCreate,
     this.dateReceive,
@@ -38,12 +38,6 @@ class Request {
 
     var info = RequestInformation.fromJson(json["info"]);
 
-    List<FileData>? listFiles;
-    if (json['file'] != null) {
-      var listFilesJson = json['file'] as List;
-      listFiles = listFilesJson.map((fileJson) => FileData.fromJson(fileJson)).toList();
-    }
-
     return Request(
       id: json["id"] as int?, 
       student: json["student"] as String?, 
@@ -51,7 +45,7 @@ class Request {
       requestType: json["request_type"] as String?, 
       requestTypeId: json["request_type_id"] as int,
       info: info, 
-      file: listFiles, 
+      file: json['file'] != null ? toListString(json["file"]) : null, 
       documentNeed: json["document_need"] as String?, 
       status: json["status"] as String, 
       fee: json["fee"] as String?, 
@@ -67,18 +61,12 @@ class Request {
   }
 
   Map<String, dynamic> toMap() {
-
-    List<Map<String, dynamic>>? listFile;
-    if (file != null) {
-      listFile = file?.map((item) => item.toMap()).toList();
-    }
-
     return <String, dynamic>{
       'student': globalLoginResponse!.user.name,
       'userId': globalLoginResponse!.user.id,
       'request_type': ConstantList.requests[requestTypeId - 1],
       'request_type_id': requestTypeId,
-      'file': listFile,
+      'file': file,
       'document_need': documentNeed ?? "Không",
       'status': status,
       'fee': fee ?? "10.000",

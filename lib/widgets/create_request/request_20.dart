@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:datn/constants/constant_string.dart';
@@ -63,13 +62,12 @@ class Request20State extends State<Request20> {
     // List<File> listFiles = files.map((file) => File(file.path!)).toList();
     List<String> listFiles = files.map((file) => file.name).toList();
     formData['file'] = listFiles;
-    debugPrint(formData.toString());
+    print(formData.toString());
   }
 
   @override
   void initState() {
     super.initState();
-    // getData();
     files = [];
     isFileAdded = true;
     avatarImage = Image.asset("assets/images/avatar.jpg");
@@ -412,8 +410,6 @@ class Request20State extends State<Request20> {
                       ),
                     ))
                     .toList(),
-                  // validator: widget.provinceValidator,
-                  // onChanged: widget.provinceChanged,
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Tỉnh/Tp"),
                 ),

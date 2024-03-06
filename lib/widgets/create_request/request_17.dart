@@ -21,7 +21,7 @@ class Request17State extends State<Request17> {
   late bool isEnable;
 
   void sendFormData() {
-    _request17FormKey.currentState!.saveAndValidate() ? debugPrint(_request17FormKey.currentState?.value.toString()) : null;
+    _request17FormKey.currentState!.saveAndValidate() ? print(_request17FormKey.currentState?.value.toString()) : null;
   }
 
   @override
@@ -62,7 +62,7 @@ class Request17State extends State<Request17> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: (){print("Tap Mau don");},
                     ),
                   ),
                   const Divider(thickness: 0.4,),

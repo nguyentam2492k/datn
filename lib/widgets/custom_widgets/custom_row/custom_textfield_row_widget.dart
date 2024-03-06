@@ -12,6 +12,7 @@ class CustomTextFieldRowWidget extends StatefulWidget {
   final String? hintText;
   final FormFieldValidator<String?>? validator;
   final ValueChanged<String?>? onChanged;
+  final FormFieldSetter<String?>? onSaved;
 
   const CustomTextFieldRowWidget({
     super.key, 
@@ -22,6 +23,7 @@ class CustomTextFieldRowWidget extends StatefulWidget {
     this.isImportant = true,
     this.validator,
     this.onChanged, 
+    this.onSaved,
     this.initialValue, 
     this.keyboardType,
     this.hintText,
@@ -74,6 +76,7 @@ class CustomTextFieldRowWidgetState extends State<CustomTextFieldRowWidget> {
             keyboardType: widget.keyboardType,
             validator: widget.validator,
             onChanged: widget.onChanged,
+            onSaved: widget.onSaved,
           ),
         ),
         Visibility(

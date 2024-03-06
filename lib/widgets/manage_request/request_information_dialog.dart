@@ -1,6 +1,6 @@
 import 'package:datn/function/function.dart';
-import 'package:datn/model/request/file_data_model.dart';
 import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -267,11 +267,11 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
     
 }
 
-Widget buildListFileWidget(BuildContext context, List<FileData> listFile) {
+Widget buildListFileWidget(BuildContext context, List<String> listFileUrl) {
     return Wrap(
       spacing: 6,
       runSpacing: 6,
-      children: listFile.map((file) {
+      children: listFileUrl.map((fileUrl) {
         return Container(
           height: 25,
           decoration: BoxDecoration(
@@ -279,9 +279,9 @@ Widget buildListFileWidget(BuildContext context, List<FileData> listFile) {
             border: Border.all(color: const Color(0xFF0037FF), width: 0.5),
           ),
           child: FilledButton.icon(
-            icon: Icon(getIcon(file.filename), size: 12, color: const Color(0xFF0037FF),), 
+            icon: Icon(getIcon(getFileNameFromUrl(fileUrl)), size: 12, color: const Color(0xFF0037FF),), 
             label: Text(
-              file.filename,
+              getFileNameFromUrl(fileUrl),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
@@ -302,10 +302,10 @@ Widget buildListFileWidget(BuildContext context, List<FileData> listFile) {
             ),
             onPressed: () async {
               context.loaderOverlay.show();
-              await openFileFromUrl(
+              await FileServices().openFileFromUrl(
                 context: context,
-                url: file.url, 
-                filename: file.filename
+                url: fileUrl, 
+                filename: getFileNameFromUrl(fileUrl)
               )
                 .then((value) {
                   context.loaderOverlay.hide();

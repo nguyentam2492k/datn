@@ -51,7 +51,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     scrollController.addListener(() {
       _handleScroll();
     });
-    // isExpanded = ValueNotifier(List.generate(listRequest.value.length, (index) => false));
   }
 
   @override
@@ -100,6 +99,9 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   Future<String?> loadRequest() async {
     print("LOAD");
     isLoading = true;
+    if (currentIndex == 0) {
+      listRequest.value = [];
+    }
     try {
       await apiService.getData(currentStatus, currentIndex, userId).then((value) {
         listRequest.value.addAll(value);
@@ -114,6 +116,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
       });
       return null;
     } catch (e) {
+      print(e);
       return "Lỗi tải!";
     }
   }
@@ -219,7 +222,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               blurRadius: 1.5,
-              offset: const Offset(0, 0.5), // changes position of shadow
+              offset: const Offset(0, 0.5),
             ),
           ],
         ),
@@ -233,7 +236,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 width: 7,
                 decoration: BoxDecoration(
                   color: getColor(list[index].status),
-                  // color: Colors.red,
                   borderRadius: const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
                 ),
               ),
@@ -314,7 +316,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
         Row(
           mainAxisSize: MainAxisSize.max,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: Row(
@@ -403,16 +404,15 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
               maxHeight: MediaQuery.of(context).size.height * 0.5,
             ),
             builder: (context) {
-              List<String> listFileName = list[index].file!.map((item) => item.filename).toList();
+              List<String> listFileUrl = list[index].file!.map((url) => url).toList();
               return BottomSheetWithList(
                 title: "Tệp đính kèm",
-                list: listFileName,
+                list: listFileUrl,
                 isHaveCancelButton: false,
                 isHaveLeftIcon: true,
                 isHaveRightIcon: true,
-                rightIcon: Icons.visibility_outlined,
+                rightIcon: Icons.file_download_outlined,
                 isListFile: true,
-                listFile: list[index].file,
               );
             },
           );
@@ -475,7 +475,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
         separatorBuilder: (context, index) => const SizedBox(width: 5,),
         itemBuilder: (context, index) {
           return ChoiceChip(
-            // labelPadding: EdgeInsets.zero,
             padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 8),
             backgroundColor: Colors.white,
             elevation: 0,

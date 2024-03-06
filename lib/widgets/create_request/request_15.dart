@@ -45,7 +45,7 @@ class Request15State extends State<Request15> {
       'quantity_viet': numberOfVietVer,
       'quantity_eng': numberOfEngVer,
     });
-    debugPrint(formData.toString());
+    print(formData.toString());
   }
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:datn/function/function.dart';
 
 class RequestInformation {
@@ -89,12 +87,6 @@ class RequestInformation {
   });
 
   factory RequestInformation.fromJson(Map<String, dynamic> json) {
-    List<String> toListString(List list) {
-      var listString =  list.map((item) => item as String).toList();
-      listString.sort();
-      return listString;
-    }
-
     var examDate = formatDate(json['exam_date'] as String?);
     var untilDate = formatDate(json['until_date'] as String?);
 
@@ -135,42 +127,4 @@ class RequestInformation {
       khicanbaotin: json['khicanbaotin'] as String?,
     );
   }
-
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'quantityViet': quantityViet,
-      'quantityEng': quantityEng,
-      'reason': reason,
-      'phoneContact': phoneContact,
-      'certificateType': certificateType,
-      'semesterType': semesterType,
-      'semesterNumber': semesterNumber,
-      'transcriptType': transcriptType,
-      'subject': subject,
-      'lecturer': lecturer,
-      'examDate': examDate,
-      'subjectReview': subjectReview,
-      'semester': semester,
-      'year': year,
-      'untilDate': untilDate,
-      'documentType': documents,
-      'otherDocument': otherDocument,
-      'borrowDate': borrowDate,
-      'monthFee': monthFee,
-      'absentDate': absentDate,
-      'tuyen': tuyen,
-      'mottuyen': mottuyen,
-      'studentAddress': studentAddress,
-      'receivingPlace': receivingPlace,
-      'name': name,
-      'rentDate': rentDate,
-      'doituonguutien': doituonguutien,
-      'permanentAddress': permanentAddress,
-      'email': email,
-      'khicanbaotin': khicanbaotin,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
 }

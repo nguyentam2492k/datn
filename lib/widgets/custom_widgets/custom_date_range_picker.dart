@@ -89,6 +89,7 @@ class CustomFormBuilderDateRangePickerState extends State<CustomFormBuilderDateR
         decoration: widget.decoration,
         validator: widget.validator,
         onChanged: widget.onChanged,
+        valueTransformer: (value) => value.toString(),
       ),
     );
   }

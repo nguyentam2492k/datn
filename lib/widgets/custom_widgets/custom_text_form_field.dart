@@ -6,6 +6,7 @@ class CustomFormBuilderTextField extends StatefulWidget {
     final int? maxLines;
     final FormFieldValidator<String?>? validator;
     final ValueChanged<String?>? onChanged;
+    final FormFieldSetter<String?>? onSaved;
     final String? initialValue;
     final bool enabled;
     final TextInputType? keyboardType;
@@ -18,6 +19,7 @@ class CustomFormBuilderTextField extends StatefulWidget {
     this.maxLines = 1, 
     this.validator, 
     this.onChanged, 
+    this.onSaved,
     this.initialValue, 
     this.enabled = true, 
     this.keyboardType, 
@@ -87,6 +89,7 @@ class CustomFormBuilderTextFieldState extends State<CustomFormBuilderTextField> 
         decoration: widget.decoration,
         validator: widget.validator,
         onChanged: widget.onChanged,
+        onSaved: widget.onSaved,
       ),
     );
   }

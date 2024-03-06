@@ -37,7 +37,7 @@ class Request16State extends State<Request16> {
     // List<File> listFiles = files.map((file) => File(file.path!)).toList();
     List<String> listFiles = files.map((file) => file.name).toList();
     formData['file'] = listFiles;
-    debugPrint(formData.toString());
+    print(formData.toString());
   }
 
   @override
@@ -71,7 +71,7 @@ class Request16State extends State<Request16> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: (){print("Tap Mau don");},
                     ),
                   ),
                   const Divider(thickness: 0.4,),

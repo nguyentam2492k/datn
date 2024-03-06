@@ -37,7 +37,7 @@ class Request14State extends State<Request14> {
     // List<File> listFiles = files.map((file) => File(file.path!)).toList();
     List<String> listFiles = files.map((file) => file.name).toList();
     formData['file'] = listFiles;
-    debugPrint(formData.toString());
+    print(formData.toString());
   }
 
   @override
@@ -73,7 +73,7 @@ class Request14State extends State<Request14> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Mau don");},
+                          onTap: (){print("Tap Mau don");},
                         ),
                         InkWell(
                           child: const Text(
@@ -86,7 +86,7 @@ class Request14State extends State<Request14> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Báo cáo");},
+                          onTap: (){print("Tap Báo cáo");},
                         )
                       ],
                     ),

@@ -1,10 +1,7 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/request/file_data_model.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
-import 'package:datn/services/firebase/firebase_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -14,7 +11,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:uuid/v1.dart';
 
 class Request3 extends StatefulWidget {
   const Request3({super.key});
@@ -29,8 +25,6 @@ class Request3 extends StatefulWidget {
 class Request3State extends State<Request3> {
 
   final GlobalKey<FormBuilderState> _request3FormKey = GlobalKey<FormBuilderState>();
-
-  FirebaseServices firebaseServices = FirebaseServices();
 
   List<PlatformFile> files = [];
 
@@ -54,54 +48,35 @@ class Request3State extends State<Request3> {
       return false;
     }
 
-    Future<void> postDataToApi({required List<FileData> listFileData}) async {
-      APIService apiService = APIService();
-      Map<String, dynamic> formData = {};
-
-      formData.addAll(_request3FormKey.currentState!.value);
+    Future<void> sendFormData() async {
+      context.loaderOverlay.show();
 
       var request = Request(
-        requestTypeId: 1, 
+        requestTypeId: 3, 
         status: "processing", 
-        file: listFileData,
-        dateCreate: DateTime.now().toString()
+        documentNeed: null,
+        fee: null,
+        dateCreate: DateTime.now().toString(),
       );
-
-      await apiService.postData(request: request, requestInfo: formData)
-        .then((value) {
+      
+      try {
+        await APIService().postDataWithFile(request: request, formData: _request3FormKey.currentState!.value, files: files).then((value) {
           context.loaderOverlay.hide();
           CustomSnackBar().showSnackBar(
             context,
-            isError: value != null,
             text: "Gửi thành công",
-            errorText: "LỖI: $value"
           );
         });
-    }
-
-    Future<void> sendFormData() async {
-      context.loaderOverlay.show();
-      
-      //TODO: TEST SEND MULTIPLE FILES
-
-      List<FileData> listFileData = [];
-      String child = "files/${globalLoginResponse!.user.id}/${const UuidV1().generate()}";
-
-      await firebaseServices.uploadMultipleFile(child: child, files: files)
-        .then((value) async {          
-          if (value.isEmpty) {
-            context.loaderOverlay.hide();
-            CustomSnackBar().showSnackBar(
-              context,
-              isError: true,
-              errorText: "LỖI: Gửi không thành công"
-            );
-            return;
-          }
-          listFileData = value;
-          await postDataToApi(listFileData: listFileData);
-        });
-      
+      } catch (e) {
+        if (context.mounted) {
+          context.loaderOverlay.hide();
+          CustomSnackBar().showSnackBar(
+            context,
+            isError: true,
+            errorText: "LỖI: Gửi không thành công"
+          );
+        }
+      } 
     }
 
     return LoaderOverlay(

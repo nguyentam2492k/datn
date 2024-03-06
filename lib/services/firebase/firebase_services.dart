@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:datn/model/request/file_data_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mime/mime.dart';
 
 class FirebaseServices {
 
-  //TODO: FIREBASE STORAGE
+  //TODO: FIREBASE STORAGE REFERENCE
   final storageRef = FirebaseStorage.instance.ref();
 
   Future<List<Reference>> getListFileRef() async {
@@ -22,9 +21,20 @@ class FirebaseServices {
     return fileDownloadUrl;
   }
 
-  Future<List<FileData>> uploadMultipleFile({required String child, required List<PlatformFile> files}) async {
+  Future<void> deleteFolder({required String folderPath}) async {
+    await storageRef.child(folderPath).listAll()
+      .then((value) async {
+        for (var element in value.items) {
+          await FirebaseStorage.instance.ref(element.fullPath).delete().then((value){
+            print("Delete completed");
+          });
+        }
+      });
+  }
+
+  Future<List<String>> uploadMultipleFile({required String child, required List<PlatformFile> files}) async {
     
-    List<FileData> listFile = [];
+    List<String> listFileUrl = [];
 
     await Future.wait(files.map((platformFile) async {
 
@@ -35,18 +45,19 @@ class FirebaseServices {
           .then((value) async {
             await getFileUrl(child: child, filename: platformFile.name)
               .then((value) {
-                listFile.add(FileData(filename: platformFile.name, url: value));
+                listFileUrl.add(value);
               });
           });
       } catch (e) {
-        listFile.clear();
+        listFileUrl.clear();
         return ;
       }
     
     }));
-    return listFile;
+    return listFileUrl;
   }
 
+  //TODO: UPLOAD 1 FILE TO FIREBASE STORAGE
   Future<void> uploadFileToFirebaseStorage({required File fileUpload, required String child, required String filename}) async {
     print("Start Upload");
     final contentType = lookupMimeType(fileUpload.path);

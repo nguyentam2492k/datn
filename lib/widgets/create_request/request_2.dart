@@ -54,10 +54,10 @@ class Request2State extends State<Request2> {
   @override
   Widget build(BuildContext context) {
 
-  Map<String, dynamic> formData = {};
-
     Future<void> sendFormData() async {
       APIService apiService = APIService();
+      Map<String, dynamic> formData = {};
+      
       context.loaderOverlay.show();
       formData.addAll(_request2FormKey.currentState!.value);
       formData.addAll({
@@ -67,7 +67,8 @@ class Request2State extends State<Request2> {
 
       var request = Request(
         requestTypeId: 2, 
-        file: null,
+        documentNeed: null,
+        fee: null,
         status: "processing", 
         dateCreate: DateTime.now().toString()
       );

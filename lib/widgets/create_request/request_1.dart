@@ -49,6 +49,38 @@ class Request1Stated extends State<Request1> {
       numberOfEngVer != null;
   }
 
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    context.loaderOverlay.show();
+    formData.addAll(_request1FormKey.currentState!.value);
+    formData.addAll({
+      "certificate_type": selectedCertification,
+      "quantity_viet": numberOfVietVer.toString(),
+      "quantity_eng": numberOfEngVer.toString()
+    });
+
+    var request = Request(
+      requestTypeId: 1, 
+      documentNeed: null,
+      fee: null,
+      status: "processing", 
+      dateCreate: DateTime.now().toString()
+    );
+
+    await apiService.postData(request: request, requestInfo: formData).then((value) {
+      context.loaderOverlay.hide();
+      CustomSnackBar().showSnackBar(
+        context,
+        isError: value != null,
+        text: "Gửi thành công",
+        errorText: "LỖI: $value"
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,37 +91,6 @@ class Request1Stated extends State<Request1> {
 
   @override
   Widget build(BuildContext context) {
-
-    Future<void> sendFormData() async {
-
-      APIService apiService = APIService();
-      Map<String, dynamic> formData = {};
-
-      context.loaderOverlay.show();
-      formData.addAll(_request1FormKey.currentState!.value);
-      formData.addAll({
-        "certificate_type": selectedCertification,
-        "quantity_viet": numberOfVietVer.toString(),
-        "quantity_eng": numberOfEngVer.toString()
-      });
-
-      var request = Request(
-        requestTypeId: 1, 
-        file: null,
-        status: "processing", 
-        dateCreate: DateTime.now().toString()
-      );
-
-      await apiService.postData(request: request, requestInfo: formData).then((value) {
-        context.loaderOverlay.hide();
-        CustomSnackBar().showSnackBar(
-          context,
-          isError: value != null,
-          text: "Gửi thành công",
-          errorText: "LỖI: $value"
-        );
-      });
-    }
 
     return LoaderOverlay(
       useDefaultLoading: false,

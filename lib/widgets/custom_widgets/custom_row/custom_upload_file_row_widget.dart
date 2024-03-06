@@ -101,14 +101,14 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                               files = fileSet.toList();
                               widget.onChanged(files);
                               for (var file in files) {
-                                debugPrint("${file.name}-${file.size}");
+                                print("${file.name}-${file.size}");
                               }
-                              debugPrint('Add completed');
+                              print('Add completed');
                             } else {
-                              debugPrint("Nothing added");
+                              print("Nothing added");
                             }
                           } catch (error) {
-                            debugPrint(error.toString());
+                            print(error.toString());
                           }
                         },
                       ),
@@ -182,6 +182,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                       ),
                     ),
                     onPressed: () async {
+                      print(file.path);
                       OpenResult result;
                       try {
                         result = await OpenFile.open(

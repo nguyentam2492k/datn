@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login_model.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +8,11 @@ import 'package:datn/screens/manage_request/manage_request_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 
-  // final LoginResponseModel loginResponseData;
   final LoginResponseModel loginResponse;
 
   HomeScreen({
     super.key, 
     required this.loginResponse,
-    // required this.loginResponseData,
   });
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -51,7 +48,6 @@ class HomeScreen extends StatelessWidget {
         fit: BoxFit.contain,
         height: 40,
       ),
-      // foregroundColor: Colors.black,
       leading: IconButton(
         icon: const Icon(Icons.menu),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(), 
@@ -200,7 +196,7 @@ class HomeScreen extends StatelessWidget {
             title: const Text('Xử lý yêu cầu'),
             leading: const Icon(Icons.contact_page),
             trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {
+            onTap: () async {
               Navigator.push(
                 context, 
                 MaterialPageRoute(
@@ -227,7 +223,7 @@ class HomeScreen extends StatelessWidget {
             leading: const Icon(Icons.help),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              debugPrint("Open Ho tro Page");
+              print("Open Ho tro Page");
             },
           ),
           Container(
@@ -247,10 +243,6 @@ class HomeScreen extends StatelessWidget {
                   }), 
                   (route) => false
                 );
-                // Navigator.pushReplacement(context, MaterialPageRoute<void>(
-                //     builder: (BuildContext context) => const LogIn(),
-                //   ),
-                // );
               },
               icon: const Icon(Icons.logout),
               label: const Text("Đăng xuất"),

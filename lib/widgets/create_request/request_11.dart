@@ -30,7 +30,6 @@ class Request11State extends State<Request11> {
       return true;
     }
     return false;
-    // return files.isNotEmpty ? true : false;
   }
 
   void sendFormData() {
@@ -39,7 +38,7 @@ class Request11State extends State<Request11> {
     // List<File> listFiles = files.map((file) => File(file.path!)).toList();
     List<String> listFiles = files.map((file) => file.name).toList();
     formData['file'] = listFiles;
-    debugPrint(formData.toString());
+    print(formData.toString());
   }
 
   @override
@@ -74,7 +73,7 @@ class Request11State extends State<Request11> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: (){print("Tap Mau don");},
                     ),
                   ),
                   const Divider(thickness: 0.4,),
@@ -127,9 +126,6 @@ class Request11State extends State<Request11> {
                       }
                       return null;
                     },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // },
                   ),
                   const SizedBox(height: 5,),
                   CustomUploadFileRowWidget(

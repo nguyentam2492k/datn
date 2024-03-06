@@ -22,7 +22,7 @@ class Request19State extends State<Request19> {
   ];
 
   void sendFormData() {
-    _request19FormKey.currentState!.saveAndValidate() ? debugPrint(_request19FormKey.currentState?.value.toString()) : null;
+    _request19FormKey.currentState!.saveAndValidate() ? print(_request19FormKey.currentState?.value.toString()) : null;
   }
   
   @override

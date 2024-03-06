@@ -33,7 +33,6 @@ class LogInState extends State<LogIn> {
   void initState() {
     super.initState();
     isShowPassword = false;
-    // setImageData();
   }
 
   @override
@@ -137,7 +136,6 @@ class LogInState extends State<LogIn> {
           ),
           const SizedBox(height: 20,),
           Container(
-            // height: MediaQuery.of(context).size.height * 0.4,
             padding: const EdgeInsets.fromLTRB(35, 10, 20, 10),
             color: Colors.transparent,
             child: FormBuilder(
@@ -237,20 +235,16 @@ class LogInState extends State<LogIn> {
       apiService.login(loginRequestModel).then((value) {
         if (value.runtimeType == LoginResponseModel) {
           LoginResponseModel loginResponseData = value as LoginResponseModel;
-          debugPrint(loginResponseData.accessToken);
+          print(loginResponseData.accessToken);
           TextInput.finishAutofillContext();
           Navigator.pushAndRemoveUntil(
             context, 
             MaterialPageRoute(builder: (context) {
-              // return HomeScreen(loginResponseData: loginResponseData);
               return HomeScreen(loginResponse: loginResponseData,);
             }), 
             (route) => false
           );
-          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          //     return HomeScreen(loginResponseData: loginResponseData);
-          // })); 
-          debugPrint(loginRequestModel.toString());
+          print(loginRequestModel.toString());
         } else {
           var errorMessage = (value as String).trim().replaceAll(RegExp('"'), '');
           CustomSnackBar().showSnackBar(

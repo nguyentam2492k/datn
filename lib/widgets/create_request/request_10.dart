@@ -1,8 +1,13 @@
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class Request10 extends StatefulWidget {
   const Request10({super.key});
@@ -39,14 +44,37 @@ class Request10State extends State<Request10> {
       numberOfEngVer != null;
   }
 
-  void sendFormData() {
-    formData.addAll(_request10FormKey.currentState!.value);
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    context.loaderOverlay.show();
     formData.addAll({
-      'quantity_viet': numberOfVietVer,
-      'quantity_eng': numberOfEngVer,
+      "quantity_viet": numberOfVietVer.toString(),
+      "quantity_eng": numberOfEngVer.toString()
     });
-    debugPrint(formData.toString());
+    formData.addAll(_request10FormKey.currentState!.value);
+
+    var request = Request(
+      requestTypeId: 10, 
+      documentNeed: null,
+      fee: null,
+      status: "completed", 
+      dateCreate: DateTime.now().toString()
+    );
+
+    await apiService.postData(request: request, requestInfo: formData).then((value) {
+      context.loaderOverlay.hide();
+      CustomSnackBar().showSnackBar(
+        context,
+        isError: value != null,
+        text: "Gửi thành công",
+        errorText: "LỖI: $value"
+      );
+    });
   }
+
 
   @override
   void initState() {
@@ -57,124 +85,131 @@ class Request10State extends State<Request10> {
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilder(
-      key: _request10FormKey,
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 10,),
-                  Text(
-                    ConstantString.request10Note,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
+    return LoaderOverlay(
+      useDefaultLoading: false,
+      overlayColor: Colors.transparent,
+      overlayWidgetBuilder: (progress) {
+        return const LoadingHud();
+      },
+      child: FormBuilder(
+        key: _request10FormKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
+                    Text(
+                      ConstantString.request10Note,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const Divider(thickness: 0.4,),
-                  SizedBox(
-                    height: 70,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Text(
-                          "Số bản tiếng Việt:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
+                    const Divider(thickness: 0.4,),
+                    SizedBox(
+                      height: 70,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                        const Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Số bản tiếng Việt:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 5,),
-                      Expanded(
-                        flex: 4,
-                        child: NumericStepButton(
-                          initialValue: 1, 
-                          minValue: 0, 
-                          maxValue: 10, 
-                          onChanged: (value) {
-                            setState(() {
-                              numberOfVietVer = value;
-                            });
-                          }
-                        ),
-                      ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 70,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                      const Expanded(
-                        flex: 1,
-                        child: Text(
-                          "Số bản tiếng Anh:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
+                        const SizedBox(width: 5,),
+                        Expanded(
+                          flex: 4,
+                          child: NumericStepButton(
+                            initialValue: 1, 
+                            minValue: 0, 
+                            maxValue: 10, 
+                            onChanged: (value) {
+                              setState(() {
+                                numberOfVietVer = value;
+                              });
+                            }
                           ),
                         ),
+                        ],
                       ),
-                      const SizedBox(width: 5,),
-                      Expanded(
-                        flex: 4,
-                        child: NumericStepButton(
-                          initialValue: 0, 
-                          minValue: 0, 
-                          maxValue: 10,
-                          onChanged: (value) {
-                            setState(() {
-                              numberOfEngVer = value;
-                            });
-                          }
-                        ),
-                      ),
-                      ],
                     ),
+                    SizedBox(
+                      height: 70,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                        const Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Số bản tiếng Anh:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 5,),
+                        Expanded(
+                          flex: 4,
+                          child: NumericStepButton(
+                            initialValue: 0, 
+                            minValue: 0, 
+                            maxValue: 10,
+                            onChanged: (value) {
+                              setState(() {
+                                numberOfEngVer = value;
+                              });
+                            }
+                          ),
+                        ),
+                        ],
+                      ),
+                    ),
+                    CustomTextFieldRowWidget(
+                      labelText: "Lý do:",
+                      name: 'reason',
+                      maxLines: 5,
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return "Điền đầy đủ thông tin!";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 10,),
+                  ],
+                ),
+              )
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.save),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
+                    foregroundColor: Colors.white
                   ),
-                  CustomTextFieldRowWidget(
-                    labelText: "Lý do:",
-                    name: 'reason',
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value == null || value.isEmpty ) {
-                        return "Điền đầy đủ thông tin!";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: 10,),
-                ],
+                  onPressed: () async { 
+                    (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
+                  }, 
+                  label: const Text("Gửi yêu cầu"),
+                ),
               ),
             )
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () { 
-                  (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
-        ],
-      )
+          ],
+        )
+      ),
     );
   }
 }

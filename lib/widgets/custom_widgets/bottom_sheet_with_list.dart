@@ -1,5 +1,5 @@
 import 'package:datn/function/function.dart';
-import 'package:datn/model/request/file_data_model.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -13,7 +13,6 @@ class BottomSheetWithList extends StatefulWidget {
   final bool isHaveCancelButton;
   final IconData rightIcon;
   final bool isListFile;
-  final List<FileData>? listFile;
 
   const BottomSheetWithList({
     super.key, 
@@ -25,7 +24,6 @@ class BottomSheetWithList extends StatefulWidget {
     this.isHaveCancelButton = true,
     this.rightIcon = Icons.keyboard_arrow_right,
     this.isListFile = false,
-    this.listFile
   });
 
   @override
@@ -35,25 +33,23 @@ class BottomSheetWithList extends StatefulWidget {
 }
 
 class BottomSheetWithListState extends State<BottomSheetWithList> {
-  // String? selectedItemChanged = widget.selectedItem;
 
   @override
   Widget build(BuildContext context) {
     String? selectedItemChanged = widget.selectedItem;
-    List<String> list = widget.list;
+    List<String> list =  widget.list;
     String? title = widget.title;
     bool isHaveRightIcon = widget.isHaveRightIcon;
     bool isHaveLeftIcon = widget.isHaveLeftIcon;
     bool isHaveCancelButton = widget.isHaveCancelButton;
     IconData rightIcon = widget.rightIcon;
     bool isListFile = widget.isListFile;
-    List<FileData>? listFile = widget.listFile;
 
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayColor: Colors.transparent,
       overlayWidgetBuilder: (progress) {
-        return const LoadingHud(text: "Đang mở...",);
+        return LoadingHud(text: progress.toString(),);
       },
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -101,25 +97,22 @@ class BottomSheetWithListState extends State<BottomSheetWithList> {
                             textColor: selectedItemChanged == list[index] ? Colors.blue : Colors.black,
                             iconColor: selectedItemChanged == list[index] ? Colors.blue : Colors.black,
                             title: Text(
-                              list[index],
+                              !isListFile ? list[index] : getFileNameFromUrl(list[index]),
                               textScaler: selectedItemChanged == list[index] ? const TextScaler.linear(1.1) : const TextScaler.linear(1),
                               style: TextStyle(
                                 fontWeight: selectedItemChanged == list[index] ? FontWeight.bold : FontWeight.normal,
                               ),
                             ),
                             trailing: isHaveRightIcon ? Icon(rightIcon) : null,
-                            leading: isHaveLeftIcon ? Icon(getIcon(list[index])) : null,
+                            leading: isHaveLeftIcon ? Icon(getIcon(getFileNameFromUrl(list[index]))) : null,
                             onTap: () async {
-                              if (isListFile && listFile != null) {
-                                context.loaderOverlay.show();
-                                await openFileFromUrl(
-                                  context: context,
-                                  url: listFile[index].url, 
-                                  filename: listFile[index].filename
-                                )
-                                  .then((value) {
+                              if (isListFile) {
+                                context.loaderOverlay.show(progress: "Đang tải tệp...");
+                                await FileServices().downloadFileFromUrl(context, url: list[index])
+                                  .then((value) async {
                                     context.loaderOverlay.hide();
                                   });
+                                
                               } else {
                                 selectedItemChanged = list[index];
                                 Navigator.pop(context, selectedItemChanged);
