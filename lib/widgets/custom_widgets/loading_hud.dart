@@ -51,6 +51,7 @@ class LoadingHud extends StatelessWidget {
               maxLines: 2,
               textAlign: TextAlign.center,
               style: const TextStyle(
+                fontSize: 12,
                 fontWeight: FontWeight.w700
               ),
             ),

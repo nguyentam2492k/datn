@@ -4,9 +4,10 @@ import 'package:datn/function/function.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:datn/widgets/manage_request/file_alert_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -71,7 +72,6 @@ class FileServices {
         case ResultType.noAppToOpen:
           throw "No app to open!";
         case ResultType.permissionDenied:
-          print(result.message);
           throw "Permission denied!";
         case ResultType.error:
           throw ResultType.error.name;
@@ -88,72 +88,126 @@ class FileServices {
     // return file;
   }
 
-  Future<bool> checkStoragePermission() async {
+  Future<bool> checkStoragePermission(BuildContext context) async {
     DeviceInfoPlugin plugin = DeviceInfoPlugin();
     AndroidDeviceInfo android = await plugin.androidInfo;
 
     bool permissionStatus;
 
     if (android.version.sdkInt >= 33) {
-      final externalStorageStatus = await Permission.manageExternalStorage.request();
+      // final externalStorageStatus = await Permission.manageExternalStorage.request();
       final photoStorageStatus = await Permission.photos.request();
       final videoStorageStatus = await Permission.videos.request();
 
-      permissionStatus =  (externalStorageStatus == PermissionStatus.granted
-              && photoStorageStatus == PermissionStatus.granted
-              && videoStorageStatus == PermissionStatus.granted);
+      permissionStatus =  
+              // (externalStorageStatus == PermissionStatus.granted &&
+              photoStorageStatus == PermissionStatus.granted
+              && videoStorageStatus == PermissionStatus.granted;
 
-    } else if (android.version.sdkInt >= 30 && android.version.sdkInt < 33) {
-      final externalStorageStatus = await Permission.manageExternalStorage.request();
-      final storageStatus = await Permission.storage.request();
-      permissionStatus = externalStorageStatus == PermissionStatus.granted && storageStatus == PermissionStatus.granted;
+    // } else if (android.version.sdkInt >= 30 && android.version.sdkInt < 33) {
+      // final externalStorageStatus = await Permission.manageExternalStorage.request();
+      // permissionStatus = externalStorageStatus == PermissionStatus.granted;
     } else {
       final storageStatus = await Permission.storage.request();
-      permissionStatus = storageStatus == PermissionStatus.granted;
+      permissionStatus = (storageStatus == PermissionStatus.granted);
     }
 
-    if (!permissionStatus) {
-      openAppSettings();
+    if (!permissionStatus && context.mounted) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))
+            ),
+            titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            actionsPadding: const EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            title: const Text("Yêu cầu", style: TextStyle(fontWeight: FontWeight.bold),),
+            content: const Text("Để tải và mở file, vui lòng cho phép ứng dụng quyền quản lý tất cả tệp trên thiết bị"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                }, 
+                child: const Text("Đóng")
+              ),
+              TextButton(
+                onPressed: () {
+                  openAppSettings();
+                }, 
+                child: const Text("Mở Cài đặt")
+              )
+            ],
+          );
+        }
+      );
+      // await checkStoragePermission();
     }
 
     return permissionStatus;
   }
 
-  Future<void> downloadFileFromUrl(BuildContext buildContext, {required String url}) async {
+  Future<String?> downloadAndGetFileFromUrl(BuildContext buildContext, {required String url}) async {
 
-    var permissionReady = await checkStoragePermission();
+    var permissionReady = await checkStoragePermission(buildContext);
 
     if (permissionReady) {
+
+      final externalDir = await getExternalStorageDirectory();
       try {
-        print(url);
-        await FileDownloader.downloadFile(
-          url: url,
-          name: getFileNameFromUrl(url),
-          onDownloadError: (errorMessage) {
-            CustomSnackBar().showSnackBar(
-              buildContext,
-              isError: true,
-              errorText: "LỖI: $errorMessage",
-            );
+        var response = await Dio().downloadUri(
+          Uri.parse(url), 
+          "${externalDir!.path}/${getFileNameFromUrl(url)}",
+          onReceiveProgress: (count, total) {
+            buildContext.loaderOverlay.progress("Đang tải: ${(100*count/total).toStringAsFixed(1)}%");
           },
-          onDownloadCompleted: (path) async {
-            showDialog(
-              context: buildContext, 
-              builder: (context) {
-                return fileAlertDialog(parentContext: buildContext, alertContext: context, url: url, path: Uri.decodeComponent(path));
-              },
-            );
-          },
-        );  
-      } catch (error) {
-        if (buildContext.mounted) {
-          CustomSnackBar().showSnackBar(
-            buildContext,
-            isError: true,
-            errorText: "LỖI: ${error.toString()}",
-          );
+        );
+        if (response.statusCode == 200) {
+          return "${externalDir.path}/${getFileNameFromUrl(url)}";
         }
+      } on DioException catch (dioError) {
+        throw dioError.message.toString();
+      } catch (e) {
+        rethrow;
       }
-    } 
+      return null;
+    }
+    return null;
+  }
+
+  Future<void> actionDownloadFileWithUrl(BuildContext context, {required String url}) async {
+    context.loaderOverlay.show(progress: "Chuẩn bị tải");
+    try {
+      await FileServices().downloadAndGetFileFromUrl(context, url: url)
+        .then((path) async {
+          context.loaderOverlay.hide();
+          if (path == null) {
+            CustomSnackBar().showSnackBar(
+              context,
+              isError: true,
+              errorText: "LỖI",
+            );
+            return;
+          }
+          showDialog(
+            context: context, 
+            builder:(context) {
+              return CustomAlertDialog(path: Uri.decodeComponent(path),);
+            },
+          );
+        });
+    } catch (error) {
+      if (context.mounted) {
+        context.loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          context,
+          isError: true,
+          errorText: "LỖI: $error",
+        );
+      }
+    }
   }
 }

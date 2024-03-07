@@ -107,12 +107,10 @@ class BottomSheetWithListState extends State<BottomSheetWithList> {
                             leading: isHaveLeftIcon ? Icon(getIcon(getFileNameFromUrl(list[index]))) : null,
                             onTap: () async {
                               if (isListFile) {
-                                context.loaderOverlay.show(progress: "Đang tải xuống...");
-                                await FileServices().downloadFileFromUrl(context, url: list[index])
-                                  .then((value) async {
-                                    context.loaderOverlay.hide();
-                                  });
-                                
+                                await FileServices().actionDownloadFileWithUrl(
+                                  context, 
+                                  url: list[index]
+                                );
                               } else {
                                 selectedItemChanged = list[index];
                                 Navigator.pop(context, selectedItemChanged);
@@ -147,4 +145,5 @@ class BottomSheetWithListState extends State<BottomSheetWithList> {
       ),
     );
   }
+
 }

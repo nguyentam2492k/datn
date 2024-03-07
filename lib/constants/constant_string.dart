@@ -9,7 +9,7 @@ class ConstantString {
   static String request14DocumentUrl2 = "https://firebasestorage.googleapis.com/v0/b/datn-flutter.appspot.com/o/documents%2F111_%20Bao%20cao%20sau%20chuyen%20di%20nuoc%20ngoai.doc?alt=media&token=be566da0-9717-424d-a2ec-102ddf3b8205";
   static String request16DocumentUrl = "https://firebasestorage.googleapis.com/v0/b/datn-flutter.appspot.com/o/documents%2F14_Don%20de%20nghi%20cap%20tien%20ho%20tro%20mien%20giam%20hoc%20phi.doc?alt=media&token=d8699aa8-bbf7-4184-8138-48434af9db76";
   static String request17DocumentUrl = "https://firebasestorage.googleapis.com/v0/b/datn-flutter.appspot.com/o/documents%2F8_%20Mau%20dang%20ky%20lam%20the%20ve%20thang%20xe%20buyt.doc?alt=media&token=7b0b35b4-136e-4656-9dfd-425f10a128d1";
-  static String request18DocumentUrl = "https://firebasestorage.googleapis.com/v0/b/datn-flutter.appspot.com/o/avatars%2FCapture.PNG?alt=media&token=65be5513-c567-47be-a12e-cd1dd938f7ae";
+  static String request18DocumentUrl = "";
 
   static String request1Note =  "Sinh viên kích chọn loại giấy thích hợp theo yêu cầu, "
                                 "số bản bằng tiếng Việt hoặc tiếng Anh; Giấy giới thiệu thực "

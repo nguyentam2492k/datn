@@ -117,8 +117,8 @@ class Request8State extends State<Request8> {
                           ),
                         ),
                         onTap: () async {
-                          context.loaderOverlay.show(progress: "Đang tải xuống");
-                          await FileServices().downloadFileFromUrl(
+                          context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                          await FileServices().actionDownloadFileWithUrl(
                             context, 
                             url: ConstantString.request8DocumentUrl
                           ).then((value) {

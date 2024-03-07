@@ -72,8 +72,8 @@ class Request17State extends State<Request17> {
                           ),
                         ),
                         onTap: () async {
-                          context.loaderOverlay.show(progress: "Đang tải xuống");
-                          await FileServices().downloadFileFromUrl(
+                          context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                          await FileServices().actionDownloadFileWithUrl(
                             context, 
                             url: ConstantString.request17DocumentUrl
                           ).then((value) {

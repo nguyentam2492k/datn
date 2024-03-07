@@ -1,8 +1,12 @@
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -27,20 +31,50 @@ class Request13State extends State<Request13> {
 
   bool isFileAdded = true;
 
-  bool isFormValid() {
+bool isFormValid() {
     if (_request13FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        CustomSnackBar().showSnackBar(
+          context,
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
   }
 
-  void sendFormData() {
-    formData.addAll(_request13FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    print(formData.toString());
+  Future<void> sendFormData() async {
+    context.loaderOverlay.show(progress: "Đang gửi");
+
+    var request = Request(
+      requestTypeId: 12, 
+      status: "processing", 
+      documentNeed: null,
+      fee: "15.000",
+      dateCreate: DateTime.now().toString(),
+    );
+    
+    try {
+      await APIService().postDataWithFile(request: request, formData: _request13FormKey.currentState!.value, files: files).then((value) {
+        context.loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          context,
+          text: "Gửi thành công",
+        );
+      });
+    } catch (e) {
+      if (context.mounted) {
+        context.loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          context,
+          isError: true,
+          errorText: "LỖI: Gửi không thành công"
+        );
+      }
+    } 
   }
 
   @override
@@ -83,8 +117,8 @@ class Request13State extends State<Request13> {
                               ),
                             ),
                             onTap: () async {
-                              context.loaderOverlay.show(progress: "Đang tải xuống");
-                              await FileServices().downloadFileFromUrl(
+                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                              await FileServices().actionDownloadFileWithUrl(
                                 context, 
                                 url: ConstantString.request13DocumentUrl1
                               ).then((value) {
@@ -104,8 +138,8 @@ class Request13State extends State<Request13> {
                               ),
                             ),
                             onTap: () async {
-                              context.loaderOverlay.show(progress: "Đang tải xuống");
-                              await FileServices().downloadFileFromUrl(
+                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                              await FileServices().actionDownloadFileWithUrl(
                                 context, 
                                 url: ConstantString.request13DocumentUrl2
                               ).then((value) {

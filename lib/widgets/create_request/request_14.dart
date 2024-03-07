@@ -83,8 +83,8 @@ class Request14State extends State<Request14> {
                               ),
                             ),
                             onTap: () async {
-                              context.loaderOverlay.show(progress: "Đang tải xuống");
-                              await FileServices().downloadFileFromUrl(
+                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                              await FileServices().actionDownloadFileWithUrl(
                                 context, 
                                 url: ConstantString.request14DocumentUrl1
                               ).then((value) {
@@ -104,8 +104,8 @@ class Request14State extends State<Request14> {
                               ),
                             ),
                             onTap: () async {
-                              context.loaderOverlay.show(progress: "Đang tải xuống");
-                              await FileServices().downloadFileFromUrl(
+                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
+                              await FileServices().actionDownloadFileWithUrl(
                                 context, 
                                 url: ConstantString.request14DocumentUrl2
                               ).then((value) {
