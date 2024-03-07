@@ -10,6 +10,8 @@ class CustomTextFieldRowWidget extends StatefulWidget {
   final bool isImportant;
   final TextInputType? keyboardType;
   final String? hintText;
+  final CrossAxisAlignment crossAxisAlignment;
+  final bool autoFocus;
   final FormFieldValidator<String?>? validator;
   final ValueChanged<String?>? onChanged;
   final FormFieldSetter<String?>? onSaved;
@@ -26,7 +28,9 @@ class CustomTextFieldRowWidget extends StatefulWidget {
     this.onSaved,
     this.initialValue, 
     this.keyboardType,
-    this.hintText,
+    this.hintText, 
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.autoFocus = false
   });
 
   @override
@@ -42,6 +46,7 @@ class CustomTextFieldRowWidgetState extends State<CustomTextFieldRowWidget> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: widget.crossAxisAlignment,
       children: [
         Expanded(
           flex: 1,
@@ -74,6 +79,7 @@ class CustomTextFieldRowWidgetState extends State<CustomTextFieldRowWidget> {
             maxLines: widget.maxLines,
             initialValue: widget.initialValue,
             keyboardType: widget.keyboardType,
+            autoFocus: widget.autoFocus,
             validator: widget.validator,
             onChanged: widget.onChanged,
             onSaved: widget.onSaved,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/text_row.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -262,7 +263,7 @@ class Request20State extends State<Request20> {
             border: Border.all(color: Colors.grey, width: 1)
           ),
           child: Image.network(
-             "https://picsum.photos/id/143/320/480",
+             globalLoginResponse!.user.image,
             fit: BoxFit.cover,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;

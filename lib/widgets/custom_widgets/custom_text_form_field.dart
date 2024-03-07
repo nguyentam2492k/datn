@@ -12,6 +12,7 @@ class CustomFormBuilderTextField extends StatefulWidget {
     final TextInputType? keyboardType;
     final TextStyle? style;
     final InputDecoration decoration;
+    final bool autoFocus;
 
   const CustomFormBuilderTextField({
     super.key, 
@@ -23,6 +24,7 @@ class CustomFormBuilderTextField extends StatefulWidget {
     this.initialValue, 
     this.enabled = true, 
     this.keyboardType, 
+    this.autoFocus = false,
     this.style = const TextStyle(fontSize: 14), 
     this.decoration = const InputDecoration(
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -90,6 +92,7 @@ class CustomFormBuilderTextFieldState extends State<CustomFormBuilderTextField> 
         validator: widget.validator,
         onChanged: widget.onChanged,
         onSaved: widget.onSaved,
+        autofocus: widget.autoFocus,
       ),
     );
   }

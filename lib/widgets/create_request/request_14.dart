@@ -1,8 +1,12 @@
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -29,18 +33,48 @@ class Request14State extends State<Request14> {
 
   bool isFormValid() {
     if (_request14FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        CustomSnackBar().showSnackBar(
+          context,
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
   }
 
-  void sendFormData() {
-    formData.addAll(_request14FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    print(formData.toString());
+  Future<void> sendFormData() async {
+    context.loaderOverlay.show(progress: "Đang gửi");
+
+    var request = Request(
+      requestTypeId: 14, 
+      status: "completed", 
+      documentNeed: null,
+      fee: "8.000",
+      dateCreate: DateTime.now().toString(),
+    );
+    
+    try {
+      await APIService().postDataWithFile(request: request, formData: _request14FormKey.currentState!.value, files: files).then((value) {
+        context.loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          context,
+          text: "Gửi thành công",
+        );
+      });
+    } catch (e) {
+      if (context.mounted) {
+        context.loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          context,
+          isError: true,
+          errorText: "LỖI: Gửi không thành công"
+        );
+      }
+    } 
   }
 
   @override
@@ -155,9 +189,9 @@ class Request14State extends State<Request14> {
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     isFileAdded = files.isEmpty ? false : true;
-                    isFormValid() ? sendFormData() : null;
+                    isFormValid() ? await sendFormData() : null;
                     setState(() {});
                   }, 
                   label: const Text("Gửi yêu cầu"),

@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:datn/function/function.dart';
+import 'package:datn/widgets/custom_widgets/change_filename_alert.dart';
+import 'package:datn/widgets/custom_widgets/file_alert_dialog.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
-import 'package:datn/widgets/manage_request/file_alert_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -157,16 +158,29 @@ class FileServices {
     if (permissionReady) {
 
       final externalDir = await getExternalStorageDirectory();
+      var savePath = "${externalDir!.path}/${getFileNameFromUrl(url)}";
+
+      if (File(savePath).existsSync() && buildContext.mounted) {
+        var newFilename = await showDialog(
+          context: buildContext, 
+          builder: (context) {
+            return ChangeFilenameAlertDialog(filename: getFileNameFromUrl(url));
+          }
+        );
+        savePath = "${externalDir.path}/$newFilename";
+      }
+      
+      buildContext.mounted ? buildContext.loaderOverlay.show(progress: "Chuẩn bị tải") : null;
       try {
         var response = await Dio().downloadUri(
           Uri.parse(url), 
-          "${externalDir!.path}/${getFileNameFromUrl(url)}",
+          savePath,
           onReceiveProgress: (count, total) {
             buildContext.loaderOverlay.progress("Đang tải: ${(100*count/total).toStringAsFixed(1)}%");
           },
         );
         if (response.statusCode == 200) {
-          return "${externalDir.path}/${getFileNameFromUrl(url)}";
+          return savePath;
         }
       } on DioException catch (dioError) {
         throw dioError.message.toString();
@@ -179,7 +193,6 @@ class FileServices {
   }
 
   Future<void> actionDownloadFileWithUrl(BuildContext context, {required String url}) async {
-    context.loaderOverlay.show(progress: "Chuẩn bị tải");
     try {
       await FileServices().downloadAndGetFileFromUrl(context, url: url)
         .then((path) async {

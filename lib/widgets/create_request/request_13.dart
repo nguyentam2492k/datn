@@ -31,7 +31,7 @@ class Request13State extends State<Request13> {
 
   bool isFileAdded = true;
 
-bool isFormValid() {
+  bool isFormValid() {
     if (_request13FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         CustomSnackBar().showSnackBar(
@@ -50,7 +50,7 @@ bool isFormValid() {
     context.loaderOverlay.show(progress: "Đang gửi");
 
     var request = Request(
-      requestTypeId: 12, 
+      requestTypeId: 13, 
       status: "processing", 
       documentNeed: null,
       fee: "15.000",
