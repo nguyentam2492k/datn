@@ -11,6 +11,10 @@ class ConstantString {
   static String request17DocumentUrl = "https://firebasestorage.googleapis.com/v0/b/datn-flutter.appspot.com/o/documents%2F8_%20Mau%20dang%20ky%20lam%20the%20ve%20thang%20xe%20buyt.doc?alt=media&token=7b0b35b4-136e-4656-9dfd-425f10a128d1";
   static String request19DocumentUrl = "";
 
+  static String uetCourseUrl = "https://courses.uet.vnu.edu.vn";
+  static String uetMailUrl = "https://idp.vnu.edu.vn";
+  static String uetWebsiteUrl = "https://uet.vnu.edu.vn";
+
   static String request1Note =  "Sinh viên kích chọn loại giấy thích hợp theo yêu cầu, "
                                 "số bản bằng tiếng Việt hoặc tiếng Anh; Giấy giới thiệu thực "
                                 "tập cần ghi rõ tên công ty, thời gian thực tập. "
