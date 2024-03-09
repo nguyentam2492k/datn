@@ -52,15 +52,6 @@ class HomeScreen extends StatelessWidget {
         icon: const Icon(Icons.menu),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(), 
       ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: IconButton(
-            onPressed: (){}, 
-            icon: const Icon(Icons.settings)
-          ),
-        )
-      ],
     );
   }
 

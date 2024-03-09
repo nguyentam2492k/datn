@@ -205,9 +205,9 @@ class Request8State extends State<Request8> {
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     isFileAdded = files.isEmpty ? false : true;
-                    isFormValid() ? sendFormData() : null;
+                    isFormValid() ? await sendFormData() : null;
                     setState(() {});
                   }, 
                   label: const Text("Gửi yêu cầu"),

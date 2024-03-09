@@ -6,6 +6,7 @@ class RequestInformation {
   String? quantityEng;
   String? reason;
   String? phoneContact;
+  String? year;
   
   //Request 1
   String? certificateType;
@@ -23,7 +24,6 @@ class RequestInformation {
   //Request 4
   String? subjectReview;
   String? semester;
-  String? year;
 
   //Request 5
   String? untilDate;
@@ -45,13 +45,17 @@ class RequestInformation {
   String? studentAddress;
   String? receivingPlace;
 
-  //Request 18
+  //Request 19
   String? name;
   String? rentDate;
   String? doituonguutien;
   String? permanentAddress;
   String? email;
   String? khicanbaotin;
+
+  //Request 20+22
+  String? educationProgram;
+  String? internCompany;
 
   RequestInformation({
     this.quantityViet,
@@ -84,6 +88,8 @@ class RequestInformation {
     this.permanentAddress,
     this.email,
     this.khicanbaotin,
+    this.educationProgram,
+    this.internCompany
   });
 
   factory RequestInformation.fromJson(Map<String, dynamic> json) {
@@ -125,6 +131,8 @@ class RequestInformation {
       permanentAddress: json['permanent_address'] as String?,
       email: json['email'] as String?,
       khicanbaotin: json['khicanbaotin'] as String?,
+      educationProgram: json['education_program'] as String?,
+      internCompany: json['intern_company'] as String?
     );
   }
 }

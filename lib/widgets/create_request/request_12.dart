@@ -25,8 +25,6 @@ class Request12State extends State<Request12> {
 
   final GlobalKey<FormBuilderState> _request12FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;

@@ -90,10 +90,11 @@ class ConstantList {
     "Chứng nhận còn nợ môn", 
     "XN nhận miễn giảm HP", 
     "Đề nghị làm vé xe buýt",
+    "Cập nhật hồ sơ",
     "Đề nghị thuê nhà ở",
     "XN điểm rèn luyện",
-    "Cập nhật hồ sơ",
-    "Đánh giá Rèn luyện"
+    "Đánh giá Rèn luyện",
+    "Giới thiệu sinh viên thực tập"
     ];
 
   static List<String> admissionCodes = [
@@ -191,5 +192,10 @@ class ConstantList {
     "Một tuyến",
     "Liên tuyến bình thường (không đi tuyến 54)",
     "Liên tuyến và tuyến 54 (tất cả các tuyến)",
+  ];
+
+  static List<String> educationPrograms = [
+    "Bằng thứ nhất",
+    "Bằng kép/Bằng thứ 2",
   ];
 }

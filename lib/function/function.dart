@@ -103,6 +103,7 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.examDate != null ? requestText.writeln("Ngày thi: ${requestInfo.examDate}") : null;
   requestInfo.subjectReview != null ? requestText.writeln("Học phần: ${requestInfo.subjectReview}") : null;
   requestInfo.semester != null ? requestText.writeln("Học kỳ: ${requestInfo.semester}") : null;
+  requestInfo.educationProgram != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.educationProgram}") : null;
   requestInfo.year != null ? requestText.writeln("Năm học: ${requestInfo.year}") : null;
   requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
   requestInfo.documents != null ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
@@ -121,6 +122,7 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.receivingPlace != null ? requestText.writeln("Nơi nộp đơn và nhận thẻ: ${requestInfo.receivingPlace}") : null;
   requestInfo.email != null ? requestText.writeln("Email: ${requestInfo.email}") : null;
   requestInfo.khicanbaotin != null ? requestText.writeln("Khi cần liên hệ: ${requestInfo.khicanbaotin}") : null;
+  requestInfo.internCompany != null ? requestText.writeln("Nơi thực tập: ${requestInfo.internCompany}") : null;
   (requestInfo.quantityViet != null && requestInfo.quantityViet != "0") ? requestText.writeln("Số bản tiếng Việt: ${requestInfo.quantityViet}") : null;
   (requestInfo.quantityEng != null && requestInfo.quantityEng != "0") ? requestText.writeln("Số bản tiếng Anh: ${requestInfo.quantityEng}") : null;
   requestInfo.reason != null ? requestText.writeln("Lý do: ${requestInfo.reason}") : null;

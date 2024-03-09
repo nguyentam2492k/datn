@@ -1,9 +1,12 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -22,9 +25,36 @@ class Request17State extends State<Request17> {
   final GlobalKey<FormBuilderState> _request17FormKey = GlobalKey<FormBuilderState>();
 
   late bool isEnable;
+  
+  bool isFormValid() {
+    return _request17FormKey.currentState!.saveAndValidate();
+  }
 
-  void sendFormData() {
-    _request17FormKey.currentState!.saveAndValidate() ? print(_request17FormKey.currentState?.value.toString()) : null;
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    context.loaderOverlay.show(progress: "Đang gửi");
+    formData.addAll(_request17FormKey.currentState!.value);
+
+    var request = Request(
+      requestTypeId: 17, 
+      documentNeed: null,
+      fee: null,
+      status: "processing", 
+      dateCreate: DateTime.now().toString()
+    );
+
+    await apiService.postData(request: request, requestInfo: formData).then((value) {
+      context.loaderOverlay.hide();
+      CustomSnackBar().showSnackBar(
+        context,
+        isError: value != null,
+        text: "Gửi thành công",
+        errorText: "LỖI: $value"
+      );
+    });
+      
   }
 
   @override
@@ -169,7 +199,7 @@ class Request17State extends State<Request17> {
                     const SizedBox(height: 10,),
                     CustomTextFieldRowWidget(
                       labelText: "Địa chỉ sinh viên:", 
-                      name: 'address',
+                      name: 'student_address',
                       validator: (value) {
                         if (value == null || value.isEmpty ) {
                           return "Điền đầy đủ thông tin!";
@@ -183,7 +213,7 @@ class Request17State extends State<Request17> {
                     const SizedBox(height: 10,),
                     CustomTextFieldRowWidget(
                       labelText: "Điện thoại liên hệ:", 
-                      name: 'contact',
+                      name: 'phone_contact',
                       isShort: true,
                       keyboardType: TextInputType.phone,
                       validator: (value) {
@@ -199,7 +229,7 @@ class Request17State extends State<Request17> {
                     const SizedBox(height: 10,),
                     CustomTextFieldRowWidget(
                       labelText: "Nơi nộp đơn và nhận thẻ:", 
-                      name: 'receiving_address',
+                      name: 'receiving_place',
                       validator: (value) {
                         if (value == null || value.isEmpty ) {
                           return "Điền đầy đủ thông tin!";
@@ -226,8 +256,8 @@ class Request17State extends State<Request17> {
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white
                   ),
-                  onPressed: () {
-                    sendFormData();
+                  onPressed: () async {
+                    isFormValid() ? await sendFormData() : null;
                     setState(() {});
                   }, 
                   label: const Text("Gửi yêu cầu"),

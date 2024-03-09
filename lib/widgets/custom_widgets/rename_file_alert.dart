@@ -1,12 +1,13 @@
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:path/path.dart';
 
 class ChangeFilenameAlertDialog extends StatelessWidget {
-  final String filename;
+  final String fullFilename;
   const ChangeFilenameAlertDialog({
     super.key,
-    required this.filename
+    required this.fullFilename
   });
 
   @override
@@ -14,10 +15,13 @@ class ChangeFilenameAlertDialog extends StatelessWidget {
 
     final GlobalKey<FormBuilderState> changeFilenameFormKey = GlobalKey<FormBuilderState>();
 
+    final filename = basenameWithoutExtension(fullFilename);
+    final fileExtension = extension(fullFilename);
+
     var acceptButton = TextButton(
       onPressed: () async {
         if (changeFilenameFormKey.currentState!.saveAndValidate()) {
-          Navigator.of(context).pop(changeFilenameFormKey.currentState!.fields["new_name"]!.value);
+          Navigator.of(context).pop("${changeFilenameFormKey.currentState!.fields["new_name"]!.value}$fileExtension");
         }
       }, 
       child: const Text("Lưu")

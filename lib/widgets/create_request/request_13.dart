@@ -25,8 +25,6 @@ class Request13State extends State<Request13> {
 
   final GlobalKey<FormBuilderState> _request13FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
@@ -189,9 +187,9 @@ class Request13State extends State<Request13> {
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     isFileAdded = files.isEmpty ? false : true;
-                    isFormValid() ? sendFormData() : null;
+                    isFormValid() ? await sendFormData() : null;
                     setState(() {});
                   }, 
                   label: const Text("Gửi yêu cầu"),

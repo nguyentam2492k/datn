@@ -1,8 +1,7 @@
-import 'package:datn/constants/constant_string.dart';
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
-import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
@@ -12,25 +11,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-class Request14 extends StatefulWidget {
-  const Request14({super.key});
+class Request22 extends StatefulWidget {
+  const Request22({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return Request14State();
+    return Request22State();
   }
+  
 }
 
-class Request14State extends State<Request14> {
+class Request22State extends State<Request22> {
 
-  final GlobalKey<FormBuilderState> _request14FormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _request22FormKey = GlobalKey<FormBuilderState>();
 
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
-  bool isFormValid() {
-    if (_request14FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+  bool isFormValid(){
+    if (_request22FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         CustomSnackBar().showSnackBar(
           context,
@@ -48,15 +48,15 @@ class Request14State extends State<Request14> {
     context.loaderOverlay.show(progress: "Đang gửi");
 
     var request = Request(
-      requestTypeId: 14, 
-      status: "completed", 
+      requestTypeId: 22, 
+      status: "canceled", 
       documentNeed: null,
-      fee: "8.000",
+      fee: "10.000",
       dateCreate: DateTime.now().toString(),
     );
     
     try {
-      await APIService().postDataWithFile(request: request, formData: _request14FormKey.currentState!.value, files: files).then((value) {
+      await APIService().postDataWithFile(request: request, formData: _request22FormKey.currentState!.value, files: files).then((value) {
         context.loaderOverlay.hide();
         CustomSnackBar().showSnackBar(
           context,
@@ -74,7 +74,7 @@ class Request14State extends State<Request14> {
       }
     } 
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -84,71 +84,61 @@ class Request14State extends State<Request14> {
         return LoadingHud(text: progress.toString(),);
       },
       child: FormBuilder(
-        key: _request14FormKey,
+        key: _request22FormKey,
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 10,),
-                    Text(
-                      ConstantString.request14Note,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            child: const Text(
-                              "Mẫu đơn",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.blue,
-                              ),
+                    Row(
+                      children: [
+                        const Expanded(
+                          flex: 1,
+                          child: Text(
+                            "Chương trình đào tạo:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
                             ),
-                            onTap: () async {
-                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
-                              await FileServices().actionDownloadFileWithUrl(
-                                context, 
-                                url: ConstantString.request14DocumentUrl1
-                              ).then((value) {
-                                context.loaderOverlay.hide();
-                              });
-                            },
                           ),
-                          InkWell(
-                            child: const Text(
-                              "Báo cáo",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.blue,
-                              ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: FormBuilderRadioGroup(
+                            name: 'education_program', 
+                            initialValue: ConstantList.educationPrograms[0],
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              isCollapsed: true,
                             ),
-                            onTap: () async {
-                              context.loaderOverlay.show(progress: "Chuẩn bị tải ");
-                              await FileServices().actionDownloadFileWithUrl(
-                                context, 
-                                url: ConstantString.request14DocumentUrl2
-                              ).then((value) {
-                                context.loaderOverlay.hide();
-                              });
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Chọn chương trình đào tạo";
+                              }
+                              return null;
                             },
-                          )
-                        ],
-                      ),
+                            options: ConstantList.educationPrograms
+                              .map((program) => FormBuilderFieldOption(value: program))
+                              .toList(),
+                          ),
+                        )
+                      ],
                     ),
-                    const Divider(thickness: 0.4,),
+                    const SizedBox(height: 10,),
+                    CustomTextFieldRowWidget(
+                      labelText: "Nơi thực tập:",
+                      name: 'intern_company',
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return "Điền đầy đủ thông tin!";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 10,),
                     CustomTextFieldRowWidget(
                       labelText: "Lý do:",
                       name: 'reason',
@@ -174,7 +164,7 @@ class Request14State extends State<Request14> {
                     )
                   ],
                 ),
-              ),
+              )
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -201,4 +191,5 @@ class Request14State extends State<Request14> {
       ),
     );
   }
+  
 }

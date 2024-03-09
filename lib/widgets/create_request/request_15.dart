@@ -22,8 +22,6 @@ class Request15State extends State<Request15> {
 
   final GlobalKey<FormBuilderState> _request15FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   late int? numberOfVietVer;
   late int? numberOfEngVer;
 
@@ -199,8 +197,8 @@ class Request15State extends State<Request15> {
                     backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
                     foregroundColor: Colors.white
                   ),
-                  onPressed: () { 
-                    (isFormValid() && _request15FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
+                  onPressed: () async { 
+                    (isFormValid() && _request15FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
                   }, 
                   label: const Text("Gửi yêu cầu"),
                 ),

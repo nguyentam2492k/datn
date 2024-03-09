@@ -46,11 +46,9 @@ dependencies:
   mime: ^1.0.5
   firebase_core: ^2.25.4
   firebase_storage: ^11.6.6
-  # firebase_app_check: ^0.2.1+14
   loader_overlay: ^4.0.0
   uuid: ^4.3.3
   path: 1.8.3
-  # flutter_file_downloader: ^1.2.1
   permission_handler: ^11.3.0
   device_info_plus: ^9.1.2
   dio: ^5.4.1

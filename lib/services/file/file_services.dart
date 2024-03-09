@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:datn/function/function.dart';
-import 'package:datn/widgets/custom_widgets/change_filename_alert.dart';
+import 'package:datn/widgets/custom_widgets/rename_file_alert.dart';
 import 'package:datn/widgets/custom_widgets/file_alert_dialog.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -96,18 +96,11 @@ class FileServices {
     bool permissionStatus;
 
     if (android.version.sdkInt >= 33) {
-      // final externalStorageStatus = await Permission.manageExternalStorage.request();
       final photoStorageStatus = await Permission.photos.request();
       final videoStorageStatus = await Permission.videos.request();
 
-      permissionStatus =  
-              // (externalStorageStatus == PermissionStatus.granted &&
-              photoStorageStatus == PermissionStatus.granted
-              && videoStorageStatus == PermissionStatus.granted;
-
-    // } else if (android.version.sdkInt >= 30 && android.version.sdkInt < 33) {
-      // final externalStorageStatus = await Permission.manageExternalStorage.request();
-      // permissionStatus = externalStorageStatus == PermissionStatus.granted;
+      permissionStatus = photoStorageStatus == PermissionStatus.granted
+                        && videoStorageStatus == PermissionStatus.granted;
     } else {
       final storageStatus = await Permission.storage.request();
       permissionStatus = (storageStatus == PermissionStatus.granted);
@@ -162,9 +155,10 @@ class FileServices {
 
       if (File(savePath).existsSync() && buildContext.mounted) {
         var newFilename = await showDialog(
+          barrierDismissible: false,
           context: buildContext, 
           builder: (context) {
-            return ChangeFilenameAlertDialog(filename: getFileNameFromUrl(url));
+            return ChangeFilenameAlertDialog(fullFilename: getFileNameFromUrl(url));
           }
         );
         savePath = "${externalDir.path}/$newFilename";
