@@ -245,7 +245,7 @@ class FileServices {
           showDialog(
             context: context, 
             builder:(context) {
-              return CustomAlertDialog(path: Uri.decodeComponent(path),);
+              return FileAlertDialog(path: Uri.decodeComponent(path),);
             },
           );
         });

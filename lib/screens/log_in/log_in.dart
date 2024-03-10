@@ -1,7 +1,10 @@
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/model/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
+import 'package:datn/services/session/session_timeout.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -234,17 +237,35 @@ class LogInState extends State<LogIn> {
 
       apiService.login(loginRequestModel).then((value) {
         if (value.runtimeType == LoginResponseModel) {
+
           LoginResponseModel loginResponseData = value as LoginResponseModel;
+
           print(loginResponseData.accessToken);
           TextInput.finishAutofillContext();
+
           Navigator.pushAndRemoveUntil(
             context, 
             MaterialPageRoute(builder: (context) {
-              return HomeScreen(loginResponse: loginResponseData,);
+
+              return SessionTimeoutLitener(
+                duration: const Duration(hours: 1),
+                onTimeOut: () {
+                  showDialog(
+                    barrierDismissible: false,
+                    context: globalNavigatorKey.currentState!.context, 
+                    builder:(context) {
+                      return const SessionTimeoutAlert();
+                    },
+                  );
+                },
+                child: HomeScreen(loginResponse: loginResponseData,)
+              );
+
             }), 
             (route) => false
           );
           print(loginRequestModel.toString());
+
         } else {
           var errorMessage = (value as String).trim().replaceAll(RegExp('"'), '');
           CustomSnackBar().showSnackBar(

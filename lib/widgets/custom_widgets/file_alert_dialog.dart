@@ -2,10 +2,10 @@ import 'package:datn/function/function.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:flutter/material.dart';
 
-class CustomAlertDialog extends StatelessWidget {
+class FileAlertDialog extends StatelessWidget {
   final String path;
 
-  const CustomAlertDialog({
+  const FileAlertDialog({
     super.key,
     required this.path,
   });

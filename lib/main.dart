@@ -21,10 +21,11 @@ class MyApp extends StatelessWidget {
     return buildMyApp();
   }
 
-  MaterialApp buildMyApp() {
+  Widget buildMyApp() {
     
     return MaterialApp(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
+      navigatorKey: globalNavigatorKey,
       title: 'Student UET System',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),

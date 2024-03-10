@@ -5,3 +5,4 @@ import 'package:flutter/material.dart';
 
 LoginResponseModel? globalLoginResponse;
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>();
