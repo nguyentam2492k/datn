@@ -29,54 +29,51 @@ class Request7State extends State<Request7> {
 
   bool isFileAdded = true;
 
+  bool isFormValid() {
+    if (_request7FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        CustomSnackBar().showSnackBar(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> sendFormData() async {
+    var loaderOverlay = context.loaderOverlay;
+
+    loaderOverlay.show(progress: "Đang gửi");
+
+    var request = Request(
+      requestTypeId: 7, 
+      status: "processing", 
+      documentNeed: null,
+      fee: null,
+      dateCreate: DateTime.now().toString(),
+    );
+
+    try {
+      await APIService().postDataWithFile(request: request, formData: _request7FormKey.currentState!.value, files: files).then((value) {
+        loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          text: "Gửi thành công",
+        );
+      });
+    } catch (e) {
+        loaderOverlay.hide();
+        CustomSnackBar().showSnackBar(
+          isError: true,
+          errorText: "LỖI: Gửi không thành công"
+        );
+    } 
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    bool isFormValid() {
-      if (_request7FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-        if (!isListFileOK(files)) {
-          CustomSnackBar().showSnackBar(
-            context,
-            isError: true,
-            errorText: "File lỗi"
-          );
-          return false;
-        }
-        return true;
-      }
-      return false;
-    }
-
-    Future<void> sendFormData() async {
-      context.loaderOverlay.show(progress: "Đang gửi");
-
-      var request = Request(
-        requestTypeId: 7, 
-        status: "processing", 
-        documentNeed: null,
-        fee: null,
-        dateCreate: DateTime.now().toString(),
-      );
-
-      try {
-        await APIService().postDataWithFile(request: request, formData: _request7FormKey.currentState!.value, files: files).then((value) {
-          context.loaderOverlay.hide();
-          CustomSnackBar().showSnackBar(
-            context,
-            text: "Gửi thành công",
-          );
-        });
-      } catch (e) {
-        if (context.mounted) {
-          context.loaderOverlay.hide();
-          CustomSnackBar().showSnackBar(
-            context,
-            isError: true,
-            errorText: "LỖI: Gửi không thành công"
-          );
-        }
-      } 
-    }
 
     return LoaderOverlay(
       useDefaultLoading: false,
@@ -139,7 +136,7 @@ class Request7State extends State<Request7> {
                         setState(() {});
                       },
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(height: 8,),
                     CustomUploadFileRowWidget(
                       files: files, 
                       isFileAdded: isFileAdded, 

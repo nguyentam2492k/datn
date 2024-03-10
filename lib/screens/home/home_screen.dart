@@ -309,13 +309,10 @@ class HomeScreenState extends State<HomeScreen> {
           mode: LaunchMode.platformDefault
         );
     } else {
-      if (context.mounted) {
-        CustomSnackBar().showSnackBar(
-          context,
-          isError: true,
-          errorText: "LỖI",
-        );
-      }
+      CustomSnackBar().showSnackBar(
+        isError: true,
+        errorText: "LỖI",
+      );
     }
   }
   

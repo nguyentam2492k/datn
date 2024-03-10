@@ -33,7 +33,6 @@ class Request22State extends State<Request22> {
     if (_request22FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         CustomSnackBar().showSnackBar(
-          context,
           isError: true,
           errorText: "File lỗi"
         );
@@ -45,7 +44,9 @@ class Request22State extends State<Request22> {
   }
 
   Future<void> sendFormData() async {
-    context.loaderOverlay.show(progress: "Đang gửi");
+    var loaderOverlay = context.loaderOverlay;
+    
+    loaderOverlay.show(progress: "Đang gửi");
 
     var request = Request(
       requestTypeId: 22, 
@@ -57,26 +58,23 @@ class Request22State extends State<Request22> {
     
     try {
       await APIService().postDataWithFile(request: request, formData: _request22FormKey.currentState!.value, files: files).then((value) {
-        context.loaderOverlay.hide();
+        loaderOverlay.hide();
         CustomSnackBar().showSnackBar(
-          context,
           text: "Gửi thành công",
         );
       });
     } catch (e) {
-      if (context.mounted) {
-        context.loaderOverlay.hide();
-        CustomSnackBar().showSnackBar(
-          context,
-          isError: true,
-          errorText: "LỖI: Gửi không thành công"
-        );
-      }
+      loaderOverlay.hide();
+      CustomSnackBar().showSnackBar(
+        isError: true,
+        errorText: "LỖI: Gửi không thành công"
+      );
     } 
   }
   
   @override
   Widget build(BuildContext context) {
+
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayColor: Colors.transparent,
@@ -153,7 +151,7 @@ class Request22State extends State<Request22> {
                         setState(() {});
                       },
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(height: 8,),
                     CustomUploadFileRowWidget(
                       files: files, 
                       isFileAdded: isFileAdded, 

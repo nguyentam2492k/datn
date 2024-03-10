@@ -1,3 +1,4 @@
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class MyApp extends StatelessWidget {
   }
 
   MaterialApp buildMyApp() {
+    
     return MaterialApp(
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       title: 'Student UET System',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),

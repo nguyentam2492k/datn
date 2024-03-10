@@ -34,7 +34,6 @@ class Request19State extends State<Request19> {
     if (_request19FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         CustomSnackBar().showSnackBar(
-          context,
           isError: true,
           errorText: "File lỗi"
         );
@@ -46,7 +45,9 @@ class Request19State extends State<Request19> {
   }
 
   Future<void> sendFormData() async {
-    context.loaderOverlay.show(progress: "Đang gửi");
+    var loaderOverlay = context.loaderOverlay;
+    
+    loaderOverlay.show(progress: "Đang gửi");
 
     var request = Request(
       requestTypeId: 19, 
@@ -58,21 +59,17 @@ class Request19State extends State<Request19> {
     
     try {
       await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) {
-        context.loaderOverlay.hide();
+        loaderOverlay.hide();
         CustomSnackBar().showSnackBar(
-          context,
           text: "Gửi thành công",
         );
       });
     } catch (e) {
-      if (context.mounted) {
-        context.loaderOverlay.hide();
-        CustomSnackBar().showSnackBar(
-          context,
-          isError: true,
-          errorText: "LỖI: Gửi không thành công"
-        );
-      }
+      loaderOverlay.hide();
+      CustomSnackBar().showSnackBar(
+        isError: true,
+        errorText: "LỖI: Gửi không thành công"
+      );
     } 
   }
   

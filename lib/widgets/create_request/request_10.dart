@@ -67,7 +67,6 @@ class Request10State extends State<Request10> {
     await apiService.postData(request: request, requestInfo: formData).then((value) {
       context.loaderOverlay.hide();
       CustomSnackBar().showSnackBar(
-        context,
         isError: value != null,
         text: "Gửi thành công",
         errorText: "LỖI: $value"

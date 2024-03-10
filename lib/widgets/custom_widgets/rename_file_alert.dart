@@ -18,6 +18,13 @@ class ChangeFilenameAlertDialog extends StatelessWidget {
     final filename = basenameWithoutExtension(fullFilename);
     final fileExtension = extension(fullFilename);
 
+    var cancelButton = TextButton(
+      onPressed: () async {
+        Navigator.of(context).pop(null);
+      }, 
+      child: const Text("Huỷ")
+    );
+
     var acceptButton = TextButton(
       onPressed: () async {
         if (changeFilenameFormKey.currentState!.saveAndValidate()) {
@@ -67,6 +74,7 @@ class ChangeFilenameAlertDialog extends StatelessWidget {
         ],
       ),
       actions: [
+        cancelButton,
         acceptButton
       ],
     );

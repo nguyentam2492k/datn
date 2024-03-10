@@ -248,7 +248,6 @@ class LogInState extends State<LogIn> {
         } else {
           var errorMessage = (value as String).trim().replaceAll(RegExp('"'), '');
           CustomSnackBar().showSnackBar(
-            context,
             isError: true,
             errorText: errorMessage
           );

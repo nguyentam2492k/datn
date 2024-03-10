@@ -1,8 +1,8 @@
 import 'package:datn/function/function.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 
 class CustomUploadFileRowWidget extends StatefulWidget {
 
@@ -78,12 +78,20 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 45,
+                  height: 38,
                   child: Row(
                     children: [
                       OutlinedButton.icon(
-                        icon: const Icon(Icons.file_upload_outlined),
-                        label: const Text('Thêm tệp'),
+                        icon: const Icon(
+                          Icons.file_upload_outlined, 
+                          size: 19,
+                        ),
+                        label: const Text(
+                          'Thêm tệp (< 5MB)',
+                          style: TextStyle(
+                            fontSize: 12.5
+                          ),
+                        ),
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(
                             width: 0.5,
@@ -93,22 +101,18 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         ),
                         onPressed: () async {
                           try {
-                            FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
-                            
-                            if (result != null) {
-                              Set<PlatformFile> fileSet = Set.from(files);
-                              fileSet.addAll(result.files);
-                              files = fileSet.toList();
-                              widget.onChanged(files);
-                              for (var file in files) {
-                                print("${file.name}-${file.size}");
-                              }
-                              print('Add completed');
-                            } else {
-                              print("Nothing added");
-                            }
+                            await FileServices().pickFile(listFiles: files)
+                              .then((value) {
+                                if (value != null) {
+                                  files = value.toList();
+                                  widget.onChanged(files);
+                                }
+                              });
                           } catch (error) {
-                            print(error.toString());
+                            CustomSnackBar().showSnackBar(
+                              isError: true,
+                              errorText: "LỖI: ${error.toString()}"
+                            );
                           }
                         },
                       ),
@@ -183,34 +187,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                     ),
                     onPressed: () async {
                       print(file.path);
-                      OpenResult result;
-                      try {
-                        result = await OpenFile.open(
-                          file.path,
-                        );
-
-                        switch (result.type) {
-                          case ResultType.fileNotFound:
-                            throw "File not found!";
-                          case ResultType.noAppToOpen:
-                            throw "No app to open!";
-                          case ResultType.permissionDenied:
-                            throw "Permission denied!";
-                          case ResultType.error:
-                            throw ResultType.error.name;
-                          case ResultType.done:
-                            break;
-                        }
-                      } catch (error) {
-                        if (context.mounted) {
-                          CustomSnackBar().showSnackBar(
-                            context,
-                            isError: true,
-                            // text: "Gửi thành công",
-                            errorText: "LỖI: ${error.toString()}"
-                          );
-                        }
-                      }
+                      FileServices().openFileFromPath(context: context, path: null);
                     }, 
                   ),
                 ),

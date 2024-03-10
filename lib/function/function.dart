@@ -153,6 +153,12 @@ IconData getIcon(String fileName) {
   if (mimeType.endsWith("/pdf")) {
     return Icons.picture_as_pdf_outlined;
   }
+  if (mimeType.startsWith("video/")) {
+    return Icons.video_file_outlined;
+  }
+  if (mimeType.startsWith("audio/")) {
+    return Icons.audio_file_outlined;
+  }
   return Icons.text_snippet_outlined;
 }
 
