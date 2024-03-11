@@ -3,12 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class SessionTimeoutLitener extends StatefulWidget {
+class SessionTimeoutController extends StatefulWidget {
   final Widget child;
   final Duration duration;
   final VoidCallback onTimeOut;
   
-  const SessionTimeoutLitener({
+  const SessionTimeoutController({
     super.key,
     required this.child,
     required this.duration,
@@ -17,11 +17,11 @@ class SessionTimeoutLitener extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return SessionTimeoutLitenerState();
+    return SessionTimeoutControllerState();
   }
 }
 
-class SessionTimeoutLitenerState extends State<SessionTimeoutLitener> {
+class SessionTimeoutControllerState extends State<SessionTimeoutController> {
 
   Timer? _timer;
 

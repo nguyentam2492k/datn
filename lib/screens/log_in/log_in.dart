@@ -227,15 +227,16 @@ class LogInState extends State<LogIn> {
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).clearSnackBars();
     if (_logInFormKey.currentState!.saveAndValidate()) {
-      setState(() {
-        context.loaderOverlay.show();
-      });
+      context.loaderOverlay.show();
+
       loginRequestModel = LoginRequestModel(
         username: _logInFormKey.currentState!.fields['username']!.value, 
         password: _logInFormKey.currentState!.fields['password']!.value
       );
 
       apiService.login(loginRequestModel).then((value) {
+        context.loaderOverlay.hide();
+        
         if (value.runtimeType == LoginResponseModel) {
 
           LoginResponseModel loginResponseData = value as LoginResponseModel;
@@ -247,7 +248,7 @@ class LogInState extends State<LogIn> {
             context, 
             MaterialPageRoute(builder: (context) {
 
-              return SessionTimeoutLitener(
+              return SessionTimeoutController(
                 duration: const Duration(hours: 1),
                 onTimeOut: () {
                   showDialog(
@@ -273,10 +274,6 @@ class LogInState extends State<LogIn> {
             errorText: errorMessage
           );
         }
-        setState(() {
-          context.loaderOverlay.hide();
-        });
-
       });
     }
   }
