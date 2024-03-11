@@ -10,13 +10,15 @@ class CustomUploadFileRowWidget extends StatefulWidget {
   final ValueChanged<List<PlatformFile>> onChanged;
   final bool isFileAdded;
   final String labelText;
+  final bool isImportant;
 
   const CustomUploadFileRowWidget({
     super.key, 
     this.labelText = "Tệp đính kèm:",
     required this.files,
     required this.isFileAdded, 
-    required this.onChanged, 
+    required this.onChanged,
+    this.isImportant = true
   });
 
   @override
@@ -57,9 +59,9 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         color: Colors.black
                       ),
                     ),
-                    const TextSpan(
-                      text: " *",
-                      style: TextStyle(
+                    TextSpan(
+                      text: widget.isImportant ? " *" : '',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.red
                       ),
@@ -117,7 +119,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         },
                       ),
                       Visibility(
-                        visible: !widget.isFileAdded,
+                        visible: widget.isImportant && !widget.isFileAdded,
                         child: Container(
                           height: 30,
                           alignment: Alignment.centerLeft,

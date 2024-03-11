@@ -1,8 +1,6 @@
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/log_in/log_in.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SessionTimeoutAlert extends StatelessWidget {
   const SessionTimeoutAlert({super.key});
@@ -44,7 +42,7 @@ class SessionTimeoutAlert extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red

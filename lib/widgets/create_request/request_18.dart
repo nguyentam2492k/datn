@@ -28,9 +28,10 @@ class Request18 extends StatefulWidget {
 
 class Request18State extends State<Request18> {
 
-  final GlobalKey<FormBuilderState> _request18FormKey = GlobalKey<FormBuilderState>();
-
-  late Image avatarImage;
+  // final GlobalKey<FormBuilderState> _request18FormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _personalInformationFormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _familyInformationFormKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _otherInformationFormKey = GlobalKey<FormBuilderState>();
   
   Map<String, dynamic> formData = {};
 
@@ -49,21 +50,21 @@ class Request18State extends State<Request18> {
   }
 
   bool isFormValid() {
-    if (_request18FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-      filesChanged.value = List.from(files);
-      return true;
-    }
-    filesChanged.value = List.empty();
-    return false;
+    return _personalInformationFormKey.currentState!.saveAndValidate() 
+          && _familyInformationFormKey.currentState!.saveAndValidate()
+          && _otherInformationFormKey.currentState!.saveAndValidate();
   }
 
   void sendFormData() {
-    formData.addAll(_request18FormKey.currentState!.value);
+    // formData.addAll(_request18FormKey.currentState!.value);
       
     // List<File> listFiles = files.map((file) => File(file.path!)).toList();
     List<String> listFiles = files.map((file) => file.name).toList();
     formData['file'] = listFiles;
-    print(formData.toString());
+    print("Personal Information: ${_personalInformationFormKey.currentState?.value}");
+    print("Family Information: ${_familyInformationFormKey.currentState?.value}");
+    print("Other Information: ${_otherInformationFormKey.currentState?.value}");
+    print("FILES: ${formData.toString()}");
   }
 
   @override
@@ -71,13 +72,11 @@ class Request18State extends State<Request18> {
     super.initState();
     files = [];
     isFileAdded = true;
-    avatarImage = Image.asset("assets/images/avatar.jpg");
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    precacheImage(avatarImage.image, context);
   }
 
   @override
@@ -87,27 +86,27 @@ class Request18State extends State<Request18> {
       future: getAddressData(),
       builder:(context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return FormBuilder(
-            key: _request18FormKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10,),
-                        Text(
-                          ConstantString.request18Note,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18
-                          ),
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10,),
+                      Text(
+                        ConstantString.request18Note,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18
                         ),
-                        const SizedBox(height: 10,),
-                        studentInformation(),
-                        const Divider(thickness: 0.5,),
-                        ExpansionTile(
+                      ),
+                      const SizedBox(height: 10,),
+                      studentInformation(),
+                      const Divider(thickness: 0.5,),
+                      FormBuilder(
+                        key: _personalInformationFormKey,
+                        child: ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
@@ -135,8 +134,11 @@ class Request18State extends State<Request18> {
                             const SizedBox(height: 5,)
                           ]
                         ),
-                        const Divider(thickness: 0.5,),
-                        ExpansionTile(
+                      ),
+                      const Divider(thickness: 0.5,),
+                      FormBuilder(
+                        key: _familyInformationFormKey,
+                        child: ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
@@ -159,8 +161,11 @@ class Request18State extends State<Request18> {
                             const SizedBox(height: 5,)
                           ],
                         ),
-                        const Divider(thickness: 0.5,),
-                        ExpansionTile(
+                      ),
+                      const Divider(thickness: 0.5,),
+                      FormBuilder(
+                        key: _otherInformationFormKey,
+                        child: ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
@@ -178,18 +183,18 @@ class Request18State extends State<Request18> {
                             const SizedBox(height: 15,),
                           ],
                         ),
-                        const Divider(thickness: 0.5,),
-                        uploadFile(),
-                      ],
-                    )
-                  ),
+                      ),
+                      const Divider(thickness: 0.5,),
+                      uploadFile(),
+                    ],
+                  )
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: saveButton(context),
-                )
-              ],
-            ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: saveButton(context),
+              )
+            ],
           );
         } 
         else {
@@ -315,7 +320,7 @@ class Request18State extends State<Request18> {
       children: [
         const SizedBox(height: 10,),
         CustomAddressRowWidget(
-          formKey: _request18FormKey,
+          formKey: _personalInformationFormKey,
           labelText: "Nơi khai sinh:",
           provinceName: 'tinh_khaisinh', 
           districtName: 'huyen_khaisinh', 
@@ -324,7 +329,7 @@ class Request18State extends State<Request18> {
         ),
         const SizedBox(height: 15,),
         CustomAddressRowWidget(
-          formKey: _request18FormKey,
+          formKey: _personalInformationFormKey,
           labelText: "Hộ khẩu thường chú:", 
           provinceName: 'tinh_thuongtru', 
           districtName: 'huyen_thuongtru', 
@@ -903,6 +908,7 @@ class Request18State extends State<Request18> {
       builder: (context, myFiles, child) {
         return CustomUploadFileRowWidget(
           labelText: "Cập nhật Ảnh thẻ(01 ảnh, jpg, 4x6):",
+          isImportant: false,
           files: myFiles,
           isFileAdded: isFileAdded,
           onChanged: (value) {
