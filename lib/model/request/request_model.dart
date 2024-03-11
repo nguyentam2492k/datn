@@ -36,7 +36,7 @@ class Request {
 
   factory Request.fromJson(Map<String, dynamic> json) {
 
-    var info = RequestInformation.fromJson(json["info"]);
+    var info = RequestInformation.fromJson(json["info"] as Map<String,dynamic>);
 
     return Request(
       id: json["id"] as int?, 
