@@ -2,6 +2,7 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/model/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
+import 'package:datn/services/secure_storage/secure_storage_servies.dart';
 import 'package:datn/services/session/session_timeout.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
@@ -25,6 +26,10 @@ class LogInState extends State<LogIn> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormBuilderState> _logInFormKey = GlobalKey<FormBuilderState>();
 
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  SecureStorageServices secureStorageServices = SecureStorageServices();
   APIService apiService = APIService();
 
   late bool isShowPassword;
@@ -32,14 +37,25 @@ class LogInState extends State<LogIn> {
 
   late LoginRequestModel loginRequestModel;
 
+  getSavedAccount() async {
+    var savedAccount = await secureStorageServices.getSavedAccount();
+    print(savedAccount);
+    setState(() {
+      _usernameController.text = savedAccount?.username ?? "";
+      _passwordController.text = savedAccount?.password ?? "";
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     isShowPassword = false;
+    getSavedAccount();
   }
 
   @override
   Widget build(BuildContext context){
+    
     return Scaffold (
     key: _scaffoldKey,
     backgroundColor: Colors.white,
@@ -150,6 +166,7 @@ class LogInState extends State<LogIn> {
                     children: [
                       FormBuilderTextField(
                         name: 'username',
+                        controller: _usernameController,
                         style: const TextStyle(fontSize: 15.5, color: Color(0xFF04006C),),
                         decoration: decoration("Tên đăng nhập", Icons.login),
                         autofillHints: const [AutofillHints.username],
@@ -163,6 +180,7 @@ class LogInState extends State<LogIn> {
                       const SizedBox(height: 20,),
                       FormBuilderTextField(
                         name: 'password',
+                        controller: _passwordController,
                         style: const TextStyle(fontSize: 15.5, color: Color(0xFF04006C),),
                         obscureText: !isShowPassword,
                         decoration: decoration("Mật khẩu", Icons.lock_outlined, isPassword: true),
@@ -179,7 +197,7 @@ class LogInState extends State<LogIn> {
                         scale: 0.85,
                         child: FormBuilderCheckbox(
                           name: 'remember_account', 
-                          title: const Text("Ghi nhớ đăng nhập", style: TextStyle(color: Color(0xFF04006C)),),
+                          title: const Text("Ghi nhớ tài khoản", style: TextStyle(color: Color(0xFF04006C)),),
                           initialValue: true,
                           activeColor: const Color(0xFF04006C),
                           decoration: const InputDecoration(
@@ -208,7 +226,7 @@ class LogInState extends State<LogIn> {
                             ),
                           ),
                           onPressed: () {
-                            doLoginAction();
+                            doLoginAction(context);
                           }, 
                         ),
                       ),
@@ -223,7 +241,7 @@ class LogInState extends State<LogIn> {
     );
   }
 
-  doLoginAction() {
+  doLoginAction(BuildContext context) {
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).clearSnackBars();
     if (_logInFormKey.currentState!.saveAndValidate()) {
@@ -234,39 +252,45 @@ class LogInState extends State<LogIn> {
         password: _logInFormKey.currentState!.fields['password']!.value
       );
 
-      apiService.login(loginRequestModel).then((value) {
+      apiService.login(loginRequestModel).then((value) async {
         context.loaderOverlay.hide();
         
         if (value.runtimeType == LoginResponseModel) {
 
           LoginResponseModel loginResponseData = value as LoginResponseModel;
 
-          print(loginResponseData.accessToken);
+          //TODO: Save account
+          if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
+            await secureStorageServices.writeSaveAccount(loginRequestModel);
+          } else {
+            await secureStorageServices.deleteSavedAccount();
+          }
+
           TextInput.finishAutofillContext();
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+              context, 
+              MaterialPageRoute(builder: (context) {
 
-          Navigator.pushAndRemoveUntil(
-            context, 
-            MaterialPageRoute(builder: (context) {
+                return SessionTimeoutController(
+                  duration: const Duration(hours: 1),
+                  onTimeOut: () {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: globalNavigatorKey.currentState!.context, 
+                      builder:(context) {
+                        return const SessionTimeoutAlert();
+                      },
+                    );
+                  },
+                  child: HomeScreen(loginResponse: loginResponseData,)
+                );
 
-              return SessionTimeoutController(
-                duration: const Duration(hours: 1),
-                onTimeOut: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: globalNavigatorKey.currentState!.context, 
-                    builder:(context) {
-                      return const SessionTimeoutAlert();
-                    },
-                  );
-                },
-                child: HomeScreen(loginResponse: loginResponseData,)
-              );
-
-            }), 
-            (route) => false
-          );
-          print(loginRequestModel.toString());
-
+              }), 
+              (route) => false
+            );
+          }
+          
         } else {
           var errorMessage = (value as String).trim().replaceAll(RegExp('"'), '');
           CustomSnackBar().showSnackBar(
