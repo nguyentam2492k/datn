@@ -1,7 +1,8 @@
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login_model.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/screens/help/help_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,6 @@ import 'package:datn/screens/create_request_screen/create_request_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:datn/screens/manage_request/manage_request_screen.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -266,7 +266,12 @@ class HomeScreenState extends State<HomeScreen> {
             leading: const Icon(Icons.help),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              print("Open Ho tro Page");
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => const HelpScreen()
+                )
+              );
             },
           ),
           Container(
@@ -299,21 +304,6 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> openUrl(BuildContext context, {required String urlString}) async {
-    var uri = Uri.parse(urlString);
-    if (await canLaunchUrl(uri)){
-        await launchUrl(
-          uri,
-          mode: LaunchMode.platformDefault
-        );
-    } else {
-      CustomSnackBar().showSnackBar(
-        isError: true,
-        errorText: "LỖI",
-      );
-    }
   }
   
 }

@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/request/request_information_model.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String formatDateWithTime(String dateWithTime) {
   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
@@ -183,3 +185,18 @@ bool isListFileOK(List<PlatformFile> listPlatformFile) {
   }
   return listFileNull.isEmpty && isFileOK;
 }
+
+Future<void> openUrl(BuildContext context, {required String urlString}) async {
+    var uri = Uri.parse(urlString);
+    if (await canLaunchUrl(uri)){
+        await launchUrl(
+          uri,
+          mode: LaunchMode.platformDefault
+        );
+    } else {
+      CustomSnackBar().showSnackBar(
+        isError: true,
+        errorText: "LỖI",
+      );
+    }
+  }
