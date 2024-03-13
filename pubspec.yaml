@@ -54,6 +54,7 @@ dependencies:
   dio: ^5.4.1
   url_launcher: ^6.2.5
   flutter_secure_storage: ^9.0.0
+  flutter_native_splash: ^2.3.10
 
 dev_dependencies:
   flutter_test:
@@ -107,3 +108,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/uet.png
+  android_12:
+    image: assets/images/uet.png
+    color: "#ffffff"
+    icon_background_color: "#ffffff"
+  fullscreen: true

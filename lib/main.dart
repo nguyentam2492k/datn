@@ -13,8 +13,28 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  
+  @override
+  State<StatefulWidget> createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    print("INIT APP");
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    print("APP DISPOSED");
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

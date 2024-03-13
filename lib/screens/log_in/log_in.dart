@@ -242,8 +242,10 @@ class LogInState extends State<LogIn> {
   }
 
   doLoginAction(BuildContext context) {
+
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).clearSnackBars();
+
     if (_logInFormKey.currentState!.saveAndValidate()) {
       context.loaderOverlay.show();
 
