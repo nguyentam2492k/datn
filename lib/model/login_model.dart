@@ -2,18 +2,24 @@ import 'package:datn/model/user.dart';
 
 class LoginResponseModel {
 
-  String accessToken;
-  User user;
+  String? accessToken;
+  int? expiredTime;
+  String? error;
+  User? user;
 
   LoginResponseModel({
-    required this.accessToken,
-    required this.user,
+    this.accessToken,
+    this.expiredTime,
+    this.error,
+    this.user
   });
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(
-      accessToken: json["accessToken"] as String,
-      user: User.fromJson(json["user"]),
+      accessToken: json['token'] != null ? json['token'] as String : null,
+      expiredTime: json['expires_in'] != null ? json['expires_in'] as int : null,
+      error: json['error'] != null ? json['error'] as String : null,
+      user: json['user'] != null ? User.fromJson(json['user'] as Map<String,dynamic>) : null,
     );
   }
 

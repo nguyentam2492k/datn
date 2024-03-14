@@ -1,14 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/request/request_information_model.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String formatDateWithTime(String dateWithTime) {
@@ -52,21 +49,6 @@ bool isInteger(String? s) {
     return false;
   }
   return int.tryParse(s) != null;
-}
-
-Future<String> fileToBase64(File file) async {
-  List<int> imageBytes = await file.readAsBytes();
-  return base64Encode(imageBytes);
-}
-
-Future<File> imageToFile() async {
-  ByteData bytes = await rootBundle.load('assets/images/uet.png');
-  String tempPath = (await getTemporaryDirectory()).path;
-  File file = File('$tempPath/image.jpg');
-  await file.writeAsBytes(
-    bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes)
-  );
-  return file;
 }
 
 Color getColor(String status) {

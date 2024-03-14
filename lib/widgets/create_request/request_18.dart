@@ -268,7 +268,7 @@ class Request18State extends State<Request18> {
             border: Border.all(color: Colors.grey, width: 1)
           ),
           child: Image.network(
-             globalLoginResponse!.user.image,
+             globalLoginResponse!.user?.image ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
             fit: BoxFit.cover,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;

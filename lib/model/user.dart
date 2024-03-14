@@ -2,13 +2,13 @@ class User {
   String email;
   String name;
   String id;
-  String image;
+  String? image;
 
   User({
     required this.email, 
     required this.name, 
     required this.id,
-    required this.image
+    this.image
   });
 
   factory User.fromJson(Map<String, dynamic> map) {
@@ -16,7 +16,7 @@ class User {
       email: map['email'] as String,
       name: map['name'] as String,
       id: map['id'] as String,
-      image: map['image'] as String,
+      image: map['image'] as String?,
     );
   }
 }

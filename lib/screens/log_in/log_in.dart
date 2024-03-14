@@ -57,27 +57,27 @@ class LogInState extends State<LogIn> {
   Widget build(BuildContext context){
     
     return Scaffold (
-    key: _scaffoldKey,
-    backgroundColor: Colors.white,
-    body: SafeArea(
-      child: LoaderOverlay(
-        useDefaultLoading: false,
-        overlayWidgetBuilder: (progress){
-          return const LoadingHud(
-            hudHeight: 120,
-            hudWidth: 120,
-            backgroundColor: Colors.white,
-            borderColor: Colors.transparent,
-            text: "Đang đăng nhập...",
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: buildLoginUi(context),
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: LoaderOverlay(
+          useDefaultLoading: false,
+          overlayWidgetBuilder: (progress){
+            return const LoadingHud(
+              hudHeight: 120,
+              hudWidth: 120,
+              backgroundColor: Colors.white,
+              borderColor: Colors.transparent,
+              text: "Đang đăng nhập...",
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: buildLoginUi(context),
+          ),
         ),
       ),
-    ),
-        );
+    );
   }
 
   SingleChildScrollView buildLoginUi(BuildContext context) {
@@ -92,7 +92,7 @@ class LogInState extends State<LogIn> {
                   height: 80,
                   width: 80,
                   child: Image.asset(
-                    'assets/images/uet.png',
+                    'assets/images/uet_icon.png',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -241,7 +241,7 @@ class LogInState extends State<LogIn> {
     );
   }
 
-  doLoginAction(BuildContext context) {
+  doLoginAction(BuildContext context) async {
 
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -253,54 +253,59 @@ class LogInState extends State<LogIn> {
         username: _logInFormKey.currentState!.fields['username']!.value, 
         password: _logInFormKey.currentState!.fields['password']!.value
       );
+      try {
+        await apiService.login(loginRequestModel).then((loginResponseData) async {
+          context.loaderOverlay.hide();
+          
+          if (loginResponseData.error == null) {
+            //TODO: Save account
+            if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
+              await secureStorageServices.writeSaveAccount(loginRequestModel);
+            } else {
+              await secureStorageServices.deleteSavedAccount();
+            }
 
-      apiService.login(loginRequestModel).then((value) async {
-        context.loaderOverlay.hide();
-        
-        if (value.runtimeType == LoginResponseModel) {
+            TextInput.finishAutofillContext();
+            if (context.mounted) {
+              Navigator.pushAndRemoveUntil(
+                context, 
+                MaterialPageRoute(builder: (context) {
+                  return SessionTimeoutController(
+                    duration: Duration(seconds: loginResponseData.expiredTime ?? 30),
+                    onTimeOut: () {
+                      showDialog(
+                        barrierDismissible: false,
+                        context: globalNavigatorKey.currentState!.context, 
+                        builder:(context) {
+                          return const SessionTimeoutAlert();
+                        },
+                      );
+                    },
+                    child: HomeScreen(loginResponse: loginResponseData,)
+                  );
 
-          LoginResponseModel loginResponseData = value as LoginResponseModel;
-
-          //TODO: Save account
-          if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
-            await secureStorageServices.writeSaveAccount(loginRequestModel);
+                }), 
+                (route) => false
+              );
+              CustomSnackBar().showSnackBar(
+                text: "Đăng nhập thành công"
+              );
+            }
           } else {
-            await secureStorageServices.deleteSavedAccount();
-          }
-
-          TextInput.finishAutofillContext();
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-              context, 
-              MaterialPageRoute(builder: (context) {
-
-                return SessionTimeoutController(
-                  duration: const Duration(hours: 1),
-                  onTimeOut: () {
-                    showDialog(
-                      barrierDismissible: false,
-                      context: globalNavigatorKey.currentState!.context, 
-                      builder:(context) {
-                        return const SessionTimeoutAlert();
-                      },
-                    );
-                  },
-                  child: HomeScreen(loginResponse: loginResponseData,)
-                );
-
-              }), 
-              (route) => false
+            CustomSnackBar().showSnackBar(
+              isError: true,
+              errorText: loginResponseData.error.toString()
             );
           }
           
-        } else {
-          var errorMessage = (value as String).trim().replaceAll(RegExp('"'), '');
-          CustomSnackBar().showSnackBar(
-            isError: true,
-            errorText: errorMessage
-          );
-        }
-      });
+        });
+      } catch (error) {
+        CustomSnackBar().showSnackBar(
+          isError: true,
+          errorText: error.toString()
+        );
+      }
+
     }
   }
   

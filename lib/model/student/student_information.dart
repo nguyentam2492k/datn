@@ -5,7 +5,7 @@ import 'package:datn/model/student/personal_information.dart';
 class StudentInformation {
   String name;
   String id;
-  String image;
+  String? image;
   String birthdate;
   String gender;
   String schoolYear;
@@ -16,7 +16,7 @@ class StudentInformation {
   StudentInformation({
     required this.name,
     required this.id,
-    required this.image,
+    this.image,
     required this.birthdate,
     required this.gender,
     required this.schoolYear,
@@ -43,7 +43,7 @@ class StudentInformation {
     return StudentInformation(
       name: map['name'] as String,
       id: map['id'] as String,
-      image: map['image'] as String,
+      image: map['image'] as String?,
       birthdate: map['birthdate'] as String,
       gender: map['gender'] as String,
       schoolYear: map['school_year'] as String,

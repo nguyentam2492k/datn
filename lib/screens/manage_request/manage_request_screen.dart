@@ -45,8 +45,8 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   @override
   void initState() {
     super.initState();
-    accessToken = globalLoginResponse!.accessToken;
-    userId = globalLoginResponse!.user.id;
+    accessToken = globalLoginResponse!.accessToken!;
+    userId = globalLoginResponse!.user?.id ?? "18021117";
     selectedStatusIndex = 0;
     scrollController.addListener(() {
       _handleScroll();

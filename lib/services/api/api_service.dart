@@ -52,22 +52,60 @@ class MyData {
 
 class APIService {
 
-  static const host = "192.168.1.5";
+  static const host = "http://192.168.1.5:3000";
+  static const myHost = "https://uet-student-cc10e59e8dec.herokuapp.com";
 
-  Future<dynamic> login(LoginRequestModel loginRequestModel) async{
-    Uri url = Uri.parse("http://$host:3000/login");
+  // Future<dynamic> login(LoginRequestModel loginRequestModel) async{
+  //   Uri url = Uri.parse("http://$host:3000/login");
+    
+  //   try {
+  //     final response = await http.post(url, body: loginRequestModel.toJson());
+  //     // print(response.body);
+  //     if(response.statusCode == 200) {
+  //       return LoginResponseModel.fromJson(jsonDecode(response.body));
+  //     } else {
+  //       // print("Unknown Error!");
+  //       return response.body;
+  //     }
+  //   } catch (e) {
+  //     return (e.toString());
+  //   }
+  // }
+
+  Future<LoginResponseModel> login(LoginRequestModel loginRequestModel) async{
+    Uri url = Uri.parse("$myHost/api/v1/login");
     
     try {
       final response = await http.post(url, body: loginRequestModel.toJson());
-      // print(response.body);
-      if(response.statusCode == 200) {
+      if(response.statusCode == 200 || response.statusCode == 401) {
         return LoginResponseModel.fromJson(jsonDecode(response.body));
       } else {
-        // print("Unknown Error!");
-        return response.body;
+        throw response.reasonPhrase.toString();
       }
     } catch (e) {
-      return (e.toString());
+      rethrow;
+    }
+  }
+
+  Future<String> logout() async {
+    Uri url = Uri.parse("$myHost/api/v1/logout");
+
+    try {
+      final response = await http.post(
+        url, 
+        body: null,
+        headers: <String, String>{ 
+          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+        }, 
+      );
+      if(response.statusCode == 200) {
+        var body = jsonDecode(response.body) as Map<String, dynamic>;
+        return body['message'] as String;
+      } else {
+        throw response.reasonPhrase.toString();
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -75,7 +113,7 @@ class APIService {
     List<Request> listData = [];
 
     String currentStatus;
-    String baseUrl = "http://$host:3000/requests?_sort=id&_order=desc&userId=$userId&_start=$startIndex&_limit=$limit";
+    String baseUrl = "$host/requests?_sort=id&_order=desc&userId=$userId&_start=$startIndex&_limit=$limit";
     Uri url = Uri();
 
     switch (status) {
@@ -122,7 +160,7 @@ class APIService {
   }
 
   Future<String?> postData({required Request request, required Map<String, dynamic> requestInfo}) async {
-    Uri url = Uri.parse("http://$host:3000/requests");
+    Uri url = Uri.parse("$host/requests");
 
     var bodyMap = request.toMap();
     bodyMap.addAll({"info": requestInfo});
@@ -155,7 +193,7 @@ class APIService {
 
     var uuid = const UuidV1().generate();
 
-    String child = "files/${globalLoginResponse!.user.id}/$uuid";
+    String child = "files/${globalLoginResponse?.user?.id}/$uuid";
 
     await firebaseServices.uploadMultipleFile(child: child, files: files)
         .then((value) async {          

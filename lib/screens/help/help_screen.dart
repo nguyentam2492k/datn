@@ -21,7 +21,7 @@ class HelpScreen extends StatelessWidget {
                     height: 80,
                     width: 80,
                     child: Image.asset(
-                      'assets/images/uet.png',
+                      'assets/images/uet_icon.png',
                       fit: BoxFit.contain,
                     ),
                   ),

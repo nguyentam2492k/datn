@@ -3,6 +3,9 @@ import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -41,15 +44,25 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     globalLoginResponse = loginResponse;
-
-    return LoaderOverlay(
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        appBar: buildAppBar(context),
-        floatingActionButton: buidAddButton(context), 
-        body: homeScreenBody(context),
-        drawer: buildDrawer(context),
+    
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+      appBar: buildAppBar(context),
+      floatingActionButton: buidAddButton(context), 
+      body: homeScreenBody(context),
+      drawer: LoaderOverlay(
+        useDefaultLoading: false,
+        overlayWidgetBuilder: (progress){
+          return const LoadingHud(
+            hudHeight: 120,
+            hudWidth: 120,
+            backgroundColor: Colors.white,
+            borderColor: Colors.transparent,
+            text: "Đang đăng xuất...",
+          );
+        },
+        child: buildDrawer(context)
       ),
     );
   }
@@ -66,7 +79,7 @@ class HomeScreenState extends State<HomeScreen> {
         )
       ),
       title: const Image(
-        image: AssetImage('assets/images/uet.png'),
+        image: AssetImage('assets/images/uet_icon.png'),
         fit: BoxFit.contain,
         height: 40,
       ),
@@ -207,10 +220,10 @@ class HomeScreenState extends State<HomeScreen> {
       child: ListView( 
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(loginResponse.user.name), 
-            accountEmail: Text(loginResponse.user.id),
+            accountName: Text(loginResponse.user?.name ?? "NAME"), 
+            accountEmail: Text(loginResponse.user?.id ?? "ID"),
             currentAccountPicture: Image.network(
-              loginResponse.user.image,
+              loginResponse.user?.image ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
@@ -282,15 +295,12 @@ class HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
             child: ElevatedButton.icon(
-              onPressed: (){
-                Navigator.pushAndRemoveUntil(
-                  context, 
-                  MaterialPageRoute(builder: (context) {
-                    globalLoginResponse = null;
-                    return const LogIn();
-                  }), 
-                  (route) => false
-                );
+              onPressed: () async {
+                var loaderOverlay = context.loaderOverlay;
+                loaderOverlay.show();
+                await onLogout(context).then((value) {
+                  loaderOverlay.hide();
+                });
               },
               icon: const Icon(Icons.logout),
               label: const Text("Đăng xuất"),
@@ -304,6 +314,30 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> onLogout(BuildContext context) async {
+    try {
+      await APIService().logout().then((value) {
+        Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(builder: (context) {
+            globalLoginResponse = null;
+            return const LogIn();
+          }), 
+          (route) => false
+        );
+        CustomSnackBar().showSnackBar(
+          isError: false,
+          text: value
+        );
+      });
+    } catch (error) {
+      CustomSnackBar().showSnackBar(
+        isError: true,
+        errorText: error.toString()
+      );
+    }
   }
   
 }
