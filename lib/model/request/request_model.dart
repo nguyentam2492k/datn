@@ -62,8 +62,8 @@ class Request {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'student': globalLoginResponse!.user!.name,
-      'userId': globalLoginResponse!.user!.id,
+      'student': globalLoginResponse!.user?.name ?? "Nguyen Van A",
+      'userId': globalLoginResponse!.user?.id ?? "18021117",
       'request_type': ConstantList.requests[requestTypeId - 1],
       'request_type_id': requestTypeId,
       'file': file,

@@ -1,54 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/firebase/firebase_services.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 import 'package:datn/model/login_model.dart';
+import 'package:mime/mime.dart';
 import 'package:uuid/v1.dart';
-
-class MyData {
-  String id;
-  String userId;
-  String title;
-  String body;
-  String? file;
-
-  MyData({
-    required this.id,
-    required this.userId,
-    required this.title,
-    required this.body,
-    this.file
-  });
-
-  factory MyData.fromJson(Map<String, dynamic> json) {
-    return MyData(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      title: json['title'] as String,
-      body: json['body'] as String,
-      file: json['file'] as String?
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'id': id,
-      'userId': userId,
-      'title':  title.trim(),
-      'body': body.trim(),
-      'file': file
-    };
-  }
-
-  @override
-  String toString() {
-    return 'MyData(id: $id, userId: $userId, title: $title, body: $body)';
-  }
-}
 
 class APIService {
 
@@ -76,14 +38,14 @@ class APIService {
     Uri url = Uri.parse("$myHost/api/v1/login");
     
     try {
-      final response = await http.post(url, body: loginRequestModel.toJson());
+      final response = await Dio().postUri(url, data: loginRequestModel.toJson());
       if(response.statusCode == 200 || response.statusCode == 401) {
-        return LoginResponseModel.fromJson(jsonDecode(response.body));
+        return LoginResponseModel.fromJson(response.data);
       } else {
-        throw response.reasonPhrase.toString();
+        throw response.statusMessage.toString();
       }
-    } catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      throw e.message.toString();
     }
   }
 
@@ -91,21 +53,23 @@ class APIService {
     Uri url = Uri.parse("$myHost/api/v1/logout");
 
     try {
-      final response = await http.post(
+      final response = await Dio().postUri(
         url, 
-        body: null,
-        headers: <String, String>{ 
-          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-        }, 
+        data: null,
+        options: Options(
+          headers: <String, String>{ 
+            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+          }
+        ), 
       );
       if(response.statusCode == 200) {
-        var body = jsonDecode(response.body) as Map<String, dynamic>;
+        var body = response.data;
         return body['message'] as String;
       } else {
-        throw response.reasonPhrase.toString();
+        throw response.statusMessage.toString();
       }
-    } catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      throw e.message.toString();
     }
   }
 
@@ -130,21 +94,21 @@ class APIService {
     print(url);
 
     try {
-      var response = await http.get(
+      var response = await Dio().getUri(
         url,
-        headers: <String, String>{ 
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Accept': 'application/json;charset=UTF-8',
-          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-        }, 
+        options: Options(
+          headers: <String, String>{ 
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json;charset=UTF-8',
+            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+          }
+        ), 
       );
 
       if (response.statusCode == 200) {
-        var responseBody = utf8.decode(response.bodyBytes);
-
+        var responseBody = response.data as List<dynamic>;
         if (responseBody.isNotEmpty) {
-          var data = jsonDecode(responseBody) as List;
-          listData = data.map((jsonData) {
+          listData = responseBody.map((jsonData) {
             return Request.fromJson(jsonData);
           }).toList();
           return listData;
@@ -152,9 +116,10 @@ class APIService {
       } else {
         return [];
       }
-    } on Exception catch (e) {
-      print("GET DATA ERROR: ${e.toString()}");
-      rethrow;
+
+    } on DioException catch (e) {
+      print("GET DATA ERROR: ${e.message.toString()}");
+      throw e.message.toString();
     }
     return [];
   }
@@ -166,24 +131,26 @@ class APIService {
     bodyMap.addAll({"info": requestInfo});
     
     try {
-      final response = await http.post(
+      final response = await Dio().postUri(
         url, 
-        body: jsonEncode(bodyMap),
-        headers: <String, String>{ 
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Accept': 'application/json;charset=UTF-8',
-          'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-        }, 
+        data: jsonEncode(bodyMap),
+        options: Options(
+          headers: <String, String>{ 
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json;charset=UTF-8',
+            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+          }
+        ), 
       );
       if(response.statusCode == 201) {
         return null;
       } else {
-        print(response.reasonPhrase);
-        return "#${response.statusCode}: ${response.reasonPhrase}";
+        print(response.statusMessage);
+        return "#${response.statusCode}: ${response.statusMessage}";
       }
-    } catch (e) {
+    } on DioException catch (e) {
       print(e.toString());
-      return e.toString();
+      return e.message.toString();
       // rethrow;
     }
   }
@@ -210,6 +177,70 @@ class APIService {
               }
             });
         });
+  }
+
+  Future<void> postDataWithoutFiles({required Map<String, dynamic> data}) async {
+    //TODO: THAY DOI URL
+    Uri url = Uri.parse("$host/requests");
+
+    try {
+      final response = await Dio().postUri(
+        url,
+        data: data,
+        options: Options(
+          headers: <String, String>{ 
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+          }
+        )
+      );
+
+      if (response.statusCode != 201) {
+        throw response.statusMessage.toString();
+      }
+    } on DioException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<void> postDataWithinFiles({required Map<String, dynamic> data, required List<PlatformFile> files}) async {
+    //TODO: THAY DOI URL
+    Uri url = Uri.parse("$host/requests");
+    
+    Future.wait(
+      files.map((platformFile) async {
+        var file = File(platformFile.path!);
+        final mimeTypeData = lookupMimeType(file.path)!.split('/');
+
+        final fileToPost = await MultipartFile.fromFile(
+          file.path, 
+          filename: platformFile.name,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1])
+        );
+        data.addAll({"files": fileToPost});
+      })
+    );
+
+    final formData = FormData.fromMap(data);
+
+    try {
+      final response = await Dio().postUri(
+        url,
+        data: formData,
+        options: Options(
+          headers: <String, String>{ 
+            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+          }
+        )
+      );
+
+      if (response.statusCode != 201) {
+        throw response.statusMessage.toString();
+      }
+    } on DioException catch (_) {
+      rethrow;
+    }
   }
 
 }
