@@ -222,7 +222,7 @@ class APIService {
       })
     );
 
-    final formData = FormData.fromMap(data);
+    final formData = FormData.fromMap(data, ListFormat.multiCompatible);
 
     try {
       final response = await Dio().postUri(

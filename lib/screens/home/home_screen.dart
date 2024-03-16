@@ -1,4 +1,5 @@
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login_model.dart';
@@ -84,7 +85,7 @@ class HomeScreenState extends State<HomeScreen> {
         height: 40,
       ),
       leading: IconButton(
-        icon: const Icon(Icons.menu),
+        icon: const Icon(MyIcons.menu),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(), 
       ),
     );
@@ -92,7 +93,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   FloatingActionButton buidAddButton(BuildContext context) {
     return FloatingActionButton.extended(
-      icon: const Icon(Icons.add),
+      icon: const Icon(MyIcons.add),
       label: const Text('Tạo yêu cầu'),
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
@@ -240,7 +241,7 @@ class HomeScreenState extends State<HomeScreen> {
               },
               errorBuilder: (context, error, stackTrace) {
                 return const Center(
-                  child: Icon(Icons.image_not_supported_outlined, size: 30, color: Colors.white70,)
+                  child: Icon(MyIcons.noImage, size: 30, color: Colors.white70,)
                 );
               },
             ),
@@ -250,8 +251,8 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           ListTile(
             title: const Text('Xử lý yêu cầu'),
-            leading: const Icon(Icons.contact_page),
-            trailing: const Icon(Icons.keyboard_arrow_right),
+            leading: const Icon(MyIcons.contact),
+            trailing: const Icon(MyIcons.arrowRight),
             onTap: () async {
               Navigator.push(
                 context, 
@@ -263,8 +264,8 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           ListTile(
             title: const Text('Tạo yêu cầu'),
-            leading: const Icon(Icons.note_add_rounded),
-            trailing: const Icon(Icons.keyboard_arrow_right),
+            leading: const Icon(MyIcons.addDocument),
+            trailing: const Icon(MyIcons.arrowRight),
             onTap: () {
               Navigator.push(
                 context, 
@@ -276,8 +277,8 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           ListTile(
             title: const Text('Hỗ trợ'),
-            leading: const Icon(Icons.help),
-            trailing: const Icon(Icons.keyboard_arrow_right),
+            leading: const Icon(MyIcons.help),
+            trailing: const Icon(MyIcons.arrowRight),
             onTap: () {
               Navigator.push(
                 context, 
@@ -302,7 +303,7 @@ class HomeScreenState extends State<HomeScreen> {
                   loaderOverlay.hide();
                 });
               },
-              icon: const Icon(Icons.logout),
+              icon: const Icon(MyIcons.logout),
               label: const Text("Đăng xuất"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

@@ -1,10 +1,11 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:flutter/material.dart';
 
 class CustomSnackBar {
 
   void showSnackBar({String text = "OK", String errorText = "Lỗi", bool isError = false}) {
-    var icon = isError ? Icons.error_outline_outlined : Icons.check_circle_outline_outlined;
+    var icon = isError ? MyIcons.error : MyIcons.check;
     var color = isError ? Colors.red : Colors.green;
     var snackBarText = isError ? errorText : text;
 

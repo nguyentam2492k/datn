@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class SessionTimeoutAlert extends StatelessWidget {
           (route) => false
         );
       },
-      icon: const Icon(Icons.logout),
+      icon: const Icon(MyIcons.logout),
       label: const Text("Đăng xuất"),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
@@ -48,7 +49,7 @@ class SessionTimeoutAlert extends StatelessWidget {
               color: Colors.red
             ),
             child: const Icon(
-              Icons.lock_clock_outlined, 
+              MyIcons.lockClock, 
               color: Colors.white,
               size: 17,
             ),

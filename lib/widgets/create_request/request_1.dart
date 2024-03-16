@@ -1,9 +1,11 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
@@ -146,7 +148,7 @@ class Request1Stated extends State<Request1> {
                             flex: 4,
                             child: ElevatedButton.icon(
                               
-                              icon: const Icon(Icons.arrow_drop_down),
+                              icon: const Icon(MyIcons.arrowDown),
                               label: Text(
                                 selectedCertification ?? "Chọn Loại giấy chứng nhận",
                                 maxLines: 2,  
@@ -246,23 +248,11 @@ class Request1Stated extends State<Request1> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                    foregroundColor: Colors.white
-                  ),
-                  onPressed: () async {
-                    (isFormValid() && _request1FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
-                  }, 
-                  label: const Text("Gửi yêu cầu"),
-                ),
-              ),
+            SendRequestButton(
+              isFormValid: isFormValid(),
+              onPressed: () async {
+                (isFormValid() && _request1FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
+              },
             )
           ],
         ),

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/text_row.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -190,9 +192,13 @@ class Request18State extends State<Request18> {
                   )
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: saveButton(context),
+              SendRequestButton(
+                icon: const Icon(MyIcons.save),
+                labelText: "Lưu hồ sơ",
+                onPressed: () {
+                  isFileAdded = files.isEmpty ? false : true;
+                  isFormValid() ? sendFormData() : null;
+                }, 
               )
             ],
           );
@@ -230,7 +236,7 @@ class Request18State extends State<Request18> {
         fontSize: 10,
         height: 0.3
       ),
-      suffixIcon: isDatePicker ?? false ? const Icon(Icons.calendar_month_outlined, size: 17,) : null,
+      suffixIcon: isDatePicker ?? false ? const Icon(MyIcons.calendar, size: 17,) : null,
       suffixIconColor: Colors.grey,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       focusedBorder: const OutlineInputBorder(
@@ -278,7 +284,7 @@ class Request18State extends State<Request18> {
             },
             errorBuilder: (context, error, stackTrace) {
               return const Center(
-                child: Icon(Icons.image_not_supported_outlined, size: 30, color: Colors.grey,)
+                child: Icon(MyIcons.noImage, size: 30, color: Colors.grey,)
               );
             },
           ),
@@ -909,6 +915,8 @@ class Request18State extends State<Request18> {
         return CustomUploadFileRowWidget(
           labelText: "Cập nhật Ảnh thẻ(01 ảnh, jpg, 4x6):",
           isImportant: false,
+          allowMultiple: false,
+          isPickImage: true,
           files: myFiles,
           isFileAdded: isFileAdded,
           onChanged: (value) {
@@ -920,23 +928,4 @@ class Request18State extends State<Request18> {
     );
   }
 
-  Widget saveButton(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.save),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white
-        ),
-        onPressed: () {
-          isFileAdded = files.isEmpty ? false : true;
-          isFormValid() ? sendFormData() : null;
-          // setState(() {});
-        }, 
-        label: const Text("Gửi yêu cầu"),
-      ),
-    );
-  }
 }

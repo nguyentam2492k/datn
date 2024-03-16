@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
@@ -11,6 +12,8 @@ class CustomUploadFileRowWidget extends StatefulWidget {
   final bool isFileAdded;
   final String labelText;
   final bool isImportant;
+  final bool allowMultiple;
+  final bool isPickImage;
 
   const CustomUploadFileRowWidget({
     super.key, 
@@ -18,7 +21,9 @@ class CustomUploadFileRowWidget extends StatefulWidget {
     required this.files,
     required this.isFileAdded, 
     required this.onChanged,
-    this.isImportant = true
+    this.isImportant = true,
+    this.allowMultiple = true,
+    this.isPickImage = false
   });
 
   @override
@@ -85,7 +90,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                     children: [
                       OutlinedButton.icon(
                         icon: const Icon(
-                          Icons.file_upload_outlined, 
+                          MyIcons.upload, 
                           size: 19,
                         ),
                         label: const Text(
@@ -103,7 +108,11 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         ),
                         onPressed: () async {
                           try {
-                            await FileServices().pickFile(listFiles: files)
+                            await FileServices().pickFile(
+                              listFiles: files, 
+                              allowMultiple: widget.allowMultiple,
+                              isPickImage: widget.isPickImage
+                            )
                               .then((value) {
                                 if (value != null) {
                                   files = value.toList();
@@ -199,7 +208,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                 child: FittedBox(
                   fit: BoxFit.fill,
                   child: IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(MyIcons.close),
                     onPressed: (){
                       files.removeAt(files.indexOf(file));
                       widget.onChanged(files);

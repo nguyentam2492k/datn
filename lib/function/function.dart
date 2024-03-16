@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/model/request/request_information_model.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
@@ -129,21 +130,21 @@ String getStatus(String status) {
 IconData getIcon(String fileName) {
   final mimeType = lookupMimeType(fileName);
   if (mimeType == null) {
-    return Icons.text_snippet_outlined;
+    return MyIcons.document;
   }
   if (mimeType.startsWith("image/")) {
-    return Icons.image_outlined;
+    return MyIcons.image;
   }
   if (mimeType.endsWith("/pdf")) {
-    return Icons.picture_as_pdf_outlined;
+    return MyIcons.pdf;
   }
   if (mimeType.startsWith("video/")) {
-    return Icons.video_file_outlined;
+    return MyIcons.video;
   }
   if (mimeType.startsWith("audio/")) {
-    return Icons.audio_file_outlined;
+    return MyIcons.audio;
   }
-  return Icons.text_snippet_outlined;
+  return MyIcons.document;
 }
 
 String getFileNameFromUrl(String url) {

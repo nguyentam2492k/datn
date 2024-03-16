@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/constants/constant_list.dart';
@@ -322,11 +323,11 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Icon(
-                    Icons.calendar_month,
+                    MyIcons.calendar,
                     size: 20,
                     color: Colors.grey,
                   ),
-                  const SizedBox(width: 5,),
+                  const SizedBox(width: 3,),
                   Flexible(
                     child: Text(
                       formatDateWithTime(list[index].dateCreate),
@@ -342,10 +343,11 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Icon(
-                    Icons.attach_money_rounded,
+                    MyIcons.money,
                     size: 20,
                     color: Colors.grey,
                   ),
+                  const SizedBox(width: 3,),
                   Flexible(
                     child: Text(
                       list[index].fee ?? "----",
@@ -380,7 +382,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(
-                Icons.file_present_outlined, 
+                MyIcons.attachFile, 
                 color: Color(0xFF0E6FBE), 
                 size: 14,
               ),
@@ -411,7 +413,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 isHaveCancelButton: false,
                 isHaveLeftIcon: true,
                 isHaveRightIcon: true,
-                rightIcon: Icons.file_download_outlined,
+                rightIcon: MyIcons.download,
                 isListFile: true,
               );
             },
@@ -439,7 +441,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
           height: 18,
           child: FilledButton.icon(
             icon: Icon(
-              isExpanded.value[index] ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+              isExpanded.value[index] ? MyIcons.arrowUp : MyIcons.arrowDown,
               size: 11,
               color: const Color(0xFF063A76),
             ),

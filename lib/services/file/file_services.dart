@@ -16,23 +16,28 @@ import 'package:permission_handler/permission_handler.dart';
 
 class FileServices {
 
-  Future<List<PlatformFile>?> pickFile({required List<PlatformFile> listFiles}) async {
+  Future<List<PlatformFile>?> pickFile({bool isPickImage = false, bool allowMultiple = true, required List<PlatformFile> listFiles}) async {
     const maxFileSize = 5 * 1024 * 1024;
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
+        allowMultiple: allowMultiple,
+        type: isPickImage ? FileType.image : FileType.any
       );
       
       if (result != null) {
         var listFileSize = result.files.map((e) => e.size).toList();
         if (listFileSize.every((size) => size <= maxFileSize)) {
-          Set<PlatformFile> fileSet = Set.from(listFiles);
-          fileSet.addAll(result.files);
-          var files = fileSet.toList();
-          for (var file in files) {
-            print("${file.name}-${file.size}");
+          if (!allowMultiple) {
+            return result.files;
+          } else {
+            Set<PlatformFile> fileSet = Set.from(listFiles);
+            fileSet.addAll(result.files);
+            var files = fileSet.toList();
+            for (var file in files) {
+              print("${file.name}-${file.size}");
+            }
+            return files;
           }
-          return files;
         } else {
           throw "Kich thước file >= 5MB";
         }

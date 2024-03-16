@@ -4,6 +4,7 @@ import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -188,24 +189,11 @@ class Request10State extends State<Request10> {
                 ),
               )
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                    foregroundColor: Colors.white
-                  ),
-                  onPressed: () async { 
-                    (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
-                  }, 
-                  label: const Text("Gửi yêu cầu"),
-                ),
-              ),
-            )
+            SendRequestButton(
+              onPressed: () async {
+                (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
+              },
+            ),
           ],
         )
       ),

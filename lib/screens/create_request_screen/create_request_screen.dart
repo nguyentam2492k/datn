@@ -1,4 +1,5 @@
 import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/widgets/create_request/request_1.dart';
 import 'package:datn/widgets/create_request/request_10.dart';
 import 'package:datn/widgets/create_request/request_11.dart';
@@ -133,7 +134,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
                 flex: 4,
                 child: ElevatedButton.icon(
                   
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: const Icon(MyIcons.arrowDown),
                   label: Text(selectedItem ?? "Chọn yêu cầu"),
                   onPressed: () async {
                     final String? data = await openBottomSheet(selectedItem);

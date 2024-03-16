@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -23,7 +24,7 @@ class CustomFormBuilderDropdown extends StatefulWidget {
       fontSize: 14,
       color: Colors.black,  
     ),
-    this.icon = const Icon(Icons.keyboard_arrow_down), 
+    this.icon = const Icon(MyIcons.arrowDown), 
     this.decoration = const InputDecoration(
       contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       errorStyle: TextStyle(

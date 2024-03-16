@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:flutter/material.dart';
 
 class NumericStepButton extends StatefulWidget {
@@ -66,7 +67,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
             fit: BoxFit.fill,
             child: IconButton(
               icon: Icon(
-                Icons.remove,
+                MyIcons.minus,
                 color: widget.stepButtonColor,
               ),
               iconSize: widget.iconSize,
@@ -128,7 +129,7 @@ class _NumericStepButtonState extends State<NumericStepButton> {
             fit: BoxFit.fill,
             child: IconButton(
               icon: Icon(
-                Icons.add,
+                MyIcons.add,
                 color: widget.stepButtonColor,
               ),
               iconSize: widget.iconSize,

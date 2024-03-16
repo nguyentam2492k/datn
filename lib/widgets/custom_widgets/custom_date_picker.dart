@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -33,7 +34,7 @@ class CustomFormBuilderDateTimePicker extends StatefulWidget {
         color: Colors.grey,
         fontWeight: FontWeight.normal
       ),
-      suffixIcon: Icon(Icons.calendar_month_outlined, size: 20,),
+      suffixIcon: Icon(MyIcons.calendar, size: 20,),
       suffixIconColor: Colors.grey,
       errorStyle: TextStyle(
         fontSize: 10,

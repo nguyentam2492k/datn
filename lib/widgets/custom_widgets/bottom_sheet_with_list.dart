@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
@@ -22,7 +23,7 @@ class BottomSheetWithList extends StatefulWidget {
     this.isHaveRightIcon = true,
     this.isHaveLeftIcon = false,
     this.isHaveCancelButton = true,
-    this.rightIcon = Icons.keyboard_arrow_right,
+    this.rightIcon = MyIcons.arrowRight,
     this.isListFile = false,
   });
 

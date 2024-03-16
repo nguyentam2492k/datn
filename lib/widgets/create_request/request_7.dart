@@ -6,6 +6,7 @@ import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/snack_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -149,26 +150,12 @@ class Request7State extends State<Request7> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white
-                  ),
-                  onPressed: () async {
-                    isFileAdded = files.isEmpty ? false : true;
-                    isFormValid() ? await sendFormData() : null;
-                    // setState(() {});
-                  }, 
-                  label: const Text("Gửi yêu cầu"),
-                ),
-              ),
-            )
+            SendRequestButton(
+              onPressed: () async {
+                isFileAdded = files.isEmpty ? false : true;
+                isFormValid() ? await sendFormData() : null;
+              },
+            ),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/model/login_model.dart';
@@ -168,7 +169,7 @@ class LogInState extends State<LogIn> {
                         name: 'username',
                         controller: _usernameController,
                         style: const TextStyle(fontSize: 15.5, color: Color(0xFF04006C),),
-                        decoration: decoration("Tên đăng nhập", Icons.login),
+                        decoration: decoration("Tên đăng nhập", MyIcons.person),
                         autofillHints: const [AutofillHints.username],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -183,7 +184,7 @@ class LogInState extends State<LogIn> {
                         controller: _passwordController,
                         style: const TextStyle(fontSize: 15.5, color: Color(0xFF04006C),),
                         obscureText: !isShowPassword,
-                        decoration: decoration("Mật khẩu", Icons.lock_outlined, isPassword: true),
+                        decoration: decoration("Mật khẩu", MyIcons.lock, isPassword: true),
                         autofillHints: const [AutofillHints.password],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -215,7 +216,7 @@ class LogInState extends State<LogIn> {
                             elevation: 0
                           ),
                           icon: const Icon(
-                            Icons.login,
+                            MyIcons.login,
                             color: Colors.white,
                           ), 
                           label: const Text(
@@ -329,7 +330,7 @@ class LogInState extends State<LogIn> {
       suffixIconConstraints: const BoxConstraints(minWidth: 50),
       suffixIcon: isPassword 
         ? GestureDetector(
-          child:  isShowPassword ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
+          child:  isShowPassword ? const Icon(MyIcons.eye) : const Icon(MyIcons.eyeOff),
           onTap: (){
             setState(() {
               isShowPassword = !isShowPassword;
