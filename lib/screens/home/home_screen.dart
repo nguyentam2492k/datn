@@ -2,11 +2,11 @@ import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/login_model.dart';
+import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -299,7 +299,7 @@ class HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 var loaderOverlay = context.loaderOverlay;
                 loaderOverlay.show();
-                await onLogout(context).then((value) {
+                await onLogout().then((value) {
                   loaderOverlay.hide();
                 });
               },
@@ -317,7 +317,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> onLogout(BuildContext context) async {
+  Future<void> onLogout() async {
     try {
       await APIService().logout().then((value) {
         Navigator.pushAndRemoveUntil(
@@ -328,13 +328,13 @@ class HomeScreenState extends State<HomeScreen> {
           }), 
           (route) => false
         );
-        CustomSnackBar().showSnackBar(
+        MyToast.showToast(
           isError: false,
-          text: value
+          text: value,
         );
       });
     } catch (error) {
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: true,
         errorText: error.toString()
       );

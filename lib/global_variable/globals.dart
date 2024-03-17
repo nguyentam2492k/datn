@@ -1,6 +1,6 @@
 library my_prj.globals;
 
-import 'package:datn/model/login_model.dart';
+import 'package:datn/model/login/login_model.dart';
 import 'package:flutter/material.dart';
 
 LoginResponseModel? globalLoginResponse;

@@ -7,7 +7,7 @@ import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widg
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -33,7 +33,7 @@ class Request12State extends State<Request12> {
   bool isFormValid() {
     if (_request12FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
-        CustomSnackBar().showSnackBar(
+        MyToast.showToast(
           isError: true,
           errorText: "File lỗi"
         );
@@ -60,13 +60,13 @@ class Request12State extends State<Request12> {
     try {
       await APIService().postDataWithFile(request: request, formData: _request12FormKey.currentState!.value, files: files).then((value) {
         loaderOverlay.hide();
-        CustomSnackBar().showSnackBar(
+        MyToast.showToast(
           text: "Gửi thành công",
         );
       });
     } catch (e) {
       loaderOverlay.hide();
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: true,
         errorText: "LỖI: Gửi không thành công"
       );

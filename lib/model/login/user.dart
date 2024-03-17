@@ -15,7 +15,7 @@ class User {
     return User(
       email: map['email'] as String,
       name: map['name'] as String,
-      id: map['id'] as String,
+      id: map['code'] as String,
       image: map['image'] as String?,
     );
   }

@@ -1,7 +1,7 @@
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/services/file/file_services.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -120,7 +120,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                                 }
                               });
                           } catch (error) {
-                            CustomSnackBar().showSnackBar(
+                            MyToast.showToast(
                               isError: true,
                               errorText: "LỖI: ${error.toString()}"
                             );

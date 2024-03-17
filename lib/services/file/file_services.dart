@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:datn/function/function.dart';
+import 'package:datn/services/handle/my_handle.dart';
 import 'package:datn/widgets/custom_widgets/rename_file_alert.dart';
 import 'package:datn/widgets/custom_widgets/file_alert_dialog.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -67,20 +68,12 @@ class FileServices {
         file.path,
       );
 
-      switch (result.type) {
-        case ResultType.done:
-          break;
-        case ResultType.fileNotFound:
-          throw "File not found!";
-        case ResultType.noAppToOpen:
-          throw "No app to open!";
-        case ResultType.permissionDenied:
-          throw "Permission denied!";
-        case ResultType.error:
-          throw ResultType.error.name;
+      final resultType = MyHandle.handleOpenFileResult(result.type);
+      if (resultType != null) {
+        throw resultType;
       }
     } catch (error) {
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: true,
         errorText: "LỖI: ${error.toString()}"
       );
@@ -90,7 +83,7 @@ class FileServices {
 
   Future<void> openFileFromPath({required BuildContext context, required String? path}) async {
     if (path == null) {
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: true,
         errorText: "LỖI: File's Path is Null"
       );
@@ -106,20 +99,12 @@ class FileServices {
           path,
         );
 
-        switch (result.type) {
-          case ResultType.done:
-            break;
-          case ResultType.fileNotFound:
-            throw "File not found!";
-          case ResultType.noAppToOpen:
-            throw "No app to open!";
-          case ResultType.permissionDenied:
-            throw "Permission denied!";
-          case ResultType.error:
-            throw ResultType.error.name;
+        final resultType = MyHandle.handleOpenFileResult(result.type);
+        if (resultType != null) {
+          throw resultType;
         }
       } catch (error) {
-        CustomSnackBar().showSnackBar(
+        MyToast.showToast(
           isError: true,
           errorText: "LỖI: ${error.toString()}"
         );
@@ -238,7 +223,7 @@ class FileServices {
       await FileServices().downloadAndGetFileFromUrl(context, url: url)
         .then((path) async {
           if (path == null) {
-            CustomSnackBar().showSnackBar(
+            MyToast.showToast(
               isError: true,
               errorText: "LỖI",
             );
@@ -255,7 +240,7 @@ class FileServices {
           );
         });
     } catch (error) {
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: true,
         errorText: "LỖI: $error",
       );

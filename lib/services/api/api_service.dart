@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/request_model.dart';
+import 'package:datn/services/handle/my_handle.dart';
 import 'package:datn/services/firebase/firebase_services.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 
-import 'package:datn/model/login_model.dart';
+import 'package:datn/model/login/login_model.dart';
 import 'package:mime/mime.dart';
 import 'package:uuid/v1.dart';
 
@@ -38,14 +39,28 @@ class APIService {
     Uri url = Uri.parse("$myHost/api/v1/login");
     
     try {
-      final response = await Dio().postUri(url, data: loginRequestModel.toJson());
+      final response = await Dio().postUri(
+        url, 
+        data: loginRequestModel.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept' : 'application/json; charset=UTF-8'
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+          responseType: ResponseType.plain
+        ),
+      );
       if(response.statusCode == 200 || response.statusCode == 401) {
-        return LoginResponseModel.fromJson(response.data);
+        return LoginResponseModel.fromJson(jsonDecode(response.data));
       } else {
         throw response.statusMessage.toString();
       }
-    } on DioException catch (e) {
-      throw e.message.toString();
+    } on DioException catch (error) {
+      throw MyHandle.handleDioError(error.type);
     }
   }
 
@@ -58,8 +73,13 @@ class APIService {
         data: null,
         options: Options(
           headers: <String, String>{ 
+            'Accept' : 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-          }
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
         ), 
       );
       if(response.statusCode == 200) {
@@ -68,8 +88,8 @@ class APIService {
       } else {
         throw response.statusMessage.toString();
       }
-    } on DioException catch (e) {
-      throw e.message.toString();
+    } on DioException catch (error) {
+      throw MyHandle.handleDioError(error.type);
     }
   }
 
@@ -97,16 +117,21 @@ class APIService {
       var response = await Dio().getUri(
         url,
         options: Options(
+          responseType: ResponseType.plain,
           headers: <String, String>{ 
             'Content-Type': 'application/json; charset=UTF-8',
-            'Accept': 'application/json;charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-          }
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
         ), 
       );
 
       if (response.statusCode == 200) {
-        var responseBody = response.data as List<dynamic>;
+        var responseBody = jsonDecode(response.data) as List<dynamic>;
         if (responseBody.isNotEmpty) {
           listData = responseBody.map((jsonData) {
             return Request.fromJson(jsonData);
@@ -119,7 +144,7 @@ class APIService {
 
     } on DioException catch (e) {
       print("GET DATA ERROR: ${e.message.toString()}");
-      throw e.message.toString();
+      throw MyHandle.handleDioError(e.type);
     }
     return [];
   }
@@ -137,9 +162,13 @@ class APIService {
         options: Options(
           headers: <String, String>{ 
             'Content-Type': 'application/json; charset=UTF-8',
-            'Accept': 'application/json;charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-          }
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
         ), 
       );
       if(response.statusCode == 201) {
@@ -150,7 +179,7 @@ class APIService {
       }
     } on DioException catch (e) {
       print(e.toString());
-      return e.message.toString();
+      return MyHandle.handleDioError(e.type);
       // rethrow;
     }
   }
@@ -192,15 +221,19 @@ class APIService {
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-          }
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
         )
       );
 
       if (response.statusCode != 201) {
         throw response.statusMessage.toString();
       }
-    } on DioException catch (_) {
-      rethrow;
+    } on DioException catch (e) {
+      throw MyHandle.handleDioError(e.type);
     }
   }
 
@@ -231,15 +264,19 @@ class APIService {
         options: Options(
           headers: <String, String>{ 
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-          }
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
         )
       );
 
       if (response.statusCode != 201) {
         throw response.statusMessage.toString();
       }
-    } on DioException catch (_) {
-      rethrow;
+    } on DioException catch (e) {
+      throw MyHandle.handleDioError(e.type);
     }
   }
 

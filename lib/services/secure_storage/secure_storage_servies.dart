@@ -1,4 +1,4 @@
-import 'package:datn/model/login_model.dart';
+import 'package:datn/model/login/login_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageServices {

@@ -1,4 +1,4 @@
-import 'package:datn/model/user.dart';
+import 'package:datn/model/login/user.dart';
 
 class LoginResponseModel {
 

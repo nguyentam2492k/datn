@@ -4,7 +4,7 @@ import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -45,7 +45,7 @@ class Request4State extends State<Request4> {
 
     await apiService.postData(request: request, requestInfo: formData).then((value) {
       context.loaderOverlay.hide();
-      CustomSnackBar().showSnackBar(
+      MyToast.showToast(
         isError: value != null,
         text: "Gửi thành công",
         errorText: "LỖI: $value"

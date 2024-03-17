@@ -1,13 +1,13 @@
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
-import 'package:datn/model/login_model.dart';
+import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/services/secure_storage/secure_storage_servies.dart';
 import 'package:datn/services/session/session_timeout.dart';
 import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
-import 'package:datn/widgets/custom_widgets/snack_bar.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -243,12 +243,12 @@ class LogInState extends State<LogIn> {
   }
 
   doLoginAction(BuildContext context) async {
+    final loaderOverlay = context.loaderOverlay;
 
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_logInFormKey.currentState!.saveAndValidate()) {
-      context.loaderOverlay.show();
+      loaderOverlay.show();
 
       loginRequestModel = LoginRequestModel(
         username: _logInFormKey.currentState!.fields['username']!.value, 
@@ -256,7 +256,7 @@ class LogInState extends State<LogIn> {
       );
       try {
         await apiService.login(loginRequestModel).then((loginResponseData) async {
-          context.loaderOverlay.hide();
+          loaderOverlay.hide();
           
           if (loginResponseData.error == null) {
             //TODO: Save account
@@ -288,12 +288,12 @@ class LogInState extends State<LogIn> {
                 }), 
                 (route) => false
               );
-              CustomSnackBar().showSnackBar(
+              MyToast.showToast(
                 text: "Đăng nhập thành công"
               );
             }
           } else {
-            CustomSnackBar().showSnackBar(
+            MyToast.showToast(
               isError: true,
               errorText: loginResponseData.error.toString()
             );
@@ -301,9 +301,10 @@ class LogInState extends State<LogIn> {
           
         });
       } catch (error) {
-        CustomSnackBar().showSnackBar(
+        loaderOverlay.hide();
+        MyToast.showToast(
           isError: true,
-          errorText: error.toString()
+          errorText: "LỖI: ${error.toString()}"
         );
       }
 
