@@ -5,7 +5,6 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/services/api/api_service.dart';
-import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:datn/screens/create_request_screen/create_request_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:datn/screens/manage_request/manage_request_screen.dart';
-import 'package:loader_overlay/loader_overlay.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -52,19 +51,7 @@ class HomeScreenState extends State<HomeScreen> {
       appBar: buildAppBar(context),
       floatingActionButton: buidAddButton(context), 
       body: homeScreenBody(context),
-      drawer: LoaderOverlay(
-        useDefaultLoading: false,
-        overlayWidgetBuilder: (progress){
-          return const LoadingHud(
-            hudHeight: 120,
-            hudWidth: 120,
-            backgroundColor: Colors.white,
-            borderColor: Colors.transparent,
-            text: "Đang đăng xuất...",
-          );
-        },
-        child: buildDrawer(context)
-      ),
+      drawer: buildDrawer(context),
     );
   }
 
@@ -297,10 +284,9 @@ class HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
             child: ElevatedButton.icon(
               onPressed: () async {
-                var loaderOverlay = context.loaderOverlay;
-                loaderOverlay.show();
-                await onLogout().then((value) {
-                  loaderOverlay.hide();
+                await EasyLoading.show(status: "Đang đăng xuất");
+                await onLogout().then((value) async {
+                  await EasyLoading.dismiss();
                 });
               },
               icon: const Icon(MyIcons.logout),

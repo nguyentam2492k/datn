@@ -4,13 +4,12 @@ import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
-import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class Request22 extends StatefulWidget {
   const Request22({super.key});
@@ -45,9 +44,8 @@ class Request22State extends State<Request22> {
   }
 
   Future<void> sendFormData() async {
-    var loaderOverlay = context.loaderOverlay;
     
-    loaderOverlay.show(progress: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
 
     var request = Request(
       requestTypeId: 22, 
@@ -58,14 +56,14 @@ class Request22State extends State<Request22> {
     );
     
     try {
-      await APIService().postDataWithFile(request: request, formData: _request22FormKey.currentState!.value, files: files).then((value) {
-        loaderOverlay.hide();
+      await APIService().postDataWithFile(request: request, formData: _request22FormKey.currentState!.value, files: files).then((value) async {
+        await EasyLoading.dismiss();
         MyToast.showToast(
           text: "Gửi thành công",
         );
       });
     } catch (e) {
-      loaderOverlay.hide();
+      await EasyLoading.dismiss();
       MyToast.showToast(
         isError: true,
         errorText: "LỖI: Gửi không thành công"
@@ -76,104 +74,97 @@ class Request22State extends State<Request22> {
   @override
   Widget build(BuildContext context) {
 
-    return LoaderOverlay(
-      useDefaultLoading: false,
-      overlayColor: Colors.transparent,
-      overlayWidgetBuilder: (progress) {
-        return LoadingHud(text: progress.toString(),);
-      },
-      child: FormBuilder(
-        key: _request22FormKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          flex: 1,
-                          child: Text(
-                            "Chương trình đào tạo:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
+    return FormBuilder(
+      key: _request22FormKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Chương trình đào tạo:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
                           ),
                         ),
-                        Expanded(
-                          flex: 4,
-                          child: FormBuilderRadioGroup(
-                            name: 'education_program', 
-                            initialValue: ConstantList.educationPrograms[0],
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              isCollapsed: true,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Chọn chương trình đào tạo";
-                              }
-                              return null;
-                            },
-                            options: ConstantList.educationPrograms
-                              .map((program) => FormBuilderFieldOption(value: program))
-                              .toList(),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: FormBuilderRadioGroup(
+                          name: 'education_program', 
+                          initialValue: ConstantList.educationPrograms[0],
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            isCollapsed: true,
                           ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 10,),
-                    CustomTextFieldRowWidget(
-                      labelText: "Nơi thực tập:",
-                      name: 'intern_company',
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    ),
-                    const SizedBox(height: 10,),
-                    CustomTextFieldRowWidget(
-                      labelText: "Lý do:",
-                      name: 'reason',
-                      maxLines: 5,
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    ),
-                    const SizedBox(height: 8,),
-                    CustomUploadFileRowWidget(
-                      files: files, 
-                      isFileAdded: isFileAdded, 
-                      onChanged: (List<PlatformFile> value) { 
-                        files = value;
-                        setState(() {});
-                      }, 
-                    )
-                  ],
-                ),
-              )
-            ),
-            SendRequestButton(
-              onPressed: () async {
-                isFileAdded = files.isEmpty ? false : true;
-                isFormValid() ? await sendFormData() : null;
-              }, 
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Chọn chương trình đào tạo";
+                            }
+                            return null;
+                          },
+                          options: ConstantList.educationPrograms
+                            .map((program) => FormBuilderFieldOption(value: program))
+                            .toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFieldRowWidget(
+                    labelText: "Nơi thực tập:",
+                    name: 'intern_company',
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFieldRowWidget(
+                    labelText: "Lý do:",
+                    name: 'reason',
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 8,),
+                  CustomUploadFileRowWidget(
+                    files: files, 
+                    isFileAdded: isFileAdded, 
+                    onChanged: (List<PlatformFile> value) { 
+                      files = value;
+                      setState(() {});
+                    }, 
+                  )
+                ],
+              ),
             )
-          ],
-        )
-      ),
+          ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+            }, 
+          )
+        ],
+      )
     );
   }
   

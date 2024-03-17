@@ -6,13 +6,12 @@ import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
-import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class Request19 extends StatefulWidget {
   const Request19({super.key});
@@ -46,9 +45,8 @@ class Request19State extends State<Request19> {
   }
 
   Future<void> sendFormData() async {
-    var loaderOverlay = context.loaderOverlay;
     
-    loaderOverlay.show(progress: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
 
     var request = Request(
       requestTypeId: 19, 
@@ -59,14 +57,14 @@ class Request19State extends State<Request19> {
     );
     
     try {
-      await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) {
-        loaderOverlay.hide();
+      await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) async {
+        await EasyLoading.dismiss();
         MyToast.showToast(
           text: "Gửi thành công",
         );
       });
     } catch (e) {
-      loaderOverlay.hide();
+      await EasyLoading.dismiss();
       MyToast.showToast(
         isError: true,
         errorText: "LỖI: Gửi không thành công"
@@ -76,179 +74,169 @@ class Request19State extends State<Request19> {
   
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-      useDefaultLoading: false,
-      overlayColor: Colors.transparent,
-      overlayWidgetBuilder: (progress) {
-        return LoadingHud(text: progress.toString(),);
-      },
-      child: FormBuilder(
-        key: _request19FormKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    Text(
-                      ConstantString.request19Note,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+    return FormBuilder(
+      key: _request19FormKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10,),
+                  Text(
+                    ConstantString.request19Note,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: InkWell(
-                        child: const Text(
-                          "Mẫu đơn",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue,
-                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: InkWell(
+                      child: const Text(
+                        "Mẫu đơn",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
                         ),
-                        onTap: () async {
-                          context.loaderOverlay.show(progress: "Chuẩn bị tải ");
-                          await FileServices().actionDownloadFileWithUrl(
-                            context, 
-                            url: ConstantString.request19DocumentUrl
-                          ).then((value) {
-                            context.loaderOverlay.hide();
-                          });
-                        },
                       ),
-                    ),
-                    const Divider(thickness: 0.4,),
-                    const Text(
-                      "Đề nghị được thuê phòng Khu nhà ở sinh viên Mỹ Đình II "
-                      "(đính kèm tệp minh chứng nếu thuộc diện ưu tiên):",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 10,),
-                    CustomTextFieldRowWidget(
-                      labelText: "Đơn nguyên đề nghị:", 
-                      name: "name", 
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
+                      onTap: () async {
+                        await FileServices().actionDownloadFileWithUrl(
+                          context, 
+                          url: ConstantString.request19DocumentUrl
+                        );
                       },
-                      onChanged: (value) {
-                        setState(() {});
+                    ),
+                  ),
+                  const Divider(thickness: 0.4,),
+                  const Text(
+                    "Đề nghị được thuê phòng Khu nhà ở sinh viên Mỹ Đình II "
+                    "(đính kèm tệp minh chứng nếu thuộc diện ưu tiên):",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  CustomTextFieldRowWidget(
+                    labelText: "Đơn nguyên đề nghị:", 
+                    name: "name", 
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
                       }
-                    ),
-                    const SizedBox(height: 10,),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "Thời gian thuê:",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black
-                                  ),
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    }
+                  ),
+                  const SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Thời gian thuê:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
                                 ),
-                                TextSpan(
-                                  text: " *",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red
-                                  ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
                                 ),
-                              ]
-                            )
-                          ),
+                              ),
+                            ]
+                          )
                         ),
-                        const SizedBox(width: 4,),
-                        Expanded(
-                          flex: 3,
-                          child: CustomFormBuilderDateRangePicker(
-                            name: 'rent_date',
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime(2100),
-                            initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
-                            validator: (value) => (value == null) ? "Chọn thời gian chính xác" : null,
-                          ),
-                        ),
-                        const Expanded(flex: 1, child: SizedBox()),
-                      ],
-                    ),
-                    const SizedBox(height: 5,),
-                    const Divider(thickness: 0.4,),
-                    const Text(
-                      "Thông tin cá nhân",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
                       ),
+                      const SizedBox(width: 4,),
+                      Expanded(
+                        flex: 3,
+                        child: CustomFormBuilderDateRangePicker(
+                          name: 'rent_date',
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                          initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
+                          validator: (value) => (value == null) ? "Chọn thời gian chính xác" : null,
+                        ),
+                      ),
+                      const Expanded(flex: 1, child: SizedBox()),
+                    ],
+                  ),
+                  const SizedBox(height: 5,),
+                  const Divider(thickness: 0.4,),
+                  const Text(
+                    "Thông tin cá nhân",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(height: 10,),
-                    const CustomTextFieldRowWidget(
-                      labelText: "Đối tượng ưu tiên:", 
-                      name: "doituonguutien", 
-                      isImportant: false,
-                    ),
-                    const SizedBox(height: 10,),
-                    const CustomTextFieldRowWidget(
-                      labelText: "Địa chỉ thường trú:", 
-                      name: "permanent_address", 
-                      isImportant: false,
-                    ),
-                    const SizedBox(height: 10,),
-                    const CustomTextFieldRowWidget(
-                      labelText: "Điện thoại liên hệ:", 
-                      name: "phone_contact", 
-                      isImportant: false,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 10,),
-                    const CustomTextFieldRowWidget(
-                      labelText: "Email:", 
-                      name: "email", 
-                      isImportant: false,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 10,),
-                    const CustomTextFieldRowWidget(
-                      labelText: "Khi cần liên hệ (báo tin cho):", 
-                      name: "khicanbaotin", 
-                      isImportant: false,
-                    ),
-                    const SizedBox(height: 5,),
-                    const Divider(thickness: 0.4,),
-                    CustomUploadFileRowWidget(
-                      files: files, 
-                      isFileAdded: isFileAdded, 
-                      onChanged: (List<PlatformFile> value) { 
-                        files = value;
-                        setState(() {});
-                      }, 
-                    )
-                  ],
-                ),
-              )
-            ),
-            SendRequestButton(
-              onPressed: () async {
-                isFileAdded = files.isEmpty ? false : true;
-                isFormValid() ? await sendFormData() : null;
-              }, 
+                  ),
+                  const SizedBox(height: 10,),
+                  const CustomTextFieldRowWidget(
+                    labelText: "Đối tượng ưu tiên:", 
+                    name: "doituonguutien", 
+                    isImportant: false,
+                  ),
+                  const SizedBox(height: 10,),
+                  const CustomTextFieldRowWidget(
+                    labelText: "Địa chỉ thường trú:", 
+                    name: "permanent_address", 
+                    isImportant: false,
+                  ),
+                  const SizedBox(height: 10,),
+                  const CustomTextFieldRowWidget(
+                    labelText: "Điện thoại liên hệ:", 
+                    name: "phone_contact", 
+                    isImportant: false,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 10,),
+                  const CustomTextFieldRowWidget(
+                    labelText: "Email:", 
+                    name: "email", 
+                    isImportant: false,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 10,),
+                  const CustomTextFieldRowWidget(
+                    labelText: "Khi cần liên hệ (báo tin cho):", 
+                    name: "khicanbaotin", 
+                    isImportant: false,
+                  ),
+                  const SizedBox(height: 5,),
+                  const Divider(thickness: 0.4,),
+                  CustomUploadFileRowWidget(
+                    files: files, 
+                    isFileAdded: isFileAdded, 
+                    onChanged: (List<PlatformFile> value) { 
+                      files = value;
+                      setState(() {});
+                    }, 
+                  )
+                ],
+              ),
             )
-          ],
-        )
-      ),
+          ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+            }, 
+          )
+        ],
+      )
     );
   }
 

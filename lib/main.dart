@@ -2,6 +2,7 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 
@@ -11,6 +12,25 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
   runApp(const MyApp());
+  configLoading();
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.light
+    ..maskType = EasyLoadingMaskType.black
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..animationDuration = const Duration(milliseconds: 80)
+    ..contentPadding = const EdgeInsets.all(15)
+    ..indicatorSize = 40.0
+    ..radius = 15.0
+    ..textStyle = const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+      )
+    ..progressWidth = 3;
 }
 
 class MyApp extends StatefulWidget {
@@ -42,7 +62,6 @@ class MyAppState extends State<MyApp> {
   }
 
   Widget buildMyApp() {
-    
     return MaterialApp(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       navigatorKey: globalNavigatorKey,
@@ -64,6 +83,7 @@ class MyAppState extends State<MyApp> {
         ),
       ),
       debugShowCheckedModeBanner: false,
+      builder: EasyLoading.init(),
     );
   }
 }

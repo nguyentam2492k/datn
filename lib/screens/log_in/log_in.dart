@@ -5,13 +5,12 @@ import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/services/secure_storage/secure_storage_servies.dart';
 import 'package:datn/services/session/session_timeout.dart';
-import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -61,21 +60,9 @@ class LogInState extends State<LogIn> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: LoaderOverlay(
-          useDefaultLoading: false,
-          overlayWidgetBuilder: (progress){
-            return const LoadingHud(
-              hudHeight: 120,
-              hudWidth: 120,
-              backgroundColor: Colors.white,
-              borderColor: Colors.transparent,
-              text: "Đang đăng nhập...",
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: buildLoginUi(context),
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: buildLoginUi(context),
         ),
       ),
     );
@@ -243,12 +230,11 @@ class LogInState extends State<LogIn> {
   }
 
   doLoginAction(BuildContext context) async {
-    final loaderOverlay = context.loaderOverlay;
 
     FocusScope.of(context).unfocus();
 
     if (_logInFormKey.currentState!.saveAndValidate()) {
-      loaderOverlay.show();
+      await EasyLoading.show(status: "Đang đăng nhập");
 
       loginRequestModel = LoginRequestModel(
         username: _logInFormKey.currentState!.fields['username']!.value, 
@@ -256,7 +242,7 @@ class LogInState extends State<LogIn> {
       );
       try {
         await apiService.login(loginRequestModel).then((loginResponseData) async {
-          loaderOverlay.hide();
+          await EasyLoading.dismiss();
           
           if (loginResponseData.error == null) {
             //TODO: Save account
@@ -301,7 +287,8 @@ class LogInState extends State<LogIn> {
           
         });
       } catch (error) {
-        loaderOverlay.hide();
+        await EasyLoading.dismiss();
+
         MyToast.showToast(
           isError: true,
           errorText: "LỖI: ${error.toString()}"

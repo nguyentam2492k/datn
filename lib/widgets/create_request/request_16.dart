@@ -5,13 +5,12 @@ import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
-import 'package:datn/widgets/custom_widgets/loading_hud.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class Request16 extends StatefulWidget {
   const Request16({super.key});
@@ -45,9 +44,8 @@ class Request16State extends State<Request16> {
   }
 
   Future<void> sendFormData() async {
-    var loaderOverlay = context.loaderOverlay;
 
-    loaderOverlay.show(progress: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
 
     var request = Request(
       requestTypeId: 16, 
@@ -58,14 +56,14 @@ class Request16State extends State<Request16> {
     );
     
     try {
-      await APIService().postDataWithFile(request: request, formData: _request16FormKey.currentState!.value, files: files).then((value) {
-        loaderOverlay.hide();
+      await APIService().postDataWithFile(request: request, formData: _request16FormKey.currentState!.value, files: files).then((value) async {
+        await EasyLoading.dismiss();
         MyToast.showToast(
           text: "Gửi thành công",
         );
       });
     } catch (e) {
-      loaderOverlay.hide();
+      await EasyLoading.dismiss();
       MyToast.showToast(
         isError: true,
         errorText: "LỖI: Gửi không thành công"
@@ -75,89 +73,79 @@ class Request16State extends State<Request16> {
 
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-      useDefaultLoading: false,
-      overlayColor: Colors.transparent,
-      overlayWidgetBuilder: (progress) {
-        return LoadingHud(text: progress.toString(),);
-      },
-      child: FormBuilder(
-        key: _request16FormKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    Text(
-                      ConstantString.request16Note,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+    return FormBuilder(
+      key: _request16FormKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10,),
+                  Text(
+                    ConstantString.request16Note,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: InkWell(
-                        child: const Text(
-                          "Mẫu đơn",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue,
-                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: InkWell(
+                      child: const Text(
+                        "Mẫu đơn",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
                         ),
-                        onTap: () async {
-                          context.loaderOverlay.show(progress: "Chuẩn bị tải ");
-                          await FileServices().actionDownloadFileWithUrl(
-                            context, 
-                            url: ConstantString.request16DocumentUrl
-                          ).then((value) {
-                            context.loaderOverlay.hide();
-                          });
-                        },
                       ),
-                    ),
-                    const Divider(thickness: 0.4,),
-                    CustomTextFieldRowWidget(
-                      labelText: "Lý do:",
-                      name: 'reason',
-                      maxLines: 5,
-                      validator: (value) {
-                        if (value == null || value.isEmpty ) {
-                          return "Điền đầy đủ thông tin!";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {});
+                      onTap: () async {
+                        await FileServices().actionDownloadFileWithUrl(
+                          context, 
+                          url: ConstantString.request16DocumentUrl
+                        );
                       },
                     ),
-                    const SizedBox(height: 8,),
-                    CustomUploadFileRowWidget(
-                      files: files, 
-                      isFileAdded: isFileAdded, 
-                      onChanged: (List<PlatformFile> value) { 
-                        files = value;
-                        setState(() {});
-                      }, 
-                    )
-                  ],
-                ),
+                  ),
+                  const Divider(thickness: 0.4,),
+                  CustomTextFieldRowWidget(
+                    labelText: "Lý do:",
+                    name: 'reason',
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value == null || value.isEmpty ) {
+                        return "Điền đầy đủ thông tin!";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 8,),
+                  CustomUploadFileRowWidget(
+                    files: files, 
+                    isFileAdded: isFileAdded, 
+                    onChanged: (List<PlatformFile> value) { 
+                      files = value;
+                      setState(() {});
+                    }, 
+                  )
+                ],
               ),
             ),
-            SendRequestButton(
-              onPressed: () async {
-                isFileAdded = files.isEmpty ? false : true;
-                isFormValid() ? await sendFormData() : null;
-              }, 
-            )
-          ],
-        )
-      ),
+          ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+            }, 
+          )
+        ],
+      )
     );
   }
 }

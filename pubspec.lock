@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  back_button_interceptor:
-    dependency: transitive
-    description:
-      name: back_button_interceptor
-      sha256: a95c096cf76c78cb07c4a84565f41a96f8fac42a37d1c41a1ec1a0bbdf69473e
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -230,6 +222,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_easyloading:
+    dependency: "direct main"
+    description:
+      name: flutter_easyloading
+      sha256: ba21a3c883544e582f9cc455a4a0907556714e1e9cf0eababfcb600da191d17c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.5"
   flutter_form_builder:
     dependency: "direct main"
     description:
@@ -315,6 +315,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  flutter_spinkit:
+    dependency: transitive
+    description:
+      name: flutter_spinkit
+      sha256: b39c753e909d4796906c5696a14daf33639a76e017136c8d82bf3e620ce5bb8e
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -413,14 +421,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  loader_overlay:
-    dependency: "direct main"
-    description:
-      name: loader_overlay
-      sha256: "02deeeed0d4eaaeeada6ce7bb13426d7548acad1f71e4884ec4a010e0e4824d6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   matcher:
     dependency: transitive
     description:

@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:loader_overlay/loader_overlay.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -50,7 +50,7 @@ class FileServices {
     }
   }
 
-  Future<void> openFileFromUrl({required BuildContext context, required String url, required String filename}) async {
+  Future<void> openFileFromUrl({required String url, required String filename}) async {
     var httpClient = HttpClient();
 
     var request = await httpClient.getUrl(Uri.parse(url));
@@ -171,7 +171,6 @@ class FileServices {
   }
 
   Future<String?> downloadAndGetFileFromUrl(BuildContext buildContext, {required String url}) async {
-    var loaderOverlay = buildContext.loaderOverlay;
     var permissionReady = await checkStoragePermission(buildContext);
 
     if (permissionReady) {
@@ -194,16 +193,16 @@ class FileServices {
         savePath = "${externalDir.path}/${newFilename ?? fullFilename}";
       }
       
-      loaderOverlay.show(progress: "Chuẩn bị tải");
+      await EasyLoading.showProgress(0, status: "Chuẩn bị tải");
       try {
         var response = await Dio().downloadUri(
           Uri.parse(url), 
           savePath,
-          onReceiveProgress: (count, total) {
-            loaderOverlay.progress("Đang tải: ${(100*count/total).toStringAsFixed(1)}%");
+          onReceiveProgress: (count, total) async {
+            await EasyLoading.showProgress(count/total, status: "Đang tải: ${(100 * count/total).toStringAsFixed(0)}%");
           },
         );
-        loaderOverlay.hide();
+        await EasyLoading.dismiss();
         if (response.statusCode == 200) {
           return savePath;
         } else {
