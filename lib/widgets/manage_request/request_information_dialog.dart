@@ -23,7 +23,7 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                 margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 height: 16,
                 decoration: BoxDecoration(
-                  color: getColor(requestInfo.status),
+                  color: getColor(requestInfo.statusId ?? 99),
                   borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))
                 ),
               ),
@@ -76,7 +76,8 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                   Expanded(
                     flex: 3,
                     child: Text(
-                      requestInfo.student ?? "----",
+                      // requestInfo.student ?? "----",
+                      requestInfo.user?.name ?? "----"
                     )
                   )
                 ],

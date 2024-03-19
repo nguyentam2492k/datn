@@ -210,27 +210,10 @@ class HomeScreenState extends State<HomeScreen> {
           UserAccountsDrawerHeader(
             accountName: Text(loginResponse.user?.name ?? "NAME"), 
             accountEmail: Text(loginResponse.user?.id ?? "ID"),
-            currentAccountPicture: Image.network(
-              loginResponse.user?.image ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const Center(
-                  child: SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeAlign: 2.5, 
-                      color: Colors.white,
-                    )
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(MyIcons.noImage, size: 30, color: Colors.white70,)
-                );
-              },
+            currentAccountPicture: const Image(
+              image: AssetImage('assets/images/uet_logo_background.png'),
+              fit: BoxFit.contain,
+              height: 40,
             ),
             decoration: const BoxDecoration(
               color: Color(0xFF000980),

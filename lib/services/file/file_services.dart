@@ -193,13 +193,15 @@ class FileServices {
         savePath = "${externalDir.path}/${newFilename ?? fullFilename}";
       }
       
-      await EasyLoading.showProgress(0, status: "Chuẩn bị tải");
+      await EasyLoading.show();
       try {
-        var response = await Dio().downloadUri(
-          Uri.parse(url), 
+        var response = await Dio().download(
+          url, 
           savePath,
           onReceiveProgress: (count, total) async {
-            await EasyLoading.showProgress(count/total, status: "Đang tải: ${(100 * count/total).toStringAsFixed(0)}%");
+            if (total > 0) {
+              await EasyLoading.showProgress(count/total, status: "Đang tải: ${(100 * count/total).toStringAsFixed(0)}%");
+            }
           },
         );
         await EasyLoading.dismiss();

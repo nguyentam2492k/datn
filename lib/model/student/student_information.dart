@@ -39,7 +39,7 @@ class StudentInformation {
     };
   }
 
-  factory StudentInformation.fromMap(Map<String, dynamic> map) {
+  factory StudentInformation.fromJson(Map<String, dynamic> map) {
     return StudentInformation(
       name: map['name'] as String,
       id: map['id'] as String,

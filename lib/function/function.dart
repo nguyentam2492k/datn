@@ -18,18 +18,18 @@ String formatDateWithTime(String dateWithTime) {
   return outputDate;
 }
 
-String? formatDate(String? date) {
-  if (date == null) {
-    return null;
-  }
+// String? formatDate(String? date) {
+//   if (date == null) {
+//     return null;
+//   }
 
-  var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-  var inputDate = inputFormat.parse(date);
+//   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
+//   var inputDate = inputFormat.parse(date);
   
-  var outputFormat = DateFormat('dd/MM/yyyy');
-  var outputDate = outputFormat.format(inputDate);
-  return outputDate;
-}
+//   var outputFormat = DateFormat('dd/MM/yyyy');
+//   var outputDate = outputFormat.format(inputDate);
+//   return outputDate;
+// }
 
 String? formatDateRange(String? dateRange) {
   if (dateRange == null) {
@@ -52,13 +52,13 @@ bool isInteger(String? s) {
   return int.tryParse(s) != null;
 }
 
-Color getColor(String status) {
-  switch (status) {
-    case "completed":
+Color getColor(int statusId) {
+  switch (statusId) {
+    case 2: //Đã xong
       return Colors.green;
-    case "canceled":
+    case 3: //Đã huỷ
       return Colors.red;
-    case "processing":
+    case 1: //Đang xử lý
       return Colors.yellow;
     default:
       return Colors.grey;
@@ -72,7 +72,13 @@ String listToString(List<String> listString) {
 }
 
 List<String> toListString(List list) {
-  var listString =  list.map((item) => item as String).toList();
+  var listString =  list.map((item) {
+    if (item.runtimeType == int) {
+      return "Học kỳ $item";
+    } else {
+      return item as String;
+    }
+  }).toList();
   listString.sort();
   return listString;
 }
@@ -91,7 +97,7 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.educationProgram != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.educationProgram}") : null;
   requestInfo.year != null ? requestText.writeln("Năm học: ${requestInfo.year}") : null;
   requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
-  requestInfo.documents != null ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
+  (requestInfo.documents != null && requestInfo.documents!.isNotEmpty) ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
   requestInfo.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestInfo.otherDocument}") : null;
   requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
   requestInfo.monthFee != null ? requestText.writeln("Học phí theo tháng: ${requestInfo.monthFee}") : null;

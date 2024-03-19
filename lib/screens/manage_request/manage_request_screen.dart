@@ -7,6 +7,7 @@ import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:datn/widgets/manage_request/request_information_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,10 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   String? currentStatus = ConstantList.requestStatus[0];
   late int selectedStatusIndex;
 
-  int currentIndex = 0;
+  int currentPage = 1;
+  int pageSize = 5;
+  int totalRequests = 99;
+  String? getDataErrorText;
   late String accessToken;
   late String userId;
 
@@ -97,68 +101,78 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
     );
   }
 
-  Future<String?> loadRequest() async {
+  Future<void> loadRequest() async {
     print("LOAD");
     isLoading = true;
-    if (currentIndex == 0) {
+
+    if (currentPage == 1) {
       listRequest.value = [];
     }
+
     try {
-      await apiService.getData(currentStatus, currentIndex, userId).then((value) {
-        listRequest.value.addAll(value);
+      await apiService.getMyData(currentStatus, pageIndex: currentPage, pageSize: pageSize).then((value) {
+        getDataErrorText = null;
+
+        totalRequests = value.totalRequests;
+        final list = value.listRequests;
+
+        listRequest.value.addAll(value.listRequests);
         listRequest.value = List.from(listRequest.value);
         
-        isExpanded.value.addAll(List.generate(value.length, (index) => false));
+        isExpanded.value.addAll(List.generate(list.length, (index) => false));
         isExpanded.value = List.from(isExpanded.value);
-        if (value.length == 10) {
-          currentIndex += 10;
+        if (listRequest.value.length < totalRequests) {
+          currentPage += 1;
           isLoading = false;
         }
       });
-      return null;
     } catch (e) {
-      print(e);
-      return "Lỗi tải!";
+      getDataErrorText = e.toString();
+      MyToast.showToast(
+        isError: true,
+        errorText: e.toString()
+      );
     }
   }
 
   void _handleScroll() {
-    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listRequest.value.length % 10 == 0) {
-        loadRequest();
+    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listRequest.value.length < totalRequests) {
+      loadRequest();
     }
   }
 
   Widget buildRequestListView() {
-    currentIndex = 0;
+    currentPage = 1;
     isLoading = false;
 
     return FutureBuilder(
       future: loadRequest(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done){
-    
-          if (snapshot.data != null) {
+          
+          if (getDataErrorText != null) {
             return Center(
               child: Text(
-                snapshot.data!,
+                "LỖI: $getDataErrorText!",
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 13,
-                  color: ui.Color(0xFF7E7E7E)
+                  color: Color(0xFF7B7B7B),
+                  fontSize: 12
                 ),
               ),
             );
           }
-          if (listRequest.value.isEmpty) {
-              return const Center(
-                child: Text(
-                  "Chưa có yêu cầu nào!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF7B7B7B),
-                    fontSize: 12
-                  ),
+          if (totalRequests == 0) {
+            return const Center(
+              child: Text(
+                "Chưa có yêu cầu nào!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF7B7B7B),
+                  fontSize: 12
                 ),
-              );
+              ),
+            );
           }
 
           return ValueListenableBuilder(
@@ -174,6 +188,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   
                   if (index == list.length) {
+                    print(isLoading);
                     return !isLoading
                       ? Visibility(
                         visible: !isLoading,
@@ -236,7 +251,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 width: 7,
                 decoration: BoxDecoration(
-                  color: getColor(list[index].status),
+                  color: getColor(list[index].statusId ?? 99),
                   borderRadius: const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10))
                 ),
               ),
@@ -496,7 +511,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
             onSelected: (value) {
               if (index != selectedStatusIndex) {
                 listRequest.value = [];
-                currentIndex = 0;
+                currentPage = 1;
                 isLoading = false;
                 selectedStatusIndex = value ? index : selectedStatusIndex;
                 currentStatus = ConstantList.requestStatus[index];

@@ -2,8 +2,8 @@ import 'package:datn/function/function.dart';
 
 class RequestInformation {
 
-  String? quantityViet;
-  String? quantityEng;
+  int? quantityViet;
+  int? quantityEng;
   String? reason;
   String? phoneContact;
   String? year;
@@ -93,16 +93,18 @@ class RequestInformation {
   });
 
   factory RequestInformation.fromJson(Map<String, dynamic> json) {
-    var examDate = formatDate(json['exam_date'] as String?);
-    var untilDate = formatDate(json['until_date'] as String?);
+    // var examDate = formatDate(json['exam_date'] as String?);
+    // var untilDate = formatDate(json['until_date'] as String?);
+    var examDate = json['exam_date'] as String?;
+    var untilDate = json['until_date'] as String?;
 
     var borrowDate = formatDateRange(json["borrow_date"]);
     var absentDate = formatDateRange(json["absent_date"]);
     var rentDate = formatDateRange(json["rent_date"]);
 
     return RequestInformation(
-      quantityViet: json['quantity_viet'] as String?,
-      quantityEng: json['quantity_eng'] as String?,
+      quantityViet: json['quantity_viet'] as int?,
+      quantityEng: json['quantity_eng'] as int?,
       reason: json['reason'] as String?,
       phoneContact: json['phone_contact'] as String?,
       certificateType: json['certificate_type'] as String?,
