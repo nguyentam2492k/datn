@@ -31,25 +31,25 @@ class Request4State extends State<Request4> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request4FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 4, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: currentDate.toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 4, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: currentDate.toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
       
   }
 
@@ -76,7 +76,7 @@ class Request4State extends State<Request4> {
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
                     labelText: "Học phần xin xem lại:", 
-                    name: 'subject_review',
+                    name: 'subject_name',
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -106,7 +106,7 @@ class Request4State extends State<Request4> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Năm học:", 
-                    name: 'year',
+                    name: 'school_year',
                     initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
                     isShort: true,
                     validator: (value) {

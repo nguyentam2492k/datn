@@ -34,26 +34,27 @@ class Request17State extends State<Request17> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request17FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 17, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: DateTime.now().toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 17, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: DateTime.now().toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
       
+    print(formData);
   }
 
   @override
@@ -135,7 +136,7 @@ class Request17State extends State<Request17> {
                         child: Column(
                           children: [
                             FormBuilderRadioGroup(
-                              name: 'tuyen', 
+                              name: 'interline_bus_type', 
                               initialValue: ConstantList.busChoices[0],
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
@@ -143,8 +144,8 @@ class Request17State extends State<Request17> {
                               ),
                               onChanged: (value) {
                                 isEnable = true;
-                                if (_request17FormKey.currentState!.fields['tuyen']!.value != ConstantList.busChoices[0]) {
-                                  _request17FormKey.currentState!.fields['mottuyen']!.reset();
+                                if (_request17FormKey.currentState!.fields['interline_bus_type']!.value != ConstantList.busChoices[0]) {
+                                  _request17FormKey.currentState!.fields['bus_number']!.reset();
                                   FocusScope.of(context).unfocus();
                                   isEnable = false;
                                 }
@@ -164,10 +165,10 @@ class Request17State extends State<Request17> {
                                       Expanded(
                                         flex: 2,
                                         child: CustomFormBuilderTextField(
-                                          name: "mottuyen",
+                                          name: "bus_number",
                                           enabled: isEnable,
                                           validator: (value) {
-                                            if (_request17FormKey.currentState!.fields['tuyen']!.value == ConstantList.busChoices[0] && (value == null || value.isEmpty)) {
+                                            if (_request17FormKey.currentState!.fields['interline_bus_type']!.value == ConstantList.busChoices[0] && (value == null || value.isEmpty)) {
                                               return "Nhập số tuyến";
                                             }
                                             return null;
@@ -182,6 +183,10 @@ class Request17State extends State<Request17> {
                                 FormBuilderFieldOption(value: ConstantList.busChoices[1]),
                                 FormBuilderFieldOption(value: ConstantList.busChoices[2]),
                               ],
+                              valueTransformer: (value) {
+                                final busTypeIndex = ConstantList.busChoices.indexOf(value!) + 1;
+                                return busTypeIndex;
+                              },
                             )
                           ],
                         )
@@ -191,7 +196,7 @@ class Request17State extends State<Request17> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Địa chỉ sinh viên:", 
-                    name: 'student_address',
+                    name: 'address',
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -205,7 +210,7 @@ class Request17State extends State<Request17> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Điện thoại liên hệ:", 
-                    name: 'phone_contact',
+                    name: 'phone_number',
                     isShort: true,
                     keyboardType: TextInputType.phone,
                     validator: (value) {
@@ -221,7 +226,7 @@ class Request17State extends State<Request17> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Nơi nộp đơn và nhận thẻ:", 
-                    name: 'receiving_place',
+                    name: 'process_place',
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";

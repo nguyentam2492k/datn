@@ -43,8 +43,12 @@ class Request9State extends State<Request9> {
   }
 
   Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
+
+    formData.addAll(_request9FormKey.currentState!.value);
 
     var request = Request(
       requestTypeId: 9, 
@@ -54,20 +58,21 @@ class Request9State extends State<Request9> {
       dateCreate: DateTime.now().toString(),
     );
 
-    try {
-      await APIService().postDataWithFile(request: request, formData: _request9FormKey.currentState!.value, files: files).then((value) async {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          text: "Gửi thành công",
-        );
-      });
-    } catch (e) {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: true,
-        errorText: "LỖI: Gửi không thành công"
-      );
-    } 
+    // try {
+    //   await apiService.postDataWithFile(request: request, formData: _request9FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: true,
+    //     errorText: "LỖI: Gửi không thành công"
+    //   );
+    // } 
+    print(formData);
   }
 
   @override
@@ -120,6 +125,7 @@ class Request9State extends State<Request9> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             },
           ),
         ],

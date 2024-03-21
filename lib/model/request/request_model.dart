@@ -135,21 +135,25 @@ class Request {
     this.file
   });
 
-  factory Request.fromJson(Map<String, dynamic> map) {
+  factory Request.fromJson(Map<String, dynamic> json) {
+
+    final localDateCreate = formatDateWithTime(json['created_date'] as String);
+    final localDateReceive = formatDateWithTime(json['receive_date'] as String?);
+
     return Request(
-      id: map['id'] as int?,
-      user: User.fromJson(map['user'] as Map<String,dynamic>),
-      requestType: map['type']['name'] as String?,
-      requestTypeId: map['type']['id'] as int,
-      documentNeed: map['document_need'] as String?,
-      statusId: map['status']['id'] as int?,
-      status: map['status']['name'] as String,
-      fee: map['fee'] != null ? map['fee'] as String : null,
-      processingPlace: map['processing_place'] as String?,
-      dateCreate: map['created_date'] as String,
-      dateReceive: map['receive_date'] != null ? map['receive_date'] as String : null,
-      info: RequestInformation.fromJson(map['info'] as Map<String,dynamic>),
-      file: map['info']['files'] != null ? toListString(map['info']['files']) : null, 
+      id: json['id'] as int?,
+      user: User.fromJson(json['user'] as Map<String,dynamic>),
+      requestType: json['type']['name'] as String?,
+      requestTypeId: json['type']['id'] as int,
+      documentNeed: json['document_need'] as String?,
+      statusId: json['status']['id'] as int?,
+      status: json['status']['name'] as String,
+      fee: json['fee'] != null ? "${json['fee'] as String}đ" : null,
+      processingPlace: json['processing_place'] as String?,
+      dateCreate: localDateCreate ?? json['created_date'] as String,
+      dateReceive: localDateReceive,
+      info: RequestInformation.fromJson(json['info'] as Map<String,dynamic>),
+      file: json['info']['files'] != null ? toListString(json['info']['files']) : null, 
     );
   }
 

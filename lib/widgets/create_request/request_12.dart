@@ -139,6 +139,7 @@ class Request12State extends State<Request12> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             }, 
           )
         ],

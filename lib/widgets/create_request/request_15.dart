@@ -47,29 +47,30 @@ class Request15State extends State<Request15> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll({
-      "quantity_viet": numberOfVietVer.toString(),
-      "quantity_eng": numberOfEngVer.toString()
+      "number_of_copies_vi": numberOfVietVer.toString(),
+      "number_of_copies_en": numberOfEngVer.toString()
     });
     formData.addAll(_request15FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 15, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: DateTime.now().toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 15, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: DateTime.now().toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
+    print(formData);
   }
 
   @override
@@ -180,6 +181,7 @@ class Request15State extends State<Request15> {
             )
           ),
           SendRequestButton(
+            isFormValid: isFormValid(),
             onPressed: () async {
               (isFormValid() && _request15FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
             }, 

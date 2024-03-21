@@ -11,6 +11,7 @@ class CustomFormBuilderDropdown extends StatefulWidget {
   final InputDecoration decoration;
   final List<DropdownMenuItem<dynamic>> items;
   final ValueChanged<dynamic>? onChanged;
+  final ValueTransformer<dynamic>? valueTransformer;
   
   const CustomFormBuilderDropdown({
     super.key, 
@@ -19,6 +20,7 @@ class CustomFormBuilderDropdown extends StatefulWidget {
     this.validator,
     this.initialValue, 
     this.onChanged,
+    this.valueTransformer,
 
     this.style = const TextStyle(
       fontSize: 14,
@@ -77,6 +79,7 @@ class CustomFormBuilderDropdownState extends State<CustomFormBuilderDropdown> {
         items: widget.items,
         validator: widget.validator,
         onChanged: widget.onChanged,
+        valueTransformer: widget.valueTransformer,
       ),
     );
   }

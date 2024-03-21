@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
 
@@ -296,7 +295,7 @@ class APIService {
     }
   }
 
-  Future<void> postDataWithinFiles({required Map<String, dynamic> data, required List<PlatformFile> files}) async {
+  Future<void> postDataWithFiles({required Map<String, dynamic> data, required List<PlatformFile> files}) async {
     //TODO: THAY DOI URL
     Uri url = Uri.parse("$host/requests");
     

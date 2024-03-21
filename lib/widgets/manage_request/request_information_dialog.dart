@@ -13,11 +13,13 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
         elevation: 0,
         titlePadding: const EdgeInsets.symmetric(),
         insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+        contentPadding: const EdgeInsets.fromLTRB(18, 10, 18, 0),
         title: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-          
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
@@ -171,7 +173,7 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                     ),
                   Expanded(
                     flex: 3,
-                    child: Text(getStatus(requestInfo.status)),
+                    child: Text(requestInfo.status),
                   )
                 ],
               ),
@@ -225,7 +227,7 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                     ),
                   Expanded(
                     flex: 3,
-                    child: Text(formatDateWithTime(requestInfo.dateCreate)),
+                    child: Text(requestInfo.dateCreate),
                   )
                 ],
               ),
@@ -252,7 +254,7 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
         ),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: const Text('Đóng'),
             onPressed: () => Navigator.pop(context),
           ),
         ],

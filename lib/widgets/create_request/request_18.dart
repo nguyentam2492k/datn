@@ -38,7 +38,6 @@ class Request18State extends State<Request18> {
   Map<String, dynamic> formData = {};
 
   late List<PlatformFile> files;
-  late bool isFileAdded;
 
   ValueNotifier<List<PlatformFile>> filesChanged = ValueNotifier([]);
 
@@ -73,7 +72,6 @@ class Request18State extends State<Request18> {
   void initState() {
     super.initState();
     files = [];
-    isFileAdded = true;
   }
 
   @override
@@ -196,7 +194,6 @@ class Request18State extends State<Request18> {
                 icon: const Icon(MyIcons.save),
                 labelText: "Lưu hồ sơ",
                 onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
                   isFormValid() ? sendFormData() : null;
                 }, 
               )
@@ -918,7 +915,7 @@ class Request18State extends State<Request18> {
           allowMultiple: false,
           isPickImage: true,
           files: myFiles,
-          isFileAdded: isFileAdded,
+          isFileAdded: true,
           onChanged: (value) {
             filesChanged.value = List.from(value);
             files = filesChanged.value;

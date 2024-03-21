@@ -7,6 +7,8 @@ class RequestInformation {
   String? reason;
   String? phoneContact;
   String? year;
+  String? startDate;
+  String? endDate;
   
   //Request 1
   String? certificateType;
@@ -26,18 +28,18 @@ class RequestInformation {
   String? semester;
 
   //Request 5
-  String? untilDate;
+  // String? untilDate; //1
 
   //Request 6
   List<String>? documents;
   String? otherDocument;
-  String? borrowDate;
+  // String? borrowDate; //2
 
   //Request 8
   String? monthFee;
 
   //Request 11
-  String? absentDate;
+  // String? absentDate; //3
 
   //Requet 17
   String? tuyen;
@@ -47,7 +49,7 @@ class RequestInformation {
 
   //Request 19
   String? name;
-  String? rentDate;
+  // String? rentDate; //4
   String? doituonguutien;
   String? permanentAddress;
   String? email;
@@ -62,6 +64,8 @@ class RequestInformation {
     this.quantityEng,
     this.reason,
     this.phoneContact,
+    this.startDate,
+    this.endDate,
     this.certificateType,
     this.semesterType,
     this.semesterNumber,
@@ -72,18 +76,18 @@ class RequestInformation {
     this.subjectReview,
     this.semester,
     this.year,
-    this.untilDate,
+    // this.untilDate,
     this.documents,
     this.otherDocument,
-    this.borrowDate,
+    // this.borrowDate,
     this.monthFee,
-    this.absentDate,
+    // this.absentDate,
     this.tuyen,
     this.mottuyen,
     this.studentAddress,
     this.receivingPlace,
     this.name,
-    this.rentDate,
+    // this.rentDate,
     this.doituonguutien,
     this.permanentAddress,
     this.email,
@@ -95,18 +99,24 @@ class RequestInformation {
   factory RequestInformation.fromJson(Map<String, dynamic> json) {
     // var examDate = formatDate(json['exam_date'] as String?);
     // var untilDate = formatDate(json['until_date'] as String?);
-    var examDate = json['exam_date'] as String?;
-    var untilDate = json['until_date'] as String?;
+    var examDate = formatDateWithTime(json['exam_date'] as String?);
+    // var untilDate = json['until_date'] as String?;
 
-    var borrowDate = formatDateRange(json["borrow_date"]);
-    var absentDate = formatDateRange(json["absent_date"]);
-    var rentDate = formatDateRange(json["rent_date"]);
+    // var borrowDate = formatDateRange(json["borrow_date"]);
+    // var absentDate = formatDateRange(json["absent_date"]);
+    // var rentDate = formatDateRange(json["rent_date"]);
+    var localStartDate = formatDateWithTime(json['start_date'] as String?);
+    var localEndDate = formatDateWithTime(json['end_date'] as String?);
 
     return RequestInformation(
       quantityViet: json['quantity_viet'] as int?,
       quantityEng: json['quantity_eng'] as int?,
       reason: json['reason'] as String?,
       phoneContact: json['phone_contact'] as String?,
+      startDate: localStartDate,
+      endDate: localEndDate,
+      year: json['year'] as String?,
+
       certificateType: json['certificate_type'] as String?,
       semesterType: json['semester_type'] as String?,
       semesterNumber: json['semester_number'] != null ? toListString(json["semester_number"]) : null,
@@ -116,19 +126,18 @@ class RequestInformation {
       examDate: examDate,
       subjectReview: json['subject_review'] as String?,
       semester: json['semester'] as String?,
-      year: json['year'] as String?,
-      untilDate: untilDate,
+      // untilDate: untilDate,
       documents: json['documents'] != null ? toListString(json["documents"]) : null,
       otherDocument: json['other_document'] as String?,
-      borrowDate: borrowDate,
+      // borrowDate: borrowDate,
       monthFee: json['month_fee'] as String?,
-      absentDate: absentDate,
-      tuyen: json['tuyen'] as String?,
-      mottuyen: json['mottuyen'] as String?,
+      // absentDate: absentDate,
+      tuyen: json['interline_bus_type'] as String?,
+      mottuyen: json['bus_number'] as String?,
       studentAddress: json['student_address'] as String?,
       receivingPlace: json['receiving_place'] as String?,
       name: json['name'] as String?,
-      rentDate: rentDate,
+      // rentDate: rentDate,
       doituonguutien: json['doituonguutien'] as String?,
       permanentAddress: json['permanent_address'] as String?,
       email: json['email'] as String?,

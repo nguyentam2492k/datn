@@ -143,6 +143,7 @@ class Request7State extends State<Request7> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             },
           ),
         ],

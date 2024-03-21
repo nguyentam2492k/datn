@@ -31,7 +31,7 @@ class Request19State extends State<Request19> {
   bool isFileAdded = true;
 
   bool isFormValid() {
-    if (_request19FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+    if (_request19FormKey.currentState!.validate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         MyToast.showToast(
           isError: true,
@@ -45,31 +45,48 @@ class Request19State extends State<Request19> {
   }
 
   Future<void> sendFormData() async {
-    
-    await EasyLoading.show(status: "Đang gửi");
 
-    var request = Request(
-      requestTypeId: 19, 
-      status: "completed", 
-      documentNeed: null,
-      fee: "12.000",
-      dateCreate: DateTime.now().toString(),
-    );
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
     
-    try {
-      await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) async {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          text: "Gửi thành công",
-        );
-      });
-    } catch (e) {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: true,
-        errorText: "LỖI: Gửi không thành công"
-      );
-    } 
+    // await EasyLoading.show(status: "Đang gửi");
+
+    // print(_request19FormKey.currentState!.removeInternalFieldValue("date_range"));
+
+    final dateTimeRange = _request19FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
+    _request19FormKey.currentState?.removeInternalFieldValue("date_range");
+    _request19FormKey.currentState?.save();
+    
+    formData.addAll({
+      'start_date': dateTimeRange.start,
+      'end_date': dateTimeRange.end
+    });
+
+    formData.addAll(_request19FormKey.currentState!.value);
+
+    // var request = Request(
+    //   requestTypeId: 19, 
+    //   status: "completed", 
+    //   documentNeed: null,
+    //   fee: "12.000",
+    //   dateCreate: DateTime.now().toString(),
+    // );
+    
+    // try {
+    //   await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: true,
+    //     errorText: "LỖI: Gửi không thành công"
+    //   );
+    // } 
+    print(formData);
   }
   
   @override
@@ -164,7 +181,7 @@ class Request19State extends State<Request19> {
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(
-                          name: 'rent_date',
+                          name: 'date_range',
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
                           initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now()),
@@ -233,6 +250,7 @@ class Request19State extends State<Request19> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             }, 
           )
         ],

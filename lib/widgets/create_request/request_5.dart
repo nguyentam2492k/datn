@@ -32,25 +32,27 @@ class Request5State extends State<Request5> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request5FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 5, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: currentDate.toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 5, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: currentDate.toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
+
+    print(formData);
   }
 
   @override
@@ -92,7 +94,7 @@ class Request5State extends State<Request5> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Năm học:", 
-                    name: 'year',
+                    name: 'school_year',
                     initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
                     isShort: true,
                     validator: (value) {
@@ -135,7 +137,7 @@ class Request5State extends State<Request5> {
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDateTimePicker(
-                          name: 'until_date',
+                          name: 'end_date',
                           validator: (value) {
                             if (value == null) {
                               return "Chọn ngày chính xác";

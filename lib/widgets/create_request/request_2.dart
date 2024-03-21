@@ -48,29 +48,31 @@ class Request2State extends State<Request2> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
     
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request2FormKey.currentState!.value);
     formData.addAll({
-      'quantity_viet': numberOfVietVer.toString(),
-      'quantity_eng': numberOfEngVer.toString(),
+      'number_of_copies_vi': numberOfVietVer.toString(),
+      'number_of_copies_en': numberOfEngVer.toString(),
     });
 
-    var request = Request(
-      requestTypeId: 2, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: DateTime.now().toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 2, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: DateTime.now().toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
+    print(_request2FormKey.currentState!.fields["is_all_semester"]!.value.runtimeType);
+    print(formData);
     
   }
 
@@ -141,22 +143,26 @@ class Request2State extends State<Request2> {
                                     border: InputBorder.none, 
                                     isCollapsed: true,
                                   ),
-                                  name: 'semester_type', 
-                                  initialValue: ConstantList.termTypes[0],
+                                  name: 'is_all_semester', 
+                                  initialValue: ConstantList.termTypes[1],
                                   options: ConstantList.termTypes
-                                  .map((termType) => FormBuilderFieldOption(value: termType))
-                                  .toList(),
+                                    .map((termType) => FormBuilderFieldOption(value: termType))
+                                    .toList(),
                                   onChanged: (value) {
                                     setState(() {
-                                      _request2FormKey.currentState?.fields['semester_number']?.reset();
+                                      _request2FormKey.currentState?.fields['semesters']?.reset();
                                     });
+                                  },
+                                  valueTransformer: (value) {
+                                    final termTypesIndex = ConstantList.termTypes.indexOf(value!);
+                                    return termTypesIndex;
                                   },
                                 ),
                               ),
                               const Divider(thickness: 0.4,),
                               Expanded(
                                 child: FormBuilderCheckboxGroup(
-                                  name: 'semester_number', 
+                                  name: 'semesters', 
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     isCollapsed: true,
@@ -165,16 +171,23 @@ class Request2State extends State<Request2> {
                                       height: 0.3
                                     ),
                                   ),
-                                  enabled: _request2FormKey.currentState?.fields['semester_type']?.value == ConstantList.termTypes[1],
+                                  enabled: _request2FormKey.currentState?.fields['is_all_semester']?.value == "Từng kỳ",
                                   validator: (value) {
-                                    if (_request2FormKey.currentState?.fields['semester_type']?.value == ConstantList.termTypes[1] && (value == null || value.isEmpty)) {
+                                    if (_request2FormKey.currentState?.fields['is_all_semester']?.value == "Từng kỳ" && (value == null || value.isEmpty)) {
                                       return "Chọn kỳ mong muốn";
                                     }
                                     return null;
                                   },
                                   options: ConstantList.termNumbers
-                                    .map((termNumber) => FormBuilderFieldOption(value: termNumber))
+                                    .map((termNumber) => FormBuilderFieldOption(value: termNumber, child: Text("Học kỳ $termNumber"),))
                                     .toList(),
+                                  valueTransformer: (value) {
+                                    if (value == null) {
+                                      return <int>[];
+                                    }
+                                    final intList = value.map(int.parse).toList();
+                                    return intList;
+                                  },
                                 ),
                               )
                             ],
@@ -207,8 +220,12 @@ class Request2State extends State<Request2> {
                             name: 'transcript_type', 
                             initialValue: ConstantList.transcriptTypes[0],
                             options: ConstantList.transcriptTypes
-                            .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
-                            .toList(),
+                              .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
+                              .toList(),
+                            valueTransformer: (value) {
+                              final transcriptTypeIndex = ConstantList.transcriptTypes.indexOf(value!) + 1;
+                              return transcriptTypeIndex;
+                            },
                           ),
                         ),
                       ],
@@ -304,24 +321,6 @@ class Request2State extends State<Request2> {
               (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
             }, 
           ),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child: SizedBox(
-          //     height: 50,
-          //     width: MediaQuery.of(context).size.width * 0.5,
-          //     child: ElevatedButton.icon(
-          //       icon: const Icon(MyIcons.send),
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-          //         foregroundColor: Colors.white
-          //       ),
-          //       onPressed: () async { 
-          //         (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
-          //       }, 
-          //       label: const Text("Gửi yêu cầu"),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );

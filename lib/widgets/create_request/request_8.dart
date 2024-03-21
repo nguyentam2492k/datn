@@ -1,3 +1,4 @@
+import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
@@ -26,56 +27,61 @@ class Request8State extends State<Request8> {
 
   final GlobalKey<FormBuilderState> _request8FormKey = GlobalKey<FormBuilderState>();
 
-  List<String> monthFee = ['960000đ', '3000000đ', '3500000đ', '4200000đ'];
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
-  @override
-  Widget build(BuildContext context) {
-
-    bool isFormValid() {
-      if (_request8FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-        if (!isListFileOK(files)) {
-          MyToast.showToast(
-            isError: true,
-            errorText: "File lỗi"
-          );
-          return false;
-        }
-        return true;
-      }
-      return false;
-    }
-
-    Future<void> sendFormData() async {
-
-      await EasyLoading.show(status: "Đang gửi");
-
-      var request = Request(
-        requestTypeId: 8, 
-        status: "canceled", 
-        documentNeed: null,
-        fee: "5.000",
-        dateCreate: DateTime.now().toString(),
-      );
-      
-      try {
-        await APIService().postDataWithFile(request: request, formData: _request8FormKey.currentState!.value, files: files).then((value) async {
-          await EasyLoading.dismiss();
-          MyToast.showToast(
-            text: "Gửi thành công",
-          );
-        });
-      } catch (e) {
-        await EasyLoading.dismiss();
+  bool isFormValid() {
+    if (_request8FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
         MyToast.showToast(
           isError: true,
-          errorText: "LỖI: Gửi không thành công"
+          errorText: "File lỗi"
         );
-      } 
+        return false;
+      }
+      return true;
     }
+    return false;
+  }
+
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    // await EasyLoading.show(status: "Đang gửi");
+
+    formData.addAll(_request8FormKey.currentState!.value);
+
+    var request = Request(
+      requestTypeId: 8, 
+      status: "canceled", 
+      documentNeed: null,
+      fee: "5.000",
+      dateCreate: DateTime.now().toString(),
+    );
+    
+    // try {
+    //   await apiService.postDataWithFile(request: request, formData: _request8FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: true,
+    //     errorText: "LỖI: Gửi không thành công"
+    //   );
+    // } 
+
+    print(formData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     
     return FormBuilder(
       key: _request8FormKey,
@@ -147,9 +153,9 @@ class Request8State extends State<Request8> {
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDropdown(
-                          name: 'month_fee',
-                          initialValue: monthFee[0],
-                          items: monthFee
+                          name: 'tuition_type',
+                          initialValue: ConstantList.monthFee[0],
+                          items: ConstantList.monthFee
                             .map((fee) => DropdownMenuItem(
                               value: fee, 
                               child: Text(fee),
@@ -160,6 +166,10 @@ class Request8State extends State<Request8> {
                               return "Chọn học phí";
                             }
                             return null;
+                          },
+                          valueTransformer: (value) {
+                            final monthFeeIndex = ConstantList.monthFee.indexOf(value!) + 1;
+                            return monthFeeIndex;
                           },
                         ),
                       ),
@@ -186,6 +196,7 @@ class Request8State extends State<Request8> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             },
           ),
         ],

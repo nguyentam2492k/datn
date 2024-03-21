@@ -46,30 +46,34 @@ class Request3State extends State<Request3> {
 
   Future<void> sendFormData() async {
 
-    await EasyLoading.show(status: "Đang gửi");
-
-    var request = Request(
-      requestTypeId: 3, 
-      status: "processing", 
-      documentNeed: null,
-      fee: null,
-      dateCreate: DateTime.now().toString(),
-    );
+    Map<String, dynamic> formData = {};
     
-    try {
-      await APIService().postDataWithFile(request: request, formData: _request3FormKey.currentState!.value, files: files).then((value) async {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          text: "Gửi thành công",
-        );
-      });
-    } catch (e) {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: true,
-        errorText: "LỖI: Gửi không thành công"
-      );
-    } 
+    // await EasyLoading.show(status: "Đang gửi");
+    formData.addAll(_request3FormKey.currentState!.value);
+    print(formData);
+
+    // var request = Request(
+    //   requestTypeId: 3, 
+    //   status: "processing", 
+    //   documentNeed: null,
+    //   fee: null,
+    //   dateCreate: DateTime.now().toString(),
+    // );
+    
+    // try {
+    //   await APIService().postDataWithFile(request: request, formData: _request3FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: true,
+    //     errorText: "LỖI: Gửi không thành công"
+    //   );
+    // } 
   }
 
   @override
@@ -94,7 +98,7 @@ class Request3State extends State<Request3> {
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
                     labelText: "Môn học:", 
-                    name: "subject", 
+                    name: "subject_name", 
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -108,7 +112,7 @@ class Request3State extends State<Request3> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Giảng viên giảng dạy:", 
-                    name: "lecturer", 
+                    name: "teacher_name", 
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";

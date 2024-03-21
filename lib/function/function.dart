@@ -9,27 +9,29 @@ import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String formatDateWithTime(String dateWithTime) {
+String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = true}) {
+  if (dateWithTime == null) {
+    return null;
+  }
+
   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-  var inputDate = inputFormat.parse(dateWithTime);
+  DateTime inputDate;
+
+  try {
+    inputDate = inputFormat.parse(dateWithTime);
+  } catch (e) {
+    return dateWithTime;
+  }
   
-  var outputFormat = DateFormat('dd/MM/yyyy HH:mm');
+  var outputFormat = DateFormat();
+  if (outputIncludeTime) {
+    outputFormat = DateFormat('dd/MM/yyyy HH:mm');
+  } else {
+    outputFormat = DateFormat('dd/MM/yyyy');
+  }
   var outputDate = outputFormat.format(inputDate);
   return outputDate;
 }
-
-// String? formatDate(String? date) {
-//   if (date == null) {
-//     return null;
-//   }
-
-//   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-//   var inputDate = inputFormat.parse(date);
-  
-//   var outputFormat = DateFormat('dd/MM/yyyy');
-//   var outputDate = outputFormat.format(inputDate);
-//   return outputDate;
-// }
 
 String? formatDateRange(String? dateRange) {
   if (dateRange == null) {
@@ -87,7 +89,7 @@ String getRequestText(RequestInformation requestInfo) {
   var requestText = StringBuffer();
   requestInfo.certificateType != null ? requestText.writeln("Loại GCN: ${requestInfo.certificateType}") : null;
   requestInfo.semesterType != null ? requestText.writeln("Loại kỳ: ${requestInfo.semesterType}") : null;
-  requestInfo.semesterNumber != null ? requestText.writeln("Kỳ: ${listToString(requestInfo.semesterNumber!)}") : null;
+  (requestInfo.semesterNumber != null && requestInfo.semesterNumber!.isNotEmpty) ? requestText.writeln("Kỳ: ${listToString(requestInfo.semesterNumber!)}") : null;
   requestInfo.transcriptType != null ? requestText.writeln("Loại bảng điểm: ${requestInfo.transcriptType}") : null;
   requestInfo.subject != null ? requestText.writeln("Môn học: ${requestInfo.subject}") : null;
   requestInfo.lecturer != null ? requestText.writeln("Giảng viên: ${requestInfo.lecturer}") : null;
@@ -96,17 +98,20 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.semester != null ? requestText.writeln("Học kỳ: ${requestInfo.semester}") : null;
   requestInfo.educationProgram != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.educationProgram}") : null;
   requestInfo.year != null ? requestText.writeln("Năm học: ${requestInfo.year}") : null;
-  requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
+  // requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
   (requestInfo.documents != null && requestInfo.documents!.isNotEmpty) ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
   requestInfo.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestInfo.otherDocument}") : null;
-  requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
-  requestInfo.monthFee != null ? requestText.writeln("Học phí theo tháng: ${requestInfo.monthFee}") : null;
-  requestInfo.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestInfo.absentDate}") : null;
+  // requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
+  requestInfo.monthFee != null ? requestText.writeln("Học phí theo tháng (VNĐ): ${requestInfo.monthFee}") : null;
+  // requestInfo.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestInfo.absentDate}") : null;
   requestInfo.tuyen != null ? requestText.writeln("Tuyến đăng ký: ${requestInfo.tuyen}") : null;
-  requestInfo.mottuyen != null ? requestText.writeln("Tuyến số: ${requestInfo.mottuyen}") : null;
+  requestInfo.mottuyen != null ? requestText.writeln("Một tuyến số: ${requestInfo.mottuyen}") : null;
   requestInfo.studentAddress != null ? requestText.writeln("Địa chỉ: ${requestInfo.studentAddress}") : null;
   requestInfo.name != null ? requestText.writeln("Đơn nguyên: ${requestInfo.name}") : null;
-  requestInfo.rentDate != null ? requestText.writeln("Thời gian thuê: ${requestInfo.rentDate}") : null;
+  // requestInfo.rentDate != null ? requestText.writeln("Thời gian thuê: ${requestInfo.rentDate}") : null;
+  requestInfo.startDate != null ? requestText.writeln("Từ ngày: ${requestInfo.startDate}") : null;
+  requestInfo.endDate != null ? requestText.writeln("Đến ngày: ${requestInfo.endDate}") : null;
+
   requestInfo.doituonguutien != null ? requestText.writeln("Đối tượng ưu tiên: ${requestInfo.doituonguutien}") : null;
   requestInfo.permanentAddress != null ? requestText.writeln("Địa chỉ thường trú: ${requestInfo.permanentAddress}") : null;
   requestInfo.phoneContact != null ? requestText.writeln("SĐT: ${requestInfo.phoneContact}") : null;
@@ -114,20 +119,20 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.email != null ? requestText.writeln("Email: ${requestInfo.email}") : null;
   requestInfo.khicanbaotin != null ? requestText.writeln("Khi cần liên hệ: ${requestInfo.khicanbaotin}") : null;
   requestInfo.internCompany != null ? requestText.writeln("Nơi thực tập: ${requestInfo.internCompany}") : null;
-  (requestInfo.quantityViet != null && requestInfo.quantityViet != "0") ? requestText.writeln("Số bản tiếng Việt: ${requestInfo.quantityViet}") : null;
-  (requestInfo.quantityEng != null && requestInfo.quantityEng != "0") ? requestText.writeln("Số bản tiếng Anh: ${requestInfo.quantityEng}") : null;
+  (requestInfo.quantityViet != null && requestInfo.quantityViet != 0) ? requestText.writeln("Số bản tiếng Việt: ${requestInfo.quantityViet}") : null;
+  (requestInfo.quantityEng != null && requestInfo.quantityEng != 0) ? requestText.writeln("Số bản tiếng Anh: ${requestInfo.quantityEng}") : null;
   requestInfo.reason != null ? requestText.writeln("Lý do: ${requestInfo.reason}") : null;
   return requestText.toString().trim();
 }
 
-String getStatus(String status) {
+String getStatus(int status) {
   switch (status) {
-    case "completed":
-      return "Đã xong";
-    case "canceled":
-      return "Đã huỷ";
-    case "processing":
+    case 1:
       return "Đang xử lý";
+    case 2:
+      return "Đã xong";
+    case 3:
+      return "Đã huỷ";
     default:
       return "----";
   }

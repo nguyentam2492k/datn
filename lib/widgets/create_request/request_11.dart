@@ -31,7 +31,7 @@ class Request11State extends State<Request11> {
   bool isFileAdded = true;
 
   bool isFormValid() {
-    if (_request11FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+    if (_request11FormKey.currentState!.validate() && files.isNotEmpty) {
       if (!isListFileOK(files)) {
         MyToast.showToast(
           isError: true,
@@ -45,8 +45,21 @@ class Request11State extends State<Request11> {
   }
 
   Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
+
+    final dateTimeRange = _request11FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
+    _request11FormKey.currentState?.removeInternalFieldValue("date_range");
+    _request11FormKey.currentState?.save();
+    
+    formData.addAll({
+      'start_date': dateTimeRange.start,
+      'end_date': dateTimeRange.end
+    });
+
+    formData.addAll(_request11FormKey.currentState!.value);
 
     var request = Request(
       requestTypeId: 11, 
@@ -56,20 +69,22 @@ class Request11State extends State<Request11> {
       dateCreate: DateTime.now().toString(),
     );
     
-    try {
-      await APIService().postDataWithFile(request: request, formData: _request11FormKey.currentState!.value, files: files).then((value) async {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          text: "Gửi thành công",
-        );
-      });
-    } catch (e) {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: true,
-        errorText: "LỖI: Gửi không thành công"
-      );
-    } 
+    // try {
+    //   await apiService.postDataWithFile(request: request, formData: _request11FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: true,
+    //     errorText: "LỖI: Gửi không thành công"
+    //   );
+    // } 
+
+    print(formData);
   }
 
   @override
@@ -142,7 +157,7 @@ class Request11State extends State<Request11> {
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(
-                          name: 'absent_date',
+                          name: 'date_range',
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
                           validator: (value) => (value == null) ? "Chọn thời gian chính xác" : null,
@@ -180,6 +195,7 @@ class Request11State extends State<Request11> {
             onPressed: () async {
               isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
+              setState(() {});
             }, 
           )
         ],

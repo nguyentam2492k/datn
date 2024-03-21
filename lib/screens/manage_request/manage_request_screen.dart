@@ -38,7 +38,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   late int selectedStatusIndex;
 
   int currentPage = 1;
-  int pageSize = 5;
+  int pageSize = 10;
   int totalRequests = 99;
   String? getDataErrorText;
   late String accessToken;
@@ -143,7 +143,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   Widget buildRequestListView() {
     currentPage = 1;
-    isLoading = false;
+    // isLoading = false;
 
     return FutureBuilder(
       future: loadRequest(),
@@ -188,17 +188,13 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   
                   if (index == list.length) {
-                    print(isLoading);
-                    return !isLoading
-                      ? Visibility(
-                        visible: !isLoading,
-                        child: const Center(
-                          child: SizedBox(
-                            height: loadingIndicatorSize,
-                            width: loadingIndicatorSize,
-                            child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
-                          ),
-                        )
+                    return (listRequest.value.length < totalRequests)
+                      ? const Center(
+                        child: SizedBox(
+                          height: loadingIndicatorSize,
+                          width: loadingIndicatorSize,
+                          child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
+                        ),
                       )
                       : const Text(
                           "Đã tải toàn bộ yêu cầu!",
@@ -345,7 +341,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
                   const SizedBox(width: 3,),
                   Flexible(
                     child: Text(
-                      formatDateWithTime(list[index].dateCreate),
+                      list[index].dateCreate,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     )

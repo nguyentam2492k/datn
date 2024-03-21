@@ -9,6 +9,7 @@ import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:uuid/enums.dart';
 
 class Request6 extends StatefulWidget {
   const Request6({super.key});
@@ -24,32 +25,43 @@ class Request6State extends State<Request6> {
   final GlobalKey<FormBuilderState> _request6FormKey = GlobalKey<FormBuilderState>();
 
   bool isFormValid() {
-    return _request6FormKey.currentState!.saveAndValidate();
+    return _request6FormKey.currentState!.validate();
   }
 
   Future<void> sendFormData() async {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
+    // await EasyLoading.show(status: "Đang gửi");
+    final dateTimeRange = _request6FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
+    _request6FormKey.currentState?.removeInternalFieldValue("date_range");
+    _request6FormKey.currentState?.save();
+    
+    formData.addAll({
+      'start_date': dateTimeRange.start,
+      'end_date': dateTimeRange.end
+    });
+
     formData.addAll(_request6FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 6, 
-      documentNeed: null,
-      fee: null,
-      status: "processing", 
-      dateCreate: DateTime.now().toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 6, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "processing", 
+    //   dateCreate: DateTime.now().toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
+
+    print(formData);
   }
 
   @override
@@ -108,21 +120,29 @@ class Request6State extends State<Request6> {
                               height: 0.3
                             ),
                           ),
-                          onSaved: (value) {
-                            if (value != null && value.isEmpty) {
-                              _request6FormKey.currentState!.fields["documents"]!.reset();
-                            }
-                          },
+                          // onSaved: (value) {
+                          //   if (value != null && value.isEmpty) {
+                          //     _request6FormKey.currentState!.fields["documents"]!.reset();
+                          //   }
+                          // },
                           validator: (value) {
-                            var otherDocument = _request6FormKey.currentState!.fields['other_document']!.value;
-                            if ((value == null || value.isEmpty) && (otherDocument == null || otherDocument.isEmpty)) {
-                              return "Chọn hồ sơ";
+                            var otherDocument = _request6FormKey.currentState?.fields['other_document']?.value as String?;
+                            if ((value == null || value.isEmpty) && (otherDocument == null || otherDocument.trim().isEmpty)) {
+                              return "Chọn loại hồ sơ";
                             }
                             return null;
                           },
                           options: ConstantList.documentTypes
                             .map((documentType) => FormBuilderFieldOption(value: documentType))
                             .toList(),
+                          valueTransformer: (value) {
+                            if (value != null) {
+                              final valueIndex = value.map((e) => ConstantList.documentTypes.indexOf(e) + 1).toList();
+                              valueIndex.sort();
+                              return valueIndex;
+                            }
+                            return null;
+                          },
                         ),
                       )
                     ],
@@ -133,16 +153,17 @@ class Request6State extends State<Request6> {
                     name: 'other_document',
                     isImportant: false,
                     validator: (value) {
-                      if (!_request6FormKey.currentState!.fields['documents']!.validate() && (value == null || value.isEmpty )) {
+                      final documentValue = _request6FormKey.currentState?.fields['documents']?.value as List<dynamic>?;
+                      if ((documentValue == null || documentValue.isEmpty) && (value == null || value.trim().isEmpty )) {
                         return "Điền hồ sơ khác nếu cần";
                       }
                       return null;
                     },
-                    onSaved: (value) {
-                      if (value != null && value.isEmpty) {
-                        _request6FormKey.currentState!.fields["other_document"]!.reset();
-                      }
-                    },
+                    // onSaved: (value) {
+                    //   if (value != null && value.trim().isEmpty) {
+                    //     _request6FormKey.currentState!.fields["other_document"]!.reset();
+                    //   }
+                    // },
                   ),
                   const SizedBox(height: 10,),
                   Row(
@@ -174,7 +195,7 @@ class Request6State extends State<Request6> {
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(
-                          name: 'borrow_date',
+                          name: 'date_range',
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
                           validator: (value) => (value == null) ? "Chọn thời gian chính xác" : null,
