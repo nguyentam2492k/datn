@@ -61,13 +61,13 @@ class Request11State extends State<Request11> {
 
     formData.addAll(_request11FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 11, 
-      status: "completed", 
-      documentNeed: null,
-      fee: null,
-      dateCreate: DateTime.now().toString(),
-    );
+    // var request = Request(
+    //   requestTypeId: 11, 
+    //   status: "completed", 
+    //   documentNeed: null,
+    //   fee: null,
+    //   dateCreate: DateTime.now().toString(),
+    // );
     
     // try {
     //   await apiService.postDataWithFile(request: request, formData: _request11FormKey.currentState!.value, files: files).then((value) async {

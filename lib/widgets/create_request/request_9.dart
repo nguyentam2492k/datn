@@ -50,13 +50,13 @@ class Request9State extends State<Request9> {
 
     formData.addAll(_request9FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 9, 
-      status: "completed", 
-      documentNeed: null,
-      fee: "15.000",
-      dateCreate: DateTime.now().toString(),
-    );
+    // var request = Request(
+    //   requestTypeId: 9, 
+    //   status: "completed", 
+    //   documentNeed: null,
+    //   fee: "15.000",
+    //   dateCreate: DateTime.now().toString(),
+    // );
 
     // try {
     //   await apiService.postDataWithFile(request: request, formData: _request9FormKey.currentState!.value, files: files).then((value) async {

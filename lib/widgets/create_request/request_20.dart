@@ -33,22 +33,22 @@ class Request20State extends State<Request20> {
     await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request20FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 20, 
-      documentNeed: null,
-      fee: null,
-      status: "completed", 
-      dateCreate: DateTime.now().toString()
-    );
+    // var request = Request(
+    //   requestTypeId: 20, 
+    //   documentNeed: null,
+    //   fee: null,
+    //   status: "completed", 
+    //   dateCreate: DateTime.now().toString()
+    // );
 
-    await apiService.postData(request: request, requestInfo: formData).then((value) async {
-      await EasyLoading.dismiss();
-      MyToast.showToast(
-        isError: value != null,
-        text: "Gửi thành công",
-        errorText: "LỖI: $value"
-      );
-    });
+    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    //   await EasyLoading.dismiss();
+    //   MyToast.showToast(
+    //     isError: value != null,
+    //     text: "Gửi thành công",
+    //     errorText: "LỖI: $value"
+    //   );
+    // });
   }
   
   @override

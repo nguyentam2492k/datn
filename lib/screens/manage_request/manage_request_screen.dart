@@ -51,11 +51,17 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   void initState() {
     super.initState();
     accessToken = globalLoginResponse!.accessToken!;
-    userId = globalLoginResponse!.user?.id ?? "18021117";
+    userId = globalLoginResponse!.user?.id ?? "999999";
     selectedStatusIndex = 0;
     scrollController.addListener(() {
       _handleScroll();
     });
+  }
+
+  @override
+  void dispose() {
+    apiService.cancelTask();
+    super.dispose();
   }
 
   @override

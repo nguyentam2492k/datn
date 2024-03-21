@@ -54,13 +54,13 @@ class Request8State extends State<Request8> {
 
     formData.addAll(_request8FormKey.currentState!.value);
 
-    var request = Request(
-      requestTypeId: 8, 
-      status: "canceled", 
-      documentNeed: null,
-      fee: "5.000",
-      dateCreate: DateTime.now().toString(),
-    );
+    // var request = Request(
+    //   requestTypeId: 8, 
+    //   status: "canceled", 
+    //   documentNeed: null,
+    //   fee: "5.000",
+    //   dateCreate: DateTime.now().toString(),
+    // );
     
     // try {
     //   await apiService.postDataWithFile(request: request, formData: _request8FormKey.currentState!.value, files: files).then((value) async {

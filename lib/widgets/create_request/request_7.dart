@@ -47,28 +47,28 @@ class Request7State extends State<Request7> {
 
     await EasyLoading.show(status: "Đang gửi");
 
-    var request = Request(
-      requestTypeId: 7, 
-      status: "processing", 
-      documentNeed: null,
-      fee: null,
-      dateCreate: DateTime.now().toString(),
-    );
+    // var request = Request(
+    //   requestTypeId: 7, 
+    //   status: "processing", 
+    //   documentNeed: null,
+    //   fee: null,
+    //   dateCreate: DateTime.now().toString(),
+    // );
 
-    try {
-      await APIService().postDataWithFile(request: request, formData: _request7FormKey.currentState!.value, files: files).then((value) async {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          text: "Gửi thành công",
-        );
-      });
-    } catch (e) {
-        await EasyLoading.dismiss();
-        MyToast.showToast(
-          isError: true,
-          errorText: "LỖI: Gửi không thành công"
-        );
-    } 
+    // try {
+    //   await APIService().postDataWithFile(request: request, formData: _request7FormKey.currentState!.value, files: files).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi thành công",
+    //     );
+    //   });
+    // } catch (e) {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       isError: true,
+    //       errorText: "LỖI: Gửi không thành công"
+    //     );
+    // } 
   }
 
   @override

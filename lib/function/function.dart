@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = true}) {
+String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = false}) {
   if (dateWithTime == null) {
     return null;
   }
@@ -33,19 +33,19 @@ String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = true}
   return outputDate;
 }
 
-String? formatDateRange(String? dateRange) {
-  if (dateRange == null) {
-    return null;
-  }
+// String? formatDateRange(String? dateRange) {
+//   if (dateRange == null) {
+//     return null;
+//   }
 
-  var date = dateRange.split(" - ");
+//   var date = dateRange.split(" - ");
 
-  var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-  // var inputDate = inputFormat.parse(dateRange);
+//   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
+//   // var inputDate = inputFormat.parse(dateRange);
   
-  var outputFormat = DateFormat('dd/MM/yyyy');
-  return "${outputFormat.format(inputFormat.parse(date[0]))} - ${outputFormat.format(inputFormat.parse(date[1]))}";
-}
+//   var outputFormat = DateFormat('dd/MM/yyyy');
+//   return "${outputFormat.format(inputFormat.parse(date[0]))} - ${outputFormat.format(inputFormat.parse(date[1]))}";
+// }
 
 bool isInteger(String? s) {
   if (s == null) {
@@ -74,6 +74,9 @@ String listToString(List<String> listString) {
 }
 
 List<String> toListString(List list) {
+  if (list.isEmpty) {
+    return [];
+  }
   var listString =  list.map((item) {
     if (item.runtimeType == int) {
       return "Học kỳ $item";
@@ -125,8 +128,8 @@ String getRequestText(RequestInformation requestInfo) {
   return requestText.toString().trim();
 }
 
-String getStatus(int status) {
-  switch (status) {
+String getStatus(int statusId) {
+  switch (statusId) {
     case 1:
       return "Đang xử lý";
     case 2:

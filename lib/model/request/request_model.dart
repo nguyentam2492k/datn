@@ -105,7 +105,7 @@ class Request {
 //   String? processingPlace;
 //   String dateCreate;
 //   String? dateReceive;
-  int? id;
+  int id;
   User? user;
   String? requestType;
   int requestTypeId;
@@ -120,7 +120,7 @@ class Request {
   List<String>? file;
 
   Request({
-    this.id,
+    required this.id,
     this.user,
     this.requestType,
     required this.requestTypeId,
@@ -137,19 +137,27 @@ class Request {
 
   factory Request.fromJson(Map<String, dynamic> json) {
 
-    final localDateCreate = formatDateWithTime(json['created_date'] as String);
-    final localDateReceive = formatDateWithTime(json['receive_date'] as String?);
+    final localDateCreate = formatDateWithTime(json['created_date'] as String, outputIncludeTime: true);
+    final localDateReceive = formatDateWithTime(json['receive_date'] as String?, outputIncludeTime: true);
+    String? requestFee;
+
+    if (json['fee'] is int) {
+      requestFee = "${json['fee'] as int}đ";
+    } else {
+      requestFee = "${int.tryParse(json['fee'] as String)}đ";
+    }
 
     return Request(
-      id: json['id'] as int?,
+      id: json['id'] as int,
       user: User.fromJson(json['user'] as Map<String,dynamic>),
       requestType: json['type']['name'] as String?,
       requestTypeId: json['type']['id'] as int,
       documentNeed: json['document_need'] as String?,
       statusId: json['status']['id'] as int?,
       status: json['status']['name'] as String,
-      fee: json['fee'] != null ? "${json['fee'] as String}đ" : null,
-      processingPlace: json['processing_place'] as String?,
+      // fee: json['fee'] != null ? "${json['fee'] as int}đ" : null,
+      fee: requestFee,
+      processingPlace: json['processing_place']['name'] as String?,
       dateCreate: localDateCreate ?? json['created_date'] as String,
       dateReceive: localDateReceive,
       info: RequestInformation.fromJson(json['info'] as Map<String,dynamic>),
