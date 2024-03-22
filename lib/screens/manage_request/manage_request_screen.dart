@@ -47,6 +47,46 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   bool isLoading = false;
   ScrollController scrollController = ScrollController();
 
+  Future<void> loadRequest() async {
+    print("LOAD");
+    isLoading = true;
+
+    if (currentPage == 1) {
+      listRequest.value = [];
+    }
+
+    try {
+      await apiService.getMyData(currentStatus, pageIndex: currentPage, pageSize: pageSize).then((value) {
+        getDataErrorText = null;
+
+        totalRequests = value.totalRequests;
+        final list = value.listRequests;
+
+        listRequest.value.addAll(value.listRequests);
+        listRequest.value = List.from(listRequest.value);
+        
+        isExpanded.value.addAll(List.generate(list.length, (index) => false));
+        isExpanded.value = List.from(isExpanded.value);
+        if (listRequest.value.length < totalRequests) {
+          currentPage += 1;
+          isLoading = false;
+        }
+      });
+    } catch (e) {
+      getDataErrorText = e.toString();
+      MyToast.showToast(
+        isError: true,
+        errorText: e.toString()
+      );
+    }
+  }
+
+  void _handleScroll() {
+    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listRequest.value.length < totalRequests) {
+      loadRequest();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -105,46 +145,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
         ),
       ]
     );
-  }
-
-  Future<void> loadRequest() async {
-    print("LOAD");
-    isLoading = true;
-
-    if (currentPage == 1) {
-      listRequest.value = [];
-    }
-
-    try {
-      await apiService.getMyData(currentStatus, pageIndex: currentPage, pageSize: pageSize).then((value) {
-        getDataErrorText = null;
-
-        totalRequests = value.totalRequests;
-        final list = value.listRequests;
-
-        listRequest.value.addAll(value.listRequests);
-        listRequest.value = List.from(listRequest.value);
-        
-        isExpanded.value.addAll(List.generate(list.length, (index) => false));
-        isExpanded.value = List.from(isExpanded.value);
-        if (listRequest.value.length < totalRequests) {
-          currentPage += 1;
-          isLoading = false;
-        }
-      });
-    } catch (e) {
-      getDataErrorText = e.toString();
-      MyToast.showToast(
-        isError: true,
-        errorText: e.toString()
-      );
-    }
-  }
-
-  void _handleScroll() {
-    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listRequest.value.length < totalRequests) {
-      loadRequest();
-    }
   }
 
   Widget buildRequestListView() {

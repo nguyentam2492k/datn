@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -9,7 +9,6 @@ import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:uuid/enums.dart';
 
 class Request6 extends StatefulWidget {
   const Request6({super.key});
@@ -32,34 +31,33 @@ class Request6State extends State<Request6> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
+
     final dateTimeRange = _request6FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
     _request6FormKey.currentState?.removeInternalFieldValue("date_range");
     _request6FormKey.currentState?.save();
     
     formData.addAll({
-      'start_date': dateTimeRange.start,
-      'end_date': dateTimeRange.end
+      'start_date': dateTimeRange.start.toString(),
+      'end_date': dateTimeRange.end.toString()
     });
 
     formData.addAll(_request6FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 6, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "processing", 
-    //   dateCreate: DateTime.now().toString()
-    // );
-
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
-    //   );
-    // });
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.borrowFile).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
 
     print(formData);
   }
@@ -111,7 +109,7 @@ class Request6State extends State<Request6> {
                       Expanded(
                         flex: 4,
                         child: FormBuilderCheckboxGroup(
-                          name: 'documents', 
+                          name: 'file_types', 
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             isCollapsed: true,
@@ -120,13 +118,8 @@ class Request6State extends State<Request6> {
                               height: 0.3
                             ),
                           ),
-                          // onSaved: (value) {
-                          //   if (value != null && value.isEmpty) {
-                          //     _request6FormKey.currentState!.fields["documents"]!.reset();
-                          //   }
-                          // },
                           validator: (value) {
-                            var otherDocument = _request6FormKey.currentState?.fields['other_document']?.value as String?;
+                            var otherDocument = _request6FormKey.currentState?.fields['other_file']?.value as String?;
                             if ((value == null || value.isEmpty) && (otherDocument == null || otherDocument.trim().isEmpty)) {
                               return "Chọn loại hồ sơ";
                             }
@@ -141,7 +134,7 @@ class Request6State extends State<Request6> {
                               valueIndex.sort();
                               return valueIndex;
                             }
-                            return null;
+                            return [];
                           },
                         ),
                       )
@@ -150,20 +143,15 @@ class Request6State extends State<Request6> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Hồ sơ khác:",
-                    name: 'other_document',
+                    name: 'other_file',
                     isImportant: false,
                     validator: (value) {
-                      final documentValue = _request6FormKey.currentState?.fields['documents']?.value as List<dynamic>?;
+                      final documentValue = _request6FormKey.currentState?.fields['file_types']?.value as List<dynamic>?;
                       if ((documentValue == null || documentValue.isEmpty) && (value == null || value.trim().isEmpty )) {
                         return "Điền hồ sơ khác nếu cần";
                       }
                       return null;
                     },
-                    // onSaved: (value) {
-                    //   if (value != null && value.trim().isEmpty) {
-                    //     _request6FormKey.currentState!.fields["other_document"]!.reset();
-                    //   }
-                    // },
                   ),
                   const SizedBox(height: 10,),
                   Row(

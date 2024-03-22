@@ -1,15 +1,12 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
-import 'package:datn/function/function.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
-import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -27,22 +24,8 @@ class Request8State extends State<Request8> {
 
   final GlobalKey<FormBuilderState> _request8FormKey = GlobalKey<FormBuilderState>();
 
-  List<PlatformFile> files = [];
-
-  bool isFileAdded = true;
-
   bool isFormValid() {
-    if (_request8FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-      if (!isListFileOK(files)) {
-        MyToast.showToast(
-          isError: true,
-          errorText: "File lỗi"
-        );
-        return false;
-      }
-      return true;
-    }
-    return false;
+    return _request8FormKey.currentState!.saveAndValidate();
   }
 
   Future<void> sendFormData() async {
@@ -50,32 +33,24 @@ class Request8State extends State<Request8> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
-
     formData.addAll(_request8FormKey.currentState!.value);
-
-    // var request = Request(
-    //   requestTypeId: 8, 
-    //   status: "canceled", 
-    //   documentNeed: null,
-    //   fee: "5.000",
-    //   dateCreate: DateTime.now().toString(),
-    // );
     
-    // try {
-    //   await apiService.postDataWithFile(request: request, formData: _request8FormKey.currentState!.value, files: files).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi thành công",
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: Gửi không thành công"
-    //   );
-    // } 
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.transcript).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
 
     print(formData);
   }
@@ -179,22 +154,13 @@ class Request8State extends State<Request8> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 8,),
-                  CustomUploadFileRowWidget(
-                    files: files, 
-                    isFileAdded: isFileAdded, 
-                    onChanged: (List<PlatformFile> value) { 
-                      files = value;
-                      setState(() {});
-                    }, 
-                  )
+                  const SizedBox(height: 10,)
                 ],
               ),
             )
           ),
           SendRequestButton(
             onPressed: () async {
-              isFileAdded = files.isEmpty ? false : true;
               isFormValid() ? await sendFormData() : null;
               setState(() {});
             },

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:datn/model/enum/request_type.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
@@ -13,30 +14,12 @@ import 'package:datn/services/handle/my_handle.dart';
 
 class APIService {
 
-  static const host = "http://192.168.1.5:3000";
-  static const myHost = "https://uet-student-cc10e59e8dec.herokuapp.com/api/v1";
+  static const host = "https://uet-student-cc10e59e8dec.herokuapp.com/api/v1";
 
   final dio = Dio();
 
-  // Future<dynamic> login(LoginRequestModel loginRequestModel) async{
-  //   Uri url = Uri.parse("http://$host:3000/login");
-    
-  //   try {
-  //     final response = await http.post(url, body: loginRequestModel.toJson());
-  //     // print(response.body);
-  //     if(response.statusCode == 200) {
-  //       return LoginResponseModel.fromJson(jsonDecode(response.body));
-  //     } else {
-  //       // print("Unknown Error!");
-  //       return response.body;
-  //     }
-  //   } catch (e) {
-  //     return (e.toString());
-  //   }
-  // }
-
   Future<LoginResponseModel> login(LoginRequestModel loginRequestModel) async{
-    Uri url = Uri.parse("$myHost/login");
+    Uri url = Uri.parse("$host/login");
     
     try {
       final response = await dio.postUri(
@@ -65,7 +48,7 @@ class APIService {
   }
 
   Future<String> logout() async {
-    Uri url = Uri.parse("$myHost/logout");
+    Uri url = Uri.parse("$host/logout");
 
     try {
       final response = await dio.postUri(
@@ -157,7 +140,7 @@ class APIService {
     List<Request> listData = [];
 
     String currentStatus;
-    String baseUrl = "$myHost/requests?pageSize=$pageSize&pageIndex=$pageIndex";
+    String baseUrl = "$host/requests?pageSize=$pageSize&pageIndex=$pageIndex";
     Uri url = Uri();
 
     switch (status) {
@@ -204,19 +187,20 @@ class APIService {
       }
 
     } on DioException catch (e) {
-      print("GET DATA ERROR: ${e.message.toString()}");
+      print("GET DATA ERROR: ${MyHandle.handleDioError(e.type)}");
       throw MyHandle.handleDioError(e.type);
     }
   }
 
-  Future<void> postDataWithoutFiles({required Map<String, dynamic> data}) async {
+  Future<void> postDataWithoutFiles({required RequestType requestType, required Map<String, dynamic> formData}) async {
     //TODO: THAY DOI URL
-    Uri url = Uri.parse("$host/requests");
+    Uri url = Uri.parse("$host/requests/${requestType.value}");
+    print(url);
 
     try {
       final response = await dio.postUri(
         url,
-        data: data,
+        data: formData,
         options: Options(
           headers: <String, String>{ 
             'Content-Type': 'application/json; charset=UTF-8',
@@ -230,7 +214,9 @@ class APIService {
         )
       );
 
-      if (response.statusCode != 201) {
+      print(response.data);
+
+      if (response.statusCode != 200) {
         throw response.statusMessage.toString();
       }
     } on DioException catch (e) {
@@ -238,11 +224,16 @@ class APIService {
     }
   }
 
-  Future<void> postDataWithFiles({required Map<String, dynamic> data, required List<PlatformFile> files}) async {
+  Future<void> postDataWithFiles({required RequestType requestType, required Map<String, dynamic> data, required List<PlatformFile> files}) async {
     //TODO: THAY DOI URL
-    Uri url = Uri.parse("$host/requests");
+    Uri url = Uri.parse("$host/requests/${requestType.value}");
+    print(url);
     
-    Future.wait(
+    Map<String, dynamic> sendData = Map.from(data);
+
+    List<MultipartFile > listFileToPost = [];
+
+    await Future.wait(
       files.map((platformFile) async {
         var file = File(platformFile.path!);
         final mimeTypeData = lookupMimeType(file.path)!.split('/');
@@ -252,11 +243,16 @@ class APIService {
           filename: platformFile.name,
           contentType: MediaType(mimeTypeData[0], mimeTypeData[1])
         );
-        data.addAll({"files": fileToPost});
+
+        listFileToPost.add(fileToPost);
       })
     );
 
-    final formData = FormData.fromMap(data, ListFormat.multiCompatible);
+    sendData.addAll({
+      "files": listFileToPost
+    });
+
+    final formData = FormData.fromMap(sendData, ListFormat.multiCompatible);
 
     try {
       final response = await dio.postUri(
@@ -264,6 +260,8 @@ class APIService {
         data: formData,
         options: Options(
           headers: <String, String>{ 
+            'Content-Type': 'multipart/form-data; charset=UTF-8',
+            'Accept': 'multipart/form-data; charset=UTF-8',
             'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
           },
           followRedirects: false,
@@ -273,7 +271,9 @@ class APIService {
         )
       );
 
-      if (response.statusCode != 201) {
+      print(response.data);
+
+      if (response.statusCode != 200) {
         throw response.statusMessage.toString();
       }
     } on DioException catch (e) {
@@ -282,7 +282,7 @@ class APIService {
   }
 
   cancelTask() {
-    dio.close();
+    dio.close(force: false);
   }
 
 }

@@ -4,83 +4,6 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/user.dart';
 import 'package:datn/model/request/request_information_model.dart';
 
-// class Request {
-//   int? id;
-//   String? student;
-//   String? userId;
-//   String? requestType;
-//   int requestTypeId;
-//   RequestInformation? info;
-//   List<String>? file;
-//   String? documentNeed;
-//   String status;
-//   String? fee;
-//   String? processingPlace;
-//   String dateCreate;
-//   String? dateReceive;
-
-//   Request({
-//     this.id,
-//     this.student,
-//     this.userId,
-//     this.requestType,
-//     required this.requestTypeId,
-//     this.info,
-//     this.file,
-//     required this.documentNeed,
-//     required this.status,
-//     required this.fee,
-//     this.processingPlace,
-//     required this.dateCreate,
-//     this.dateReceive,
-//   });
-
-//   factory Request.fromJson(Map<String, dynamic> json) {
-
-//     var info = RequestInformation.fromJson(json["info"] as Map<String,dynamic>);
-
-//     return Request(
-//       id: json["id"] as int?, 
-//       student: json["student"] as String?, 
-//       userId: json["userId"] as String?,
-//       requestType: json["request_type"] as String?, 
-//       requestTypeId: json["request_type_id"] as int,
-//       info: info, 
-//       file: json['file'] != null ? toListString(json["file"]) : null, 
-//       documentNeed: json["document_need"] as String?, 
-//       status: json["status"] as String, 
-//       fee: json["fee"] as String?, 
-//       processingPlace: json["processing_place"] as String?, 
-//       dateCreate: json["date_create"] as String, 
-//       dateReceive: json["date_receive"] as String?,
-//     );
-//   }
-
-//   @override
-//   String toString() {
-//     return 'RequestInformation(id: $id, student: $student, requestType: $requestType, requestTypeId: $requestTypeId, file: $file, documentNeed: $documentNeed, status: $status, fee: $fee, processingPlace: $processingPlace, dateCreate: $dateCreate, dateReceive: $dateReceive)';
-//   }
-
-//   Map<String, dynamic> toMap() {
-//     return <String, dynamic>{
-//       'student': globalLoginResponse!.user?.name ?? "Nguyen Van A",
-//       'userId': globalLoginResponse!.user?.id ?? "18021117",
-//       'request_type': ConstantList.requests[requestTypeId - 1],
-//       'request_type_id': requestTypeId,
-//       'file': file,
-//       'document_need': documentNeed ?? "Không",
-//       'status': status,
-//       'fee': fee ?? "10.000",
-//       'processing_place': processingPlace ?? "Phòng công tác Sinh viên",
-//       'date_create': dateCreate,
-//       'date_receive': dateReceive,
-//     };
-//   }
-
-// }
-
-
-
 class GetDataResponseModel {
   int totalRequests;
   List<Request> listRequests;
@@ -92,19 +15,6 @@ class GetDataResponseModel {
 }
 
 class Request {
-  //   int? id;
-//   String? student;
-//   String? userId;
-//   String? requestType;
-//   int requestTypeId;
-//   RequestInformation? info;
-//   List<String>? file;
-//   String? documentNeed;
-//   String status;
-//   String? fee;
-//   String? processingPlace;
-//   String dateCreate;
-//   String? dateReceive;
   int id;
   User? user;
   String? requestType;
@@ -139,8 +49,8 @@ class Request {
 
     final localDateCreate = formatDateWithTime(json['created_date'] as String, outputIncludeTime: true);
     final localDateReceive = formatDateWithTime(json['receive_date'] as String?, outputIncludeTime: true);
+    
     String? requestFee;
-
     if (json['fee'] is int) {
       requestFee = "${json['fee'] as int}đ";
     } else {
@@ -155,8 +65,8 @@ class Request {
       documentNeed: json['document_need'] as String?,
       statusId: json['status']['id'] as int?,
       status: json['status']['name'] as String,
-      // fee: json['fee'] != null ? "${json['fee'] as int}đ" : null,
-      fee: requestFee,
+      fee: json['fee'] != null ? "${json['fee']}đ" : null,
+      // fee: requestFee,
       processingPlace: json['processing_place']['name'] as String?,
       dateCreate: localDateCreate ?? json['created_date'] as String,
       dateReceive: localDateReceive,

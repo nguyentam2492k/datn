@@ -15,7 +15,7 @@ class MyHandle {
       case DioExceptionType.badResponse:
         return "Bad Response";
       case DioExceptionType.cancel:
-        return "Canceled";
+        return "Request Canceled";
       case DioExceptionType.connectionError:
         return "Connection Error";
       case DioExceptionType.unknown:

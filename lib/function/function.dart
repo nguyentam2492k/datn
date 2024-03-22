@@ -33,20 +33,6 @@ String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = false
   return outputDate;
 }
 
-// String? formatDateRange(String? dateRange) {
-//   if (dateRange == null) {
-//     return null;
-//   }
-
-//   var date = dateRange.split(" - ");
-
-//   var inputFormat = DateFormat('yyyy-MM-dd hh:mm');
-//   // var inputDate = inputFormat.parse(dateRange);
-  
-//   var outputFormat = DateFormat('dd/MM/yyyy');
-//   return "${outputFormat.format(inputFormat.parse(date[0]))} - ${outputFormat.format(inputFormat.parse(date[1]))}";
-// }
-
 bool isInteger(String? s) {
   if (s == null) {
     return false;

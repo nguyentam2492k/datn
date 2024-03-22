@@ -1,7 +1,7 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
@@ -25,7 +25,7 @@ class Request1Stated extends State<Request1> {
   
   final GlobalKey<FormBuilderState> _request1FormKey = GlobalKey<FormBuilderState>();
 
-  late String? selectedCertification;
+  late int? selectedCertificationIndex;
 
   bool isCertificationValid = false;
 
@@ -58,35 +58,38 @@ class Request1Stated extends State<Request1> {
     await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request1FormKey.currentState!.value);
     formData.addAll({
-      "certificate_type": selectedCertification,
+      "certificate_type": selectedCertificationIndex! + 1,
       "number_of_copies_vi": numberOfVietVer.toString(),
       "number_of_copies_en": numberOfEngVer.toString()
     });
 
-    // var request = Request(
-    //   requestTypeId: 1, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "processing", 
-    //   dateCreate: DateTime.now().toString()
-    // );
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.certificate).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+  }
 
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
-    //   );
-    // });
-
-    print(formData);
+  String? getSelectedCertification(int? index) {
+    if (index == null) {
+      return null;
+    }
+    return ConstantList.certificationList[index];
   }
 
   @override
   void initState() {
     super.initState();
-    selectedCertification = null;
+    selectedCertificationIndex = null;
     numberOfVietVer = 1;
     numberOfEngVer= 0;
   }
@@ -145,15 +148,15 @@ class Request1Stated extends State<Request1> {
                             
                             icon: const Icon(MyIcons.arrowDown),
                             label: Text(
-                              selectedCertification ?? "Chọn Loại giấy chứng nhận",
+                              getSelectedCertification(selectedCertificationIndex) ?? "Chọn Loại giấy chứng nhận",
                               maxLines: 2,  
                               overflow: TextOverflow.ellipsis,
                             ),
                             onPressed: () async {
-                              final String? data = await openBottomSheet(selectedCertification);
+                              final String? data = await openBottomSheet(getSelectedCertification(selectedCertificationIndex));
                               if (data != null) {
                                 setState(() {
-                                  selectedCertification = data;
+                                  selectedCertificationIndex = ConstantList.certificationList.indexOf(data);
                                   isCertificationValid = true;
                                 });
                               }
@@ -254,7 +257,7 @@ class Request1Stated extends State<Request1> {
     );
   }
 
-  Future<dynamic> openBottomSheet(String? selectedItem) {
+  Future<String?> openBottomSheet(String? selectedItem) {
     String? selectedItemChanged = selectedItem;
 
     return showModalBottomSheet(

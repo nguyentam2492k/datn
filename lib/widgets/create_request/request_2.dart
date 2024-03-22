@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
@@ -48,32 +48,27 @@ class Request2State extends State<Request2> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
     
-    // await EasyLoading.show(status: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request2FormKey.currentState!.value);
     formData.addAll({
       'number_of_copies_vi': numberOfVietVer.toString(),
       'number_of_copies_en': numberOfEngVer.toString(),
     });
 
-    // var request = Request(
-    //   requestTypeId: 2, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "processing", 
-    //   dateCreate: DateTime.now().toString()
-    // );
-
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
-    //   );
-    // });
-    print(_request2FormKey.currentState!.fields["is_all_semester"]!.value.runtimeType);
-    print(formData);
-    
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.transcript).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override
@@ -143,7 +138,7 @@ class Request2State extends State<Request2> {
                                     border: InputBorder.none, 
                                     isCollapsed: true,
                                   ),
-                                  name: 'is_all_semester', 
+                                  name: 'is_all_semesters', 
                                   initialValue: ConstantList.termTypes[1],
                                   options: ConstantList.termTypes
                                     .map((termType) => FormBuilderFieldOption(value: termType))
@@ -171,9 +166,9 @@ class Request2State extends State<Request2> {
                                       height: 0.3
                                     ),
                                   ),
-                                  enabled: _request2FormKey.currentState?.fields['is_all_semester']?.value == "Từng kỳ",
+                                  enabled: _request2FormKey.currentState?.fields['is_all_semesters']?.value == "Từng kỳ",
                                   validator: (value) {
-                                    if (_request2FormKey.currentState?.fields['is_all_semester']?.value == "Từng kỳ" && (value == null || value.isEmpty)) {
+                                    if (_request2FormKey.currentState?.fields['is_all_semesters']?.value == "Từng kỳ" && (value == null || value.isEmpty)) {
                                       return "Chọn kỳ mong muốn";
                                     }
                                     return null;

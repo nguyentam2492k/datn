@@ -1,5 +1,5 @@
 import 'package:datn/constants/constant_string.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/send_request_button.dart';
@@ -31,25 +31,23 @@ class Request4State extends State<Request4> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request4FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 4, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "processing", 
-    //   dateCreate: currentDate.toString()
-    // );
-
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
-    //   );
-    // });
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.reviewExam).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }    
       
   }
 
