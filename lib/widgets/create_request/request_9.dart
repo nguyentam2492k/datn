@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
@@ -46,33 +46,24 @@ class Request9State extends State<Request9> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
-
     formData.addAll(_request9FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 9, 
-    //   status: "completed", 
-    //   documentNeed: null,
-    //   fee: "15.000",
-    //   dateCreate: DateTime.now().toString(),
-    // );
+    await EasyLoading.show(status: "Đang gửi");
 
-    // try {
-    //   await apiService.postDataWithFile(request: request, formData: _request9FormKey.currentState!.value, files: files).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi thành công",
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: Gửi không thành công"
-    //   );
-    // } 
-    print(formData);
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.studentCard, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override

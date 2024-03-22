@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
@@ -48,8 +48,6 @@ class Request11State extends State<Request11> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
-
     final dateTimeRange = _request11FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
     _request11FormKey.currentState?.removeInternalFieldValue("date_range");
     _request11FormKey.currentState?.save();
@@ -61,30 +59,23 @@ class Request11State extends State<Request11> {
 
     formData.addAll(_request11FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 11, 
-    //   status: "completed", 
-    //   documentNeed: null,
-    //   fee: null,
-    //   dateCreate: DateTime.now().toString(),
-    // );
-    
-    // try {
-    //   await apiService.postDataWithFile(request: request, formData: _request11FormKey.currentState!.value, files: files).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi thành công",
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: Gửi không thành công"
-    //   );
-    // } 
+    await EasyLoading.show(status: "Đang gửi");
 
-    print(formData);
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.timeLimitedAbsence, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+
   }
 
   @override

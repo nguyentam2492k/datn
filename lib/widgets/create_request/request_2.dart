@@ -51,8 +51,8 @@ class Request2State extends State<Request2> {
     await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request2FormKey.currentState!.value);
     formData.addAll({
-      'number_of_copies_vi': numberOfVietVer.toString(),
-      'number_of_copies_en': numberOfEngVer.toString(),
+      'number_of_copies_vi': numberOfVietVer,
+      'number_of_copies_en': numberOfEngVer,
     });
 
     try {

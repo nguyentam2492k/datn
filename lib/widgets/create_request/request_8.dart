@@ -38,7 +38,7 @@ class Request8State extends State<Request8> {
     await EasyLoading.show(status: "Đang gửi");
 
     try {
-      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.transcript).then((value) async {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.bankLoan).then((value) async {
         await EasyLoading.dismiss();
         MyToast.showToast(
           text: "Gửi xong"

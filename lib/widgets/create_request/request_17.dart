@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -34,26 +34,24 @@ class Request17State extends State<Request17> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    // await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request17FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 17, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "processing", 
-    //   dateCreate: DateTime.now().toString()
-    // );
+    // await EasyLoading.show(status: "Đang gửi");
 
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
+    // try {
+    //   await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.busCard).then((value) async {
+    //     await EasyLoading.dismiss();
+    //     MyToast.showToast(
+    //       text: "Gửi xong"
+    //     );
+    //   });
+    // } catch (e) {
     //   await EasyLoading.dismiss();
     //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
+    //     isError: true,
+    //     errorText: "LỖI: ${e.toString()}"
     //   );
-    // });
-      
+    // }
     print(formData);
   }
 

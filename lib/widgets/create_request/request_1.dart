@@ -59,8 +59,8 @@ class Request1Stated extends State<Request1> {
     formData.addAll(_request1FormKey.currentState!.value);
     formData.addAll({
       "certificate_type": selectedCertificationIndex! + 1,
-      "number_of_copies_vi": numberOfVietVer.toString(),
-      "number_of_copies_en": numberOfEngVer.toString()
+      "number_of_copies_vi": numberOfVietVer,
+      "number_of_copies_en": numberOfEngVer
     });
 
     try {
