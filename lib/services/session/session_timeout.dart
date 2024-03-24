@@ -25,14 +25,12 @@ class SessionTimeoutControllerState extends State<SessionTimeoutController> {
   Timer? _timer;
 
   _startTimer() {
-    print("Session start");
     if (_timer != null) {
       _timer?.cancel();
       _timer = null;
     }
 
     _timer = Timer(widget.duration, () {
-      print("Session end");
       widget.onTimeOut();
     });
   }

@@ -39,7 +39,6 @@ class LogInState extends State<LogIn> {
 
   getSavedAccount() async {
     var savedAccount = await secureStorageServices.getSavedAccount();
-    print(savedAccount);
     setState(() {
       _usernameController.text = savedAccount?.username ?? "";
       _passwordController.text = savedAccount?.password ?? "";
@@ -245,7 +244,6 @@ class LogInState extends State<LogIn> {
           await EasyLoading.dismiss();
           
           if (loginResponseData.error == null) {
-            //TODO: Save account
             if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
               await secureStorageServices.writeSaveAccount(loginRequestModel);
             } else {

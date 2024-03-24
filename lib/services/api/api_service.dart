@@ -76,65 +76,6 @@ class APIService {
     }
   }
 
-  // Future<String?> postData({required Request request, required Map<String, dynamic> requestInfo}) async {
-  //   Uri url = Uri.parse("$host/requests");
-
-  //   var bodyMap = request.toMap();
-  //   bodyMap.addAll({"info": requestInfo});
-    
-  //   try {
-  //     final response = await dio.postUri(
-  //       url, 
-  //       data: jsonEncode(bodyMap),
-  //       options: Options(
-  //         headers: <String, String>{ 
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //           'Accept': 'application/json; charset=UTF-8',
-  //           'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
-  //         },
-  //         followRedirects: false,
-  //         validateStatus: (status) {
-  //           return status != null && status < 500;
-  //         },
-  //       ), 
-  //     );
-  //     if(response.statusCode == 201) {
-  //       return null;
-  //     } else {
-  //       print(response.statusMessage);
-  //       return "#${response.statusCode}: ${response.statusMessage}";
-  //     }
-  //   } on DioException catch (e) {
-  //     print(e.toString());
-  //     return MyHandle.handleDioError(e.type);
-  //     // rethrow;
-  //   }
-  // }
-
-  // Future<void> postDataWithFile({required Request request, required Map<String, dynamic> formData, required List<PlatformFile> files}) async {
-  //   FirebaseServices firebaseServices = FirebaseServices();
-
-  //   var uuid = const UuidV1().generate();
-
-  //   String child = "files/${globalLoginResponse?.user?.id}/$uuid";
-
-  //   await firebaseServices.uploadMultipleFile(child: child, files: files)
-  //       .then((value) async {          
-  //         if (value.isEmpty) {
-  //           throw "Upload file lỗi";
-  //         }
-  //         var requestSend = request;
-  //         requestSend.file = value;
-  //         await postData(request: requestSend, requestInfo: formData)
-  //           .then((value) {
-  //             if (value != null) {
-  //               firebaseServices.deleteFolder(folderPath: child);
-  //               throw value;
-  //             }
-  //           });
-  //       });
-  // }
-
   //TODO: NEW API
   Future<GetDataResponseModel> getMyData(String? status, {required int pageIndex, int pageSize = 10}) async {
     List<Request> listData = [];
@@ -193,7 +134,6 @@ class APIService {
   }
 
   Future<void> postDataWithoutFiles({required RequestType requestType, required Map<String, dynamic> formData}) async {
-    //TODO: THAY DOI URL
     Uri url = Uri.parse("$host/requests/${requestType.value}");
     print(url);
 
@@ -213,8 +153,6 @@ class APIService {
           },
         )
       );
-
-      print(response.data);
 
       if (response.statusCode != 200) {
         throw response.statusMessage.toString();
@@ -270,8 +208,6 @@ class APIService {
           },
         )
       );
-
-      print(response.data);
 
       if (response.statusCode != 200) {
         throw response.statusMessage.toString();

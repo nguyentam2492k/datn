@@ -51,8 +51,6 @@ class Request8State extends State<Request8> {
         errorText: "LỖI: ${e.toString()}"
       );
     }
-
-    print(formData);
   }
 
   @override

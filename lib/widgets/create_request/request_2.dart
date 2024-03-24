@@ -129,30 +129,27 @@ class Request2State extends State<Request2> {
                         Expanded(
                           flex: 4,
                           child: Column(
-                            mainAxisSize: MainAxisSize.max,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                height: 40,
-                                child: FormBuilderRadioGroup(
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none, 
-                                    isCollapsed: true,
-                                  ),
-                                  name: 'is_all_semesters', 
-                                  initialValue: ConstantList.termTypes[1],
-                                  options: ConstantList.termTypes
-                                    .map((termType) => FormBuilderFieldOption(value: termType))
-                                    .toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _request2FormKey.currentState?.fields['semesters']?.reset();
-                                    });
-                                  },
-                                  valueTransformer: (value) {
-                                    final termTypesIndex = ConstantList.termTypes.indexOf(value!);
-                                    return termTypesIndex;
-                                  },
+                              FormBuilderRadioGroup(
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none, 
                                 ),
+                                name: 'is_all_semesters', 
+                                initialValue: ConstantList.termTypes[1],
+                                options: ConstantList.termTypes
+                                  .map((termType) => FormBuilderFieldOption(value: termType))
+                                  .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _request2FormKey.currentState?.fields['semesters']?.reset();
+                                  });
+                                },
+                                valueTransformer: (value) {
+                                  final termTypesIndex = ConstantList.termTypes.indexOf(value!);
+                                  return termTypesIndex;
+                                },
                               ),
                               const Divider(thickness: 0.4,),
                               Expanded(

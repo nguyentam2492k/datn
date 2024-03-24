@@ -163,7 +163,6 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                             );
                             wards.clear();
                           }
-                          print(selectedAddressChanged.value.toString());
                           districts = provinces[provinceIndex].districts!;
                         },
                         style: buttonTextStyle,
@@ -195,7 +194,6 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                               ward: null,
                             );
                           }
-                          print(selectedAddressChanged.value.toString());
                           wards = districts[districtIndex].wards!;
                         },
                         style: buttonTextStyle,
@@ -224,7 +222,6 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                             district: selectedAddress.district,
                             ward: _formKey.currentState!.fields[wardName]!.value,
                           );
-                          print(selectedAddressChanged.value.toString());
                         },
                         style: buttonTextStyle,
                         decoration: buttonDecoration("Xã/Phường")

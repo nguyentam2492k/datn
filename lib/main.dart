@@ -41,13 +41,11 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    print("INIT APP");
     super.initState();
   }
 
   @override
   void dispose() {
-    print("APP DISPOSED");
     super.dispose();
   }
 
