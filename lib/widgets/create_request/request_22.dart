@@ -1,7 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/enum/request_type.dart';
-import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';

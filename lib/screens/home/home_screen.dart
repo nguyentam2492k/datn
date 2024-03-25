@@ -209,7 +209,7 @@ class HomeScreenState extends State<HomeScreen> {
         children: [
           UserAccountsDrawerHeader(
             accountName: Text(loginResponse.user?.name ?? "NAME"), 
-            accountEmail: Text(loginResponse.user?.id ?? "ID"),
+            accountEmail: Text("MSSV: ${loginResponse.user?.id}"),
             currentAccountPicture: const Image(
               image: AssetImage('assets/images/uet_logo_background.png'),
               fit: BoxFit.contain,
