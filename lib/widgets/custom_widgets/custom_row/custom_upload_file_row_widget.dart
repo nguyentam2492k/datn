@@ -109,6 +109,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                         onPressed: () async {
                           try {
                             await FileServices().pickFile(
+                              context,
                               listFiles: files, 
                               allowMultiple: widget.allowMultiple,
                               isPickImage: widget.isPickImage

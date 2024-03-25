@@ -17,33 +17,39 @@ import 'package:permission_handler/permission_handler.dart';
 
 class FileServices {
 
-  Future<List<PlatformFile>?> pickFile({bool isPickImage = false, bool allowMultiple = true, required List<PlatformFile> listFiles}) async {
+  Future<List<PlatformFile>?> pickFile(BuildContext context, {bool isPickImage = false, bool allowMultiple = true, required List<PlatformFile> listFiles}) async {
     const maxFileSize = 5 * 1024 * 1024;
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: allowMultiple,
-        type: isPickImage ? FileType.image : FileType.any
-      );
-      
-      if (result != null) {
-        var listFileSize = result.files.map((e) => e.size).toList();
-        if (listFileSize.every((size) => size <= maxFileSize)) {
-          if (!allowMultiple) {
-            return result.files;
+    var permissionReady = await checkStoragePermission(context);
+
+    if (permissionReady) {
+      try {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          allowMultiple: allowMultiple,
+          type: isPickImage ? FileType.image : FileType.any
+        );
+        
+        if (result != null) {
+          var listFileSize = result.files.map((e) => e.size).toList();
+          if (listFileSize.every((size) => size <= maxFileSize)) {
+            if (!allowMultiple) {
+              return result.files;
+            } else {
+              Set<PlatformFile> fileSet = Set.from(listFiles);
+              fileSet.addAll(result.files);
+              var files = fileSet.toList();
+              return files;
+            }
           } else {
-            Set<PlatformFile> fileSet = Set.from(listFiles);
-            fileSet.addAll(result.files);
-            var files = fileSet.toList();
-            return files;
+            throw "Kich thước file >= 5MB";
           }
         } else {
-          throw "Kich thước file >= 5MB";
+          return null;
         }
-      } else {
-        return null;
+      } catch (error) {
+        rethrow;
       }
-    } catch (error) {
-      rethrow;
+    } else {
+      throw "Chưa cấp quyền";
     }
   }
 
@@ -75,7 +81,6 @@ class FileServices {
         errorText: "LỖI: ${error.toString()}"
       );
     }
-    // return file;
   }
 
   Future<void> openFileFromPath({required BuildContext context, required String? path}) async {
@@ -107,7 +112,6 @@ class FileServices {
         );
       }
     }
-    // return file;
   }
 
   Future<bool> checkStoragePermission(BuildContext context) async {
@@ -167,7 +171,7 @@ class FileServices {
     return permissionStatus;
   }
 
-  Future<String?> downloadAndGetFileFromUrl(BuildContext buildContext, {required String url}) async {
+  Future<String> downloadAndGetFileFromUrl(BuildContext buildContext, {required String url}) async {
     var permissionReady = await checkStoragePermission(buildContext);
 
     if (permissionReady) {
@@ -185,7 +189,7 @@ class FileServices {
           }
         );
         if (newFilename == null) {
-          return "cancel";
+          return "cancel_rename";
         }
         savePath = "${externalDir.path}/${newFilename ?? fullFilename}";
       }
@@ -208,26 +212,22 @@ class FileServices {
           throw response.statusMessage.toString();
         }
       } on DioException catch (dioError) {
-        throw dioError.message.toString();
+        await EasyLoading.dismiss();
+        throw MyHandle.handleDioError(dioError.type);
       } catch (e) {
+        await EasyLoading.dismiss();
         rethrow;
       }
+    } else {
+      throw "Chưa cấp quyền";
     }
-    return null;
   }
 
   Future<void> actionDownloadFileWithUrl(BuildContext context, {required String url}) async {
     try {
       await FileServices().downloadAndGetFileFromUrl(context, url: url)
         .then((path) async {
-          if (path == null) {
-            MyToast.showToast(
-              isError: true,
-              errorText: "LỖI",
-            );
-            return;
-          }
-          if (path == "cancel") {
+          if (path == "cancel_rename") {
             return;
           }
           showDialog(
