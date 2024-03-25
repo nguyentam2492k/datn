@@ -127,7 +127,6 @@ class APIService {
       }
 
     } on DioException catch (e) {
-      print("GET DATA ERROR: ${MyHandle.handleDioError(e.type)}");
       throw MyHandle.handleDioError(e.type);
     }
   }

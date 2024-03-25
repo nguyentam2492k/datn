@@ -48,7 +48,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   ScrollController scrollController = ScrollController();
 
   Future<void> loadRequest() async {
-    print("LOAD");
     isLoading = true;
 
     if (currentPage == 1) {
@@ -184,7 +183,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
           return ValueListenableBuilder(
             valueListenable: listRequest,
             builder: (context, list, child) {
-              print("BUILD - ${list.length}");
 
               return ListView.separated(
                 controller: scrollController,

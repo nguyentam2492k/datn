@@ -34,9 +34,6 @@ class FileServices {
             Set<PlatformFile> fileSet = Set.from(listFiles);
             fileSet.addAll(result.files);
             var files = fileSet.toList();
-            for (var file in files) {
-              print("${file.name}-${file.size}");
-            }
             return files;
           }
         } else {

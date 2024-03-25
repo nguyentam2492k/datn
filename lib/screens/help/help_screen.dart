@@ -12,7 +12,7 @@ class HelpScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: buildAppBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             SizedBox(height: 90,
@@ -205,11 +205,11 @@ class HelpScreen extends StatelessWidget {
           ),
           const Divider(thickness: 0.4,),
           ExpansionTile(
-            shape: Border(),
+            shape: const Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: false,
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-            title: Text(
+            title: const Text(
               "Giao diện và các chức năng chính",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -217,7 +217,7 @@ class HelpScreen extends StatelessWidget {
               ),
             ),
             children: [
-              Text("Sau khi đăng nhập, giao diện màn hình chính(Home) sẽ như hình dưới đây:"),
+              const Text("Sau khi đăng nhập, giao diện màn hình chính(Home) sẽ như hình dưới đây:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/2_home.png'),
@@ -226,9 +226,9 @@ class HelpScreen extends StatelessWidget {
                 alignment: Alignment.center,
               ),
               const SizedBox(height: 10,),
-              Text("Màn Home có 2 nút nhấn chính là: "),
+              const Text("Màn Home có 2 nút nhấn chính là: "),
               RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.black
@@ -236,7 +236,7 @@ class HelpScreen extends StatelessWidget {
                   children: [
                     TextSpan(text: "• Nút Menu "),
                     WidgetSpan(child: Image(
-                      image: const AssetImage('assets/help_page_images/menu_button.png'),
+                      image: AssetImage('assets/help_page_images/menu_button.png'),
                       fit: BoxFit.contain,
                       height: 20,
                       width: 20,
@@ -266,7 +266,7 @@ class HelpScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10,),
-              Text("Sau khi nhấn vào nút Menu, một menu như hình dưới sẽ xuất hiện"),
+              const Text("Sau khi nhấn vào nút Menu, một menu như hình dưới sẽ xuất hiện"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/3_menu.png'),
@@ -274,7 +274,7 @@ class HelpScreen extends StatelessWidget {
                 height: screenSize.height * 2/3,
                 alignment: Alignment.center,
               ),
-              Text("Menu trên có các nút sau:"),
+              const Text("Menu trên có các nút sau:"),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
                 child: RichText(
@@ -333,11 +333,11 @@ class HelpScreen extends StatelessWidget {
           ),
           const Divider(thickness: 0.4,),
           ExpansionTile(
-            shape: Border(),
+            shape: const Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: false,
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-            title: Text(
+            title: const Text(
               "Tạo yêu cầu",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -345,7 +345,7 @@ class HelpScreen extends StatelessWidget {
               ),
             ),
             children: [
-              Text("Muốn tạo yêu cầu mới, sinh viên làm theo các bước sau đây (Từ màn hình chính):"),
+              const Text("Muốn tạo yêu cầu mới, sinh viên làm theo các bước sau đây (Từ màn hình chính):"),
               const SizedBox(height: 10,),
               RichText(
                 text: const TextSpan(
@@ -369,7 +369,7 @@ class HelpScreen extends StatelessWidget {
                 )
               ),
               const SizedBox(height: 10,),
-              Text("Giao diện màn Tạo yêu cầu sẽ như hình dưới đây:"),
+              const Text("Giao diện màn Tạo yêu cầu sẽ như hình dưới đây:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/4_create_request.png'),
@@ -406,7 +406,7 @@ class HelpScreen extends StatelessWidget {
                 alignment: Alignment.center,
               ),
               const SizedBox(height: 10,),
-              Text("Sau khi chọn một yêu cầu, màn tạo yêu cầu đó sẽ mở ra. Giao diện tạo yêu cầu chi tiết như hình dưới:"),
+              const Text("Sau khi chọn một yêu cầu, màn tạo yêu cầu đó sẽ mở ra. Giao diện tạo yêu cầu chi tiết như hình dưới:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/6_request.png'),
@@ -458,16 +458,16 @@ class HelpScreen extends StatelessWidget {
                 )
               ),
               const SizedBox(height: 10,),
-              Text("Sau khi bấm \"Lưu\", yêu cầu đã được gửi thành công. Sinh viên có thể kiểm tra trạng thái yêu cầu của mình gửi ở màn \"Xử lý yêu cầu\".")
+              const Text("Sau khi bấm \"Lưu\", yêu cầu đã được gửi thành công. Sinh viên có thể kiểm tra trạng thái yêu cầu của mình gửi ở màn \"Xử lý yêu cầu\".")
             ],
           ),
           const Divider(thickness: 0.4,),
           ExpansionTile(
-            shape: Border(),
+            shape: const Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: false,
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-            title: Text(
+            title: const Text(
               "Xử lý yêu cầu",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -475,7 +475,7 @@ class HelpScreen extends StatelessWidget {
               ),
             ),
             children: [
-              Text("Chức năng \"Xử lý yêu cầu\" trong \"Menu/Xử lý yêu cầu\" hỗ trợ sinh viên theo dõi trạng thái chi tiết của yêu cầu. Giao diện \"Xử lý yêu cầu\" như hình dưới đây:"),
+              const Text("Chức năng \"Xử lý yêu cầu\" trong \"Menu/Xử lý yêu cầu\" hỗ trợ sinh viên theo dõi trạng thái chi tiết của yêu cầu. Giao diện \"Xử lý yêu cầu\" như hình dưới đây:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/7_manage_request.png'),
@@ -484,9 +484,9 @@ class HelpScreen extends StatelessWidget {
                 alignment: Alignment.center,
               ),
               const SizedBox(height: 10,),
-              Text("Trong màn này chỉ chứa các thông tin cơ bản của một yêu cầu như: \"Mã yêu cầu\", \"Loại yêu cầu\", \"Nội dung của yêu cầu\", \"Ngày tạo\" và \"Lệ phí\""),
+              const Text("Trong màn này chỉ chứa các thông tin cơ bản của một yêu cầu như: \"Mã yêu cầu\", \"Loại yêu cầu\", \"Nội dung của yêu cầu\", \"Ngày tạo\" và \"Lệ phí\""),
               const SizedBox(height: 10,),
-              Text("Để xem chi tiết toàn bộ thông tin của một yêu cầu, phải nhấn vào yêu cầu muốn xem. Sau khi nhấn, một màn hình như dưới sẽ hiện lên:"),
+              const Text("Để xem chi tiết toàn bộ thông tin của một yêu cầu, phải nhấn vào yêu cầu muốn xem. Sau khi nhấn, một màn hình như dưới sẽ hiện lên:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/8_request_details.png'),
@@ -495,7 +495,7 @@ class HelpScreen extends StatelessWidget {
                 alignment: Alignment.center,
               ),
               const SizedBox(height: 10,),
-              Text("Các thông tin chính trong cửa sổ trên:"),
+              const Text("Các thông tin chính trong cửa sổ trên:"),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
                 child: RichText(
