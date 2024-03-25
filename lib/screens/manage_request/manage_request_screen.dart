@@ -41,7 +41,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   int pageSize = 10;
   int totalRequests = 99;
   String? getDataErrorText;
-  late String accessToken;
   late String userId;
 
   bool isLoading = false;
@@ -89,7 +88,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   @override
   void initState() {
     super.initState();
-    accessToken = globalLoginResponse!.accessToken!;
     userId = globalLoginResponse!.user?.id ?? "999999";
     selectedStatusIndex = 0;
     scrollController.addListener(() {

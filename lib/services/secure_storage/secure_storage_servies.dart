@@ -5,8 +5,25 @@ class SecureStorageServices {
   FlutterSecureStorage secureStorage = const FlutterSecureStorage(
     aOptions: AndroidOptions(
       encryptedSharedPreferences: true,
-    )
+    ),
+    iOptions: IOSOptions.defaultOptions
   );
+
+  Future<void> writeAccessToken(String? token) async {
+    await secureStorage.write(key: "access_token", value: token);
+  }
+
+  Future<String?> getAccessToken() async {
+    final containAccessToken = await secureStorage.containsKey(key: "access_token");
+
+    if (!containAccessToken) {
+      return null;
+    }
+
+    final accessToken = await secureStorage.read(key: "access_token");
+
+    return accessToken;
+  }
   
   Future<bool> isContainSavedAccount() async {
     final containSavedUsername = await secureStorage.containsKey(key: "username");
@@ -32,6 +49,7 @@ class SecureStorageServices {
   }
 
   Future<void> deleteSavedAccount() async {
-    await secureStorage.deleteAll();
+    await secureStorage.delete(key: "username");
+    await secureStorage.delete(key: "password");
   }
 }

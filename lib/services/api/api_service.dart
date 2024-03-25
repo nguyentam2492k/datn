@@ -38,7 +38,10 @@ class APIService {
         ),
       );
       if(response.statusCode == 200 || response.statusCode == 401) {
-        return LoginResponseModel.fromJson(jsonDecode(response.data));
+        final responseData = jsonDecode(response.data) as Map<String, dynamic>;
+        secureStorageServices.writeAccessToken(responseData["token"] as String?);
+
+        return LoginResponseModel.fromJson(responseData);
       } else {
         throw response.statusMessage.toString();
       }
@@ -48,6 +51,7 @@ class APIService {
   }
 
   Future<String> logout() async {
+    var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/logout");
 
     try {
@@ -57,7 +61,7 @@ class APIService {
         options: Options(
           headers: <String, String>{ 
             'Accept' : 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+            'Authorization': 'Bearer $accessToken'
           },
           followRedirects: false,
           validateStatus: (status) {
@@ -77,6 +81,7 @@ class APIService {
   }
 
   Future<GetDataResponseModel> getMyData(String? status, {required int pageIndex, int pageSize = 10}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
     List<Request> listData = [];
 
     String currentStatus;
@@ -104,7 +109,7 @@ class APIService {
           headers: <String, String>{ 
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+            'Authorization': 'Bearer $accessToken'
           },
           followRedirects: false,
           validateStatus: (status) {
@@ -132,6 +137,7 @@ class APIService {
   }
 
   Future<void> postDataWithoutFiles({required RequestType requestType, required Map<String, dynamic> formData}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/requests/${requestType.value}");
     print(url);
 
@@ -143,7 +149,7 @@ class APIService {
           headers: <String, String>{ 
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+            'Authorization': 'Bearer $accessToken'
           },
           followRedirects: false,
           validateStatus: (status) {
@@ -161,6 +167,7 @@ class APIService {
   }
 
   Future<void> postDataWithFiles({required RequestType requestType, required Map<String, dynamic> data, required List<PlatformFile> files}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/requests/${requestType.value}");
     print(url);
     
@@ -197,7 +204,7 @@ class APIService {
           headers: <String, String>{ 
             'Content-Type': 'multipart/form-data; charset=UTF-8',
             'Accept': 'multipart/form-data; charset=UTF-8',
-            'Authorization': 'Bearer ${globalLoginResponse!.accessToken}'
+            'Authorization': 'Bearer $accessToken'
           },
           followRedirects: false,
           validateStatus: (status) {

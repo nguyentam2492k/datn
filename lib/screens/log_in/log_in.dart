@@ -3,7 +3,6 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
-import 'package:datn/services/secure_storage/secure_storage_servies.dart';
 import 'package:datn/services/session/session_timeout.dart';
 import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
@@ -29,7 +28,6 @@ class LogInState extends State<LogIn> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  SecureStorageServices secureStorageServices = SecureStorageServices();
   APIService apiService = APIService();
 
   late bool isShowPassword;
