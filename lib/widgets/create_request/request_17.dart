@@ -36,23 +36,22 @@ class Request17State extends State<Request17> {
 
     formData.addAll(_request17FormKey.currentState!.value);
 
-    // await EasyLoading.show(status: "Đang gửi");
+    await EasyLoading.show(status: "Đang gửi");
 
-    // try {
-    //   await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.busCard).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi xong"
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: ${e.toString()}"
-    //   );
-    // }
-    print(formData);
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.busCard).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override

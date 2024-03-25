@@ -43,12 +43,14 @@ class RequestInformation {
   //Request 19
   String? name;
   String? doituonguutien;
-  String? permanentAddress;
   String? email;
   String? khicanbaotin;
 
-  //Request 20+22
-  String? educationProgram;
+  //Request 20
+  String? programType;
+
+  //Request 22
+  String? learningProgram;
   String? internCompany;
 
   RequestInformation({
@@ -77,10 +79,10 @@ class RequestInformation {
     this.receivingPlace,
     this.name,
     this.doituonguutien,
-    this.permanentAddress,
     this.email,
     this.khicanbaotin,
-    this.educationProgram,
+    this.programType,
+    this.learningProgram,
     this.internCompany
   });
 
@@ -116,12 +118,12 @@ class RequestInformation {
       studentAddress: json['student_address'] as String?,
       receivingPlace: json['receiving_place'] as String?,
       name: json['name'] as String?,
-      doituonguutien: json['doituonguutien'] as String?,
-      permanentAddress: json['permanent_address'] as String?,
+      doituonguutien: json['priority'] as String?,
       email: json['email'] as String?,
-      khicanbaotin: json['khicanbaotin'] as String?,
-      educationProgram: json['education_program'] as String?,
-      internCompany: json['intern_company'] as String?
+      khicanbaotin: json['contact_method'] as String?,
+      programType: json['program_type'] as String?,
+      learningProgram: json['learning_program'] as String?,
+      internCompany: json['practice_place'] as String?
     );
   }
 }

@@ -33,6 +33,27 @@ String? formatDateWithTime(String? dateWithTime, {bool outputIncludeTime = false
   return outputDate;
 }
 
+DateTime? getDateFromString(String? dateString) {
+  if (dateString == null) {
+    return null;
+  }
+
+  var dateFormat = DateFormat('yyyy-MM-dd hh:mm');
+  DateTime dateTime;
+
+  try {
+    dateTime = dateFormat.parse(dateString);
+  } catch (e) {
+    return null;
+  }
+  return dateTime;
+}
+
+DateTime addDateToDateTime(DateTime date, int numberOfDateAdd) {
+  var newDate = date.add(Duration(days: numberOfDateAdd));
+  return newDate;
+}
+
 bool isInteger(String? s) {
   if (s == null) {
     return false;
@@ -85,28 +106,23 @@ String getRequestText(RequestInformation requestInfo) {
   requestInfo.examDate != null ? requestText.writeln("Ngày thi: ${requestInfo.examDate}") : null;
   requestInfo.subjectReview != null ? requestText.writeln("Học phần: ${requestInfo.subjectReview}") : null;
   requestInfo.semester != null ? requestText.writeln("Học kỳ: ${requestInfo.semester}") : null;
-  requestInfo.educationProgram != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.educationProgram}") : null;
+  requestInfo.programType != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.programType}") : null;
   requestInfo.year != null ? requestText.writeln("Năm học: ${requestInfo.year}") : null;
-  // requestInfo.untilDate != null ? requestText.writeln("Đến ngày: ${requestInfo.untilDate}") : null;
   (requestInfo.documents != null && requestInfo.documents!.isNotEmpty) ? requestText.writeln("Hồ sơ mượn: ${listToString(requestInfo.documents!)}") : null;
   requestInfo.otherDocument != null ? requestText.writeln("Hồ sơ khác: ${requestInfo.otherDocument}") : null;
-  // requestInfo.borrowDate != null ? requestText.writeln("Thời gian mượn: ${requestInfo.borrowDate}") : null;
   requestInfo.monthFee != null ? requestText.writeln("Học phí theo tháng (VNĐ): ${requestInfo.monthFee}") : null;
-  // requestInfo.absentDate != null ? requestText.writeln("Thời gian nghỉ: ${requestInfo.absentDate}") : null;
   requestInfo.tuyen != null ? requestText.writeln("Tuyến đăng ký: ${requestInfo.tuyen}") : null;
   requestInfo.mottuyen != null ? requestText.writeln("Một tuyến số: ${requestInfo.mottuyen}") : null;
-  requestInfo.studentAddress != null ? requestText.writeln("Địa chỉ: ${requestInfo.studentAddress}") : null;
   requestInfo.name != null ? requestText.writeln("Đơn nguyên: ${requestInfo.name}") : null;
-  // requestInfo.rentDate != null ? requestText.writeln("Thời gian thuê: ${requestInfo.rentDate}") : null;
+  requestInfo.studentAddress != null ? requestText.writeln("Địa chỉ: ${requestInfo.studentAddress}") : null;
   requestInfo.startDate != null ? requestText.writeln("Từ ngày: ${requestInfo.startDate}") : null;
   requestInfo.endDate != null ? requestText.writeln("Đến ngày: ${requestInfo.endDate}") : null;
-
   requestInfo.doituonguutien != null ? requestText.writeln("Đối tượng ưu tiên: ${requestInfo.doituonguutien}") : null;
-  requestInfo.permanentAddress != null ? requestText.writeln("Địa chỉ thường trú: ${requestInfo.permanentAddress}") : null;
   requestInfo.phoneContact != null ? requestText.writeln("SĐT: ${requestInfo.phoneContact}") : null;
   requestInfo.receivingPlace != null ? requestText.writeln("Nơi nộp đơn và nhận thẻ: ${requestInfo.receivingPlace}") : null;
   requestInfo.email != null ? requestText.writeln("Email: ${requestInfo.email}") : null;
   requestInfo.khicanbaotin != null ? requestText.writeln("Khi cần liên hệ: ${requestInfo.khicanbaotin}") : null;
+  requestInfo.learningProgram != null ? requestText.writeln("Chương trình đào tạo: ${requestInfo.learningProgram}") : null;
   requestInfo.internCompany != null ? requestText.writeln("Nơi thực tập: ${requestInfo.internCompany}") : null;
   (requestInfo.quantityViet != null && requestInfo.quantityViet != 0) ? requestText.writeln("Số bản tiếng Việt: ${requestInfo.quantityViet}") : null;
   (requestInfo.quantityEng != null && requestInfo.quantityEng != 0) ? requestText.writeln("Số bản tiếng Anh: ${requestInfo.quantityEng}") : null;

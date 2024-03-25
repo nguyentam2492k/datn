@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:datn/function/function.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -100,16 +103,37 @@ class HelpScreen extends StatelessWidget {
             shape: const Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: true,
-            title: Text(
+            childrenPadding: EdgeInsets.zero,
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            title: const Text(
               "Đăng nhập hệ thống",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16
               ),
-            )
+            ),
+            children: [
+              const Text("Để vào website hệ thống, Sinh viên vào trực tiếp tại địa chỉ sau:"),
+              InkWell(
+                child: const Text(
+                  'http://student.uet.vnu.edu.vn', 
+                  style: TextStyle(
+                    color: Color(0xFF1100FF),
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                onTap: () => openUrl(context, urlString: 'http://student.uet.vnu.edu.vn')
+              ),
+              Text("Giao diện đăng nhập của hệ thống như hình 1 dưới đây:"),
+              Image(
+                image: AssetImage('assets/help_page_images/1_login.png'),
+                fit: BoxFit.contain,
+                height: 40,
+              ),
+            ],
           ),
-          ExpansionTile(
-            shape: const Border(),
+          const ExpansionTile(
+            shape: Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: true,
             title: Text(
@@ -120,8 +144,8 @@ class HelpScreen extends StatelessWidget {
               ),
             )
           ),
-          ExpansionTile(
-            shape: const Border(),
+          const ExpansionTile(
+            shape: Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: true,
             title: Text(
@@ -132,8 +156,8 @@ class HelpScreen extends StatelessWidget {
               ),
             )
           ),
-          ExpansionTile(
-            shape: const Border(),
+          const ExpansionTile(
+            shape: Border(),
             tilePadding: EdgeInsetsDirectional.zero,
             initiallyExpanded: true,
             title: Text(

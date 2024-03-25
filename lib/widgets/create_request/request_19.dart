@@ -1,6 +1,6 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
@@ -49,10 +49,6 @@ class Request19State extends State<Request19> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
     
-    // await EasyLoading.show(status: "Đang gửi");
-
-    // print(_request19FormKey.currentState!.removeInternalFieldValue("date_range"));
-
     final dateTimeRange = _request19FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
     _request19FormKey.currentState?.removeInternalFieldValue("date_range");
     _request19FormKey.currentState?.save();
@@ -63,30 +59,23 @@ class Request19State extends State<Request19> {
     });
 
     formData.addAll(_request19FormKey.currentState!.value);
-
-    // var request = Request(
-    //   requestTypeId: 19, 
-    //   status: "completed", 
-    //   documentNeed: null,
-    //   fee: "12.000",
-    //   dateCreate: DateTime.now().toString(),
-    // );
     
-    // try {
-    //   await APIService().postDataWithFile(request: request, formData: _request19FormKey.currentState!.value, files: files).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi thành công",
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: Gửi không thành công"
-    //   );
-    // } 
-    print(formData);
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.houseRental, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
   
   @override
@@ -203,19 +192,19 @@ class Request19State extends State<Request19> {
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Đối tượng ưu tiên:", 
-                    name: "doituonguutien", 
+                    name: "priority", 
                     isImportant: false,
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Địa chỉ thường trú:", 
-                    name: "permanent_address", 
+                    name: "address", 
                     isImportant: false,
                   ),
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Điện thoại liên hệ:", 
-                    name: "phone_contact", 
+                    name: "phone_number", 
                     isImportant: false,
                     keyboardType: TextInputType.phone,
                   ),
@@ -229,7 +218,7 @@ class Request19State extends State<Request19> {
                   const SizedBox(height: 10,),
                   const CustomTextFieldRowWidget(
                     labelText: "Khi cần liên hệ (báo tin cho):", 
-                    name: "khicanbaotin", 
+                    name: "contact_method", 
                     isImportant: false,
                   ),
                   const SizedBox(height: 5,),

@@ -76,7 +76,6 @@ class APIService {
     }
   }
 
-  //TODO: NEW API
   Future<GetDataResponseModel> getMyData(String? status, {required int pageIndex, int pageSize = 10}) async {
     List<Request> listData = [];
 
@@ -163,7 +162,6 @@ class APIService {
   }
 
   Future<void> postDataWithFiles({required RequestType requestType, required Map<String, dynamic> data, required List<PlatformFile> files}) async {
-    //TODO: THAY DOI URL
     Uri url = Uri.parse("$host/requests/${requestType.value}");
     print(url);
     

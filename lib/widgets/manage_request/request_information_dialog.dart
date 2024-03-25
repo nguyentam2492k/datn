@@ -219,6 +219,24 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                   const Expanded(
                     flex: 1,
                     child: Text(
+                      "Hạn hoàn thành",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(requestInfo.expireIn != null ? requestInfo.expireIn! : "----"),
+                  )
+                ],
+              ),
+              const Divider(thickness: 0.4,),
+              Row(
+                children: [
+                  const Expanded(
+                    flex: 1,
+                    child: Text(
                       "Ngày tạo",
                       style: TextStyle(
                         fontWeight: FontWeight.bold

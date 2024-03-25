@@ -15,7 +15,10 @@ enum RequestType {
   goingAbroad('going-abroad'),
   notFinishedSubject('not-finished-subject'),
   tuitionExemption('tuition-exemption'),
-  busCard('bus-card');
+  busCard('bus-card'),
+  houseRental('house-rental'),
+  pointConfirm('point-confirm'),
+  introduceStudent('introduce-student');
 
   final String value;
 

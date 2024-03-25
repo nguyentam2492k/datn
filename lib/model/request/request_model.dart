@@ -1,6 +1,4 @@
-import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/user.dart';
 import 'package:datn/model/request/request_information_model.dart';
 
@@ -26,6 +24,7 @@ class Request {
   String? processingPlace;
   String dateCreate;
   String? dateReceive;
+  String? expireIn;
   RequestInformation? info;
   List<String>? file;
 
@@ -41,6 +40,7 @@ class Request {
     this.processingPlace,
     required this.dateCreate,
     this.dateReceive,
+    this.expireIn,
     this.info,
     this.file
   });
@@ -49,13 +49,10 @@ class Request {
 
     final localDateCreate = formatDateWithTime(json['created_date'] as String, outputIncludeTime: true);
     final localDateReceive = formatDateWithTime(json['receive_date'] as String?, outputIncludeTime: true);
-    
-    String? requestFee;
-    if (json['fee'] is int) {
-      requestFee = "${json['fee'] as int}đ";
-    } else {
-      requestFee = "${int.tryParse(json['fee'] as String)}đ";
-    }
+
+    final date = getDateFromString(json['created_date'] as String);
+    final expire = json['expire_in'] as int?;
+    final localExpireDate = (date != null && expire != null) ? "${formatDateWithTime(addDateToDateTime(date, expire).toString())}" : null;
 
     return Request(
       id: json['id'] as int,
@@ -66,28 +63,13 @@ class Request {
       statusId: json['status']['id'] as int?,
       status: json['status']['name'] as String,
       fee: json['fee'] != null ? "${json['fee']}đ" : null,
-      // fee: requestFee,
       processingPlace: json['processing_place']['name'] as String?,
       dateCreate: localDateCreate ?? json['created_date'] as String,
       dateReceive: localDateReceive,
+      expireIn: localExpireDate,
       info: RequestInformation.fromJson(json['info'] as Map<String,dynamic>),
       file: json['info']['files'] != null ? toListString(json['info']['files']) : null, 
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'student': globalLoginResponse!.user?.name ?? "Nguyen Van A",
-      'userId': globalLoginResponse!.user?.id ?? "18021117",
-      'request_type': ConstantList.requests[requestTypeId - 1],
-      'request_type_id': requestTypeId,
-      'file': file,
-      'document_need': documentNeed ?? "Không",
-      'status': status,
-      'fee': fee ?? "10.000",
-      'processing_place': processingPlace ?? "Phòng công tác Sinh viên",
-      'date_create': dateCreate,
-      'date_receive': dateReceive,
-    };
-  }
 }

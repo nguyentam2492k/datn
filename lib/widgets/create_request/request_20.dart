@@ -1,5 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -30,25 +31,24 @@ class Request20State extends State<Request20> {
     APIService apiService = APIService();
     Map<String, dynamic> formData = {};
 
-    await EasyLoading.show(status: "Đang gửi");
     formData.addAll(_request20FormKey.currentState!.value);
 
-    // var request = Request(
-    //   requestTypeId: 20, 
-    //   documentNeed: null,
-    //   fee: null,
-    //   status: "completed", 
-    //   dateCreate: DateTime.now().toString()
-    // );
+    await EasyLoading.show(status: "Đang gửi");
 
-    // await apiService.postData(request: request, requestInfo: formData).then((value) async {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: value != null,
-    //     text: "Gửi thành công",
-    //     errorText: "LỖI: $value"
-    //   );
-    // });
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.pointConfirm).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
   
   @override
@@ -84,7 +84,7 @@ class Request20State extends State<Request20> {
                       Expanded(
                         flex: 4,
                         child: FormBuilderRadioGroup(
-                          name: 'education_program', 
+                          name: 'program_type', 
                           initialValue: ConstantList.educationPrograms[0],
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -99,6 +99,10 @@ class Request20State extends State<Request20> {
                           options: ConstantList.educationPrograms
                             .map((program) => FormBuilderFieldOption(value: program))
                             .toList(),
+                          valueTransformer: (value) {
+                            final programTypeIndex = ConstantList.educationPrograms.indexOf(value!) + 1;
+                            return programTypeIndex;
+                          },
                         ),
                       )
                     ],
@@ -106,7 +110,7 @@ class Request20State extends State<Request20> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Năm học:",
-                    name: 'year',
+                    name: 'school_year',
                     isShort: true,
                     validator: (value) {
                       if (value == null || value.isEmpty ) {

@@ -1,5 +1,6 @@
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
@@ -44,31 +45,30 @@ class Request22State extends State<Request22> {
   }
 
   Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
     
     await EasyLoading.show(status: "Đang gửi");
 
-    // var request = Request(
-    //   requestTypeId: 22, 
-    //   status: "canceled", 
-    //   documentNeed: null,
-    //   fee: "10.000",
-    //   dateCreate: DateTime.now().toString(),
-    // );
+    formData.addAll(_request22FormKey.currentState!.value);
     
-    // try {
-    //   await APIService().postDataWithFile(request: request, formData: _request22FormKey.currentState!.value, files: files).then((value) async {
-    //     await EasyLoading.dismiss();
-    //     MyToast.showToast(
-    //       text: "Gửi thành công",
-    //     );
-    //   });
-    // } catch (e) {
-    //   await EasyLoading.dismiss();
-    //   MyToast.showToast(
-    //     isError: true,
-    //     errorText: "LỖI: Gửi không thành công"
-    //   );
-    // } 
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.introduceStudent, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
   
   @override
@@ -96,7 +96,7 @@ class Request22State extends State<Request22> {
                       Expanded(
                         flex: 4,
                         child: FormBuilderRadioGroup(
-                          name: 'education_program', 
+                          name: 'learning_program', 
                           initialValue: ConstantList.educationPrograms[0],
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -111,6 +111,10 @@ class Request22State extends State<Request22> {
                           options: ConstantList.educationPrograms
                             .map((program) => FormBuilderFieldOption(value: program))
                             .toList(),
+                          valueTransformer: (value) {
+                            final learningProgramIndex = ConstantList.educationPrograms.indexOf(value!) + 1;
+                            return learningProgramIndex;
+                          },
                         ),
                       )
                     ],
@@ -118,7 +122,7 @@ class Request22State extends State<Request22> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Nơi thực tập:",
-                    name: 'intern_company',
+                    name: 'practice_place',
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
