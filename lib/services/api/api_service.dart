@@ -39,7 +39,7 @@ class APIService {
       );
       if(response.statusCode == 200 || response.statusCode == 401) {
         final responseData = jsonDecode(response.data) as Map<String, dynamic>;
-        secureStorageServices.writeAccessToken(responseData["token"] as String?);
+        await secureStorageServices.writeAccessToken(responseData["token"] as String?);
 
         return LoginResponseModel.fromJson(responseData);
       } else {
@@ -70,6 +70,8 @@ class APIService {
         ), 
       );
       if(response.statusCode == 200) {
+        await secureStorageServices.deleteAccessToken();
+
         var body = response.data;
         return body['message'] as String;
       } else {

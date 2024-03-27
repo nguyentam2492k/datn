@@ -24,6 +24,10 @@ class SecureStorageServices {
 
     return accessToken;
   }
+
+  Future<void> deleteAccessToken() async {
+    await secureStorage.delete(key: "access_token");
+  }
   
   Future<bool> isContainSavedAccount() async {
     final containSavedUsername = await secureStorage.containsKey(key: "username");
