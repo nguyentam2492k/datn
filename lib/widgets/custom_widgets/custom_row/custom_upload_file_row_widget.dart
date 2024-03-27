@@ -198,7 +198,7 @@ class CustomUploadFileRowWidgetState extends State<CustomUploadFileRowWidget> {
                       ),
                     ),
                     onPressed: () async {
-                      FileServices().openFileFromPath(context: context, path: null);
+                      FileServices().openFileFromPath(context: context, path: file.path);
                     }, 
                   ),
                 ),

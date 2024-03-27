@@ -38,7 +38,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   file_picker: ^6.1.1
-  open_file: ^3.3.2
+  open_filex: ^4.4.0
   path_provider: ^2.1.2
   intl: ^0.18.1
   mime: ^1.0.5

@@ -101,7 +101,6 @@ class APIService {
         currentStatus = "";
     }
     url = Uri.parse("$baseUrl$currentStatus");
-    print(url);
 
     try {
       var response = await dio.getUri(
@@ -141,7 +140,6 @@ class APIService {
   Future<void> postDataWithoutFiles({required RequestType requestType, required Map<String, dynamic> formData}) async {
     var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/requests/${requestType.value}");
-    print(url);
 
     try {
       final response = await dio.postUri(
@@ -171,7 +169,6 @@ class APIService {
   Future<void> postDataWithFiles({required RequestType requestType, required Map<String, dynamic> data, required List<PlatformFile> files}) async {
     var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/requests/${requestType.value}");
-    print(url);
     
     Map<String, dynamic> sendData = Map.from(data);
 

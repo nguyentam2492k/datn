@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 
 class MyHandle {
   static String handleDioError(DioExceptionType errorType) {
