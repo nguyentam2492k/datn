@@ -15,13 +15,13 @@ class HelpScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            SizedBox(height: 90,
+            SizedBox(height: 110,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 80,
-                  width: 80,
+                  height: 88,
+                  width: 88,
                   child: Image.asset(
                     'assets/images/uet_icon.png',
                     fit: BoxFit.contain,
@@ -49,7 +49,7 @@ class HelpScreen extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Color(0xFF237625),
-                          fontSize: 16,
+                          fontSize: 15.5,
                         ),
                       ),
                       const Text(
@@ -58,7 +58,7 @@ class HelpScreen extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Color(0xFF237625),
-                          fontSize: 15,
+                          fontSize: 14.5,
                         ),
                       ),
                       InkWell(
@@ -68,7 +68,8 @@ class HelpScreen extends StatelessWidget {
                           style: TextStyle(
                             color: Color(0xFF002BD9),
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 14
+                            fontSize: 13.5,
+                            decoration: TextDecoration.underline
                           ),
                         ),
                         onTap: () {
@@ -84,7 +85,7 @@ class HelpScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(height: 20,),
           const Text(
             "HƯỚNG DẪN SỬ DỤNG",
             style: TextStyle(
@@ -96,10 +97,9 @@ class HelpScreen extends StatelessWidget {
           const Text(
             "Tài liệu dành cho sinh viên",
             style: TextStyle(
-              fontSize: 18
+              fontSize: 16
             ),
           ),
-          const SizedBox(height: 10,),
           const Divider(thickness: 0.4,),
           ExpansionTile(
             shape: const Border(),
@@ -126,6 +126,7 @@ class HelpScreen extends StatelessWidget {
                 ),
                 onTap: () => openUrl(context, urlString: 'http://student.uet.vnu.edu.vn')
               ),
+              const SizedBox(height: 10,),
               const Text("Giao diện đăng nhập của hệ thống như hình dưới đây:"),
               const SizedBox(height: 10,),
               Image(
@@ -139,7 +140,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -174,7 +175,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       color: Colors.black,
                       height: 1.35
                     ),
@@ -230,7 +231,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black
                   ),
                   children: [
@@ -249,7 +250,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black
                   ),
                   children: [
@@ -280,7 +281,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       color: Colors.black,
                       height: 1.35
                     ),
@@ -350,7 +351,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -380,7 +381,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -417,7 +418,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -439,7 +440,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -501,7 +502,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       color: Colors.black,
                       height: 1.35
                     ),

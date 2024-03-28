@@ -5,17 +5,17 @@ Widget welcomeCreateRequest() {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       Container(
-        padding: const EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.all(10),
         decoration: const BoxDecoration(
           color: Colors.blue,
-          borderRadius: BorderRadius.all(Radius.circular(10))
+          borderRadius: BorderRadius.all(Radius.circular(7))
         ),
         child: const Text(
           "Dịch vụ gửi yêu cầu của trường Đại học Công nghệ!\nHãy chọn yêu cầu bằng nút bên trên",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
-            fontSize: 19,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -24,6 +24,9 @@ Widget welcomeCreateRequest() {
       RichText(
         textAlign: TextAlign.center,
         text: const TextSpan(
+          style: TextStyle(
+            fontSize: 15
+          ),
           children: [
             TextSpan(
               text: "Chú ý: ",
