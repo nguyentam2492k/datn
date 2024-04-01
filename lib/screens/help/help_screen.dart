@@ -140,7 +140,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -175,7 +175,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.black,
                       height: 1.35
                     ),
@@ -231,7 +231,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black
                   ),
                   children: [
@@ -250,7 +250,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black
                   ),
                   children: [
@@ -281,7 +281,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.black,
                       height: 1.35
                     ),
@@ -351,7 +351,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -381,7 +381,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -418,7 +418,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -440,7 +440,7 @@ class HelpScreen extends StatelessWidget {
               RichText(
                 text: const TextSpan(
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
                     height: 1.35
                   ),
@@ -502,7 +502,7 @@ class HelpScreen extends StatelessWidget {
                 child: RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.black,
                       height: 1.35
                     ),
@@ -655,7 +655,7 @@ class HelpScreen extends StatelessWidget {
 
   AppBar buildAppBar() {
     return AppBar(
-      title: const Text("Xử lý yêu cầu"),
+      title: const Text("Hướng dẫn sử dụng"),
       centerTitle: true,
       backgroundColor: Colors.white,
       titleTextStyle: const TextStyle(

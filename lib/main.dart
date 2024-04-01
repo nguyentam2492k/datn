@@ -58,7 +58,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       navigatorKey: globalNavigatorKey,
-      title: 'Student UET System',
+      title: 'UET Single Window System',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
