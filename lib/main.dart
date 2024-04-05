@@ -1,4 +1,6 @@
 import 'package:datn/global_variable/globals.dart';
+import 'package:datn/model/login/login_model.dart';
+import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -6,7 +8,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+
+  var userInfo = await secureStorageServices.getSaveUserInfo();
+  runApp(MyApp(saveUserInfo: userInfo,));
   configLoading();
 }
 
@@ -29,7 +33,8 @@ void configLoading() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final LoginResponseModel? saveUserInfo;
+  const MyApp({super.key, this.saveUserInfo});
   
   @override
   State<StatefulWidget> createState() {
@@ -55,6 +60,7 @@ class MyAppState extends State<MyApp> {
   }
 
   Widget buildMyApp() {
+
     return MaterialApp(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       navigatorKey: globalNavigatorKey,
@@ -69,11 +75,8 @@ class MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [Locale('vi')],
-      home: Container(
-        color: Colors.white,
-        child: const SafeArea(
-          child: LogIn(),
-        ),
+      home: SafeArea(
+        child: widget.saveUserInfo == null ? const LogIn() : HomeScreen(loginResponse: widget.saveUserInfo!),
       ),
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),

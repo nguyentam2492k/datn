@@ -78,7 +78,6 @@ Widget requestInforDialog(BuildContext context, int index, Request requestInfo) 
                   Expanded(
                     flex: 3,
                     child: Text(
-                      // requestInfo.student ?? "----",
                       requestInfo.user?.name ?? "----"
                     )
                   )

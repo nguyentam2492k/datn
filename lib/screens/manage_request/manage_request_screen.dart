@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:datn/constants/my_icons.dart';
-import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/constants/constant_list.dart';
 import 'package:datn/function/function.dart';
@@ -41,7 +40,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   int pageSize = 10;
   int totalRequests = 99;
   String? getDataErrorText;
-  late String userId;
 
   bool isLoading = false;
   ScrollController scrollController = ScrollController();
@@ -88,7 +86,6 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
   @override
   void initState() {
     super.initState();
-    userId = globalLoginResponse!.user?.id ?? "999999";
     selectedStatusIndex = 0;
     scrollController.addListener(() {
       _handleScroll();

@@ -53,6 +53,10 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
 
   late GlobalKey<FormBuilderState> _formKey;
 
+  late String? initialProvinceValue;
+  late String? initialDistrictValue;
+  late String? initialWardValue;
+
   late String provinceName;
   late String districtName;
   late String wardName;
@@ -102,14 +106,65 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
     );
   }
 
+  provinceChanged({required String provinceName}) {
+    var provinceIndex = provinces.indexWhere((element) => element.name == provinceName);
+    if ((provinceName != selectedAddressChanged.value.province)) {
+      selectedAddressChanged.value = Address(
+        province: provinceName,
+        district: null,
+        ward: null,
+      );
+      wards.clear();
+    }
+    districts = provinces[provinceIndex].districts!;
+  }
+
+  districtChanged({required String districtName}) {
+    var districtIndex = districts.indexWhere((element) => element.name == districtName);
+    if ((districtName != selectedAddressChanged.value.district)) {
+      selectedAddressChanged.value = Address(
+        province: selectedAddressChanged.value.province,
+        district: districtName,
+        ward: null,
+      );
+    }
+    wards = districts[districtIndex].wards!;
+  }
+
+  wardChanged({required String wardName}) {
+    selectedAddressChanged.value = Address(
+      province: selectedAddressChanged.value.province,
+      district: selectedAddressChanged.value.district,
+      ward: wardName,
+    );
+  }
+
+  setInitAddressData() {
+    provinces = widget.provinces;
+    if (widget.initialProvinceValue != null) {
+      provinceChanged(provinceName: widget.initialProvinceValue!);
+      if (widget.initialDistrictValue != null) {
+        districtChanged(districtName: widget.initialDistrictValue!);
+        if (widget.initialWardValue != null) {
+          wardChanged(wardName: widget.initialWardValue!);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    provinces = widget.provinces;
     _formKey = widget.formKey;
+    setInitAddressData();
+    
     provinceName = widget.provinceName;
     districtName = widget.districtName;
     wardName = widget.wardName;
+
+    initialProvinceValue = widget.initialProvinceValue;
+    initialDistrictValue = widget.initialDistrictValue;
+    initialWardValue = widget.initialWardValue;
   }
 
   @override
@@ -154,16 +209,7 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                           .toList(),
                         validator: widget.provinceValidator,
                         onChanged: (value) {
-                          var provinceIndex = provinces.indexWhere((element) => element.name == _formKey.currentState!.fields[provinceName]!.value);
-                          if ((_formKey.currentState!.fields[provinceName]!.value != selectedAddress.province)) {
-                            selectedAddressChanged.value = Address(
-                              province: _formKey.currentState!.fields[provinceName]!.value,
-                              district: null,
-                              ward: null,
-                            );
-                            wards.clear();
-                          }
-                          districts = provinces[provinceIndex].districts!;
+                          provinceChanged(provinceName: _formKey.currentState!.fields[provinceName]!.value);
                         },
                         style: buttonTextStyle,
                         decoration: buttonDecoration("Tỉnh/Tp"),
@@ -186,15 +232,7 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                           .toList(),
                         validator: widget.districtValidator,
                         onChanged: (value) {
-                          var districtIndex = districts.indexWhere((element) => element.name == _formKey.currentState!.fields[districtName]!.value);
-                          if ((_formKey.currentState!.fields[districtName]!.value != selectedAddress.district)) {
-                            selectedAddressChanged.value = Address(
-                              province: selectedAddress.province,
-                              district: _formKey.currentState!.fields[districtName]!.value,
-                              ward: null,
-                            );
-                          }
-                          wards = districts[districtIndex].wards!;
+                          districtChanged(districtName: _formKey.currentState!.fields[districtName]!.value);
                         },
                         style: buttonTextStyle,
                         decoration: buttonDecoration("Quận/Huyện")
@@ -217,11 +255,7 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
                           .toList(),
                         validator: widget.wardValidator,
                         onChanged: (value) {
-                          selectedAddressChanged.value = Address(
-                            province: selectedAddress.province,
-                            district: selectedAddress.district,
-                            ward: _formKey.currentState!.fields[wardName]!.value,
-                          );
+                          wardChanged(wardName: _formKey.currentState!.fields[wardName]!.value);
                         },
                         style: buttonTextStyle,
                         decoration: buttonDecoration("Xã/Phường")

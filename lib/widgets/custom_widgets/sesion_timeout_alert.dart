@@ -1,5 +1,4 @@
 import 'package:datn/constants/my_icons.dart';
-import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,6 @@ class SessionTimeoutAlert extends StatelessWidget {
         Navigator.pushAndRemoveUntil(
           context, 
           MaterialPageRoute(builder: (context) {
-            globalLoginResponse = null;
             return const LogIn();
           }), 
           (route) => false

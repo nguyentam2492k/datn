@@ -7,7 +7,6 @@ class CustomFormBuilderDateTimePicker extends StatefulWidget {
   final String name; 
   final FormFieldValidator<DateTime?>? validator;
   final ValueChanged<DateTime?>? onChanged;
-  final DateTime? initialValue;
   final InputType inputType;
   final Locale? locale;
   final TextStyle? style;
@@ -18,7 +17,6 @@ class CustomFormBuilderDateTimePicker extends StatefulWidget {
     required this.name, 
     this.validator, 
     this.onChanged, 
-    this.initialValue, 
 
     this.inputType = InputType.date, 
     this.locale = const Locale('vi', 'VI'), 
@@ -79,7 +77,6 @@ class CustomFormBuilderDateTimePickerState extends State<CustomFormBuilderDateTi
       constraints: const BoxConstraints(maxHeight: 45),
       child: FormBuilderDateTimePicker(
         name: widget.name,
-        initialDate: widget.initialValue,
         inputType: widget.inputType,
         locale: widget.locale,
         format: DateFormat('dd/MM/yyyy'),

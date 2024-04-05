@@ -46,6 +46,7 @@ DateTime? getDateFromString(String? dateString) {
   } catch (e) {
     return null;
   }
+
   return dateTime;
 }
 

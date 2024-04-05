@@ -1,7 +1,6 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/services/api/api_service.dart';
@@ -40,7 +39,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    globalLoginResponse = loginResponse;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -285,7 +283,6 @@ class HomeScreenState extends State<HomeScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) {
-            globalLoginResponse = null;
             return const LogIn();
           }), 
           (route) => false

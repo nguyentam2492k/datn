@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/model/student/student_profile.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
@@ -39,7 +40,6 @@ class APIService {
       );
       if(response.statusCode == 200 || response.statusCode == 401) {
         final responseData = jsonDecode(response.data) as Map<String, dynamic>;
-        await secureStorageServices.writeAccessToken(responseData["token"] as String?);
 
         return LoginResponseModel.fromJson(responseData);
       } else {
@@ -70,7 +70,7 @@ class APIService {
         ), 
       );
       if(response.statusCode == 200) {
-        await secureStorageServices.deleteAccessToken();
+        await secureStorageServices.deleteSavedUserInfo();
 
         var body = response.data;
         return body['message'] as String;
@@ -211,6 +211,102 @@ class APIService {
           },
         )
       );
+
+      if (response.statusCode != 200) {
+        throw response.statusMessage.toString();
+      }
+    } on DioException catch (e) {
+      throw MyHandle.handleDioError(e.type);
+    }
+  }
+
+  Future<StudentProfile> getStudentInformation() async {
+    var accessToken = await secureStorageServices.getAccessToken();
+
+    // String baseUrl = "http://192.168.1.5:3000/user";
+    String baseUrl = "http://192.168.0.183:3000/user";
+    Uri url = Uri.parse(baseUrl);
+
+    try {
+      var response = await dio.getUri(
+        url,
+        options: Options(
+          responseType: ResponseType.plain,
+          headers: <String, String>{ 
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $accessToken'
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        ), 
+      );
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.data);
+
+        var requestData = responseBody;
+        
+        return StudentProfile.fromJson(requestData);
+      } else {
+        throw response.statusMessage.toString();
+      }
+
+    } on DioException catch (e) {
+      throw MyHandle.handleDioError(e.type);
+    }
+  }
+
+
+  //KHÔNG GỬI ĐC MULTIPART/FORM-DATA LÊN API, DO SERVER KHÔNG CHẤP NHẬN CONTENT-TYPE NÀY, THỬ TRÊN POSTMAN CŨNG VẬY
+  Future<void> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
+    // Uri url = Uri.parse("http://192.168.1.5:3000/user");
+    Uri url = Uri.parse("http://192.168.1.5:3000/user");
+
+    Map<String, dynamic> updateData = Map.from(profile);
+
+    if (image != null) {
+      var tempImage = File(image.path!);
+      final mimeTypeData = lookupMimeType(tempImage.path)!.split('/');
+
+      final fileToUpdate = await MultipartFile.fromFile(
+        tempImage.path, 
+        filename: image.name,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1])
+      );
+
+      updateData.addAll({
+        "image": fileToUpdate
+      });
+    } else {
+      updateData.addAll({
+        "image": null
+      });
+    }
+
+    final formData = FormData.fromMap(updateData, ListFormat.multiCompatible);
+
+    try {
+      final response = await dio.requestUri(
+        url,
+        data: formData,
+        options: Options(
+          method: "PUT",
+          headers: <String, String>{ 
+            'Content-Type': 'multipart/form-data; charset=UTF-8',
+            'Accept': 'multipart/form-data; charset=UTF-8',
+            'Authorization': 'Bearer $accessToken'
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        )
+      );
+
+      print(response.data);
 
       if (response.statusCode != 200) {
         throw response.statusMessage.toString();

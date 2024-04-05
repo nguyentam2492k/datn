@@ -3,8 +3,6 @@ import 'package:datn/global_variable/globals.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/home/home_screen.dart';
-import 'package:datn/services/session/session_timeout.dart';
-import 'package:datn/widgets/custom_widgets/sesion_timeout_alert.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -244,8 +242,10 @@ class LogInState extends State<LogIn> {
           if (loginResponseData.error == null) {
             if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
               await secureStorageServices.writeSaveAccount(loginRequestModel);
+              await secureStorageServices.writeSaveUserInfo(loginResponseData);
             } else {
               await secureStorageServices.deleteSavedAccount();
+              await secureStorageServices.writeAccessToken(loginResponseData.accessToken);
             }
 
             TextInput.finishAutofillContext();
@@ -253,20 +253,7 @@ class LogInState extends State<LogIn> {
               Navigator.pushAndRemoveUntil(
                 context, 
                 MaterialPageRoute(builder: (context) {
-                  return SessionTimeoutController(
-                    duration: Duration(seconds: loginResponseData.expiredTime ?? 30),
-                    onTimeOut: () {
-                      showDialog(
-                        barrierDismissible: false,
-                        context: globalNavigatorKey.currentState!.context, 
-                        builder:(context) {
-                          return const SessionTimeoutAlert();
-                        },
-                      );
-                    },
-                    child: HomeScreen(loginResponse: loginResponseData,)
-                  );
-
+                  return HomeScreen(loginResponse: loginResponseData,);
                 }), 
                 (route) => false
               );
