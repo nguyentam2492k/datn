@@ -3,6 +3,7 @@ import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
+import 'package:datn/screens/notification/notification_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/gestures.dart';
@@ -70,6 +71,14 @@ class HomeScreenState extends State<HomeScreen> {
         icon: const Icon(MyIcons.menu),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_active_outlined),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder:(context) {
+            return const NotificationPage();
+          },)),
+        ),
+      ],
     );
   }
 

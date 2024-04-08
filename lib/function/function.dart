@@ -62,14 +62,14 @@ bool isInteger(String? s) {
   return int.tryParse(s) != null;
 }
 
-Color getColor(int statusId) {
+Color getColor(int? statusId) {
   switch (statusId) {
     case 2: //Đã xong
-      return Colors.green;
+      return const Color(0xFF21A626);
     case 3: //Đã huỷ
       return Colors.red;
     case 1: //Đang xử lý
-      return Colors.yellow;
+      return const Color(0xFFFFBF00);
     default:
       return Colors.grey;
   }
