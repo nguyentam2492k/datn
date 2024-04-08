@@ -1,7 +1,14 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request9 extends StatefulWidget {
@@ -17,26 +24,46 @@ class Request9State extends State<Request9> {
 
   final GlobalKey<FormBuilderState> _request9FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
   bool isFormValid() {
     if (_request9FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
   }
 
-  void sendFormData() {
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
     formData.addAll(_request9FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    debugPrint(formData.toString());
+
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.studentCard, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override
@@ -50,17 +77,10 @@ class Request9State extends State<Request9> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Chú ý: Sinh viên (nhập học từ, sau 2018) "
-                    "làm thẻ tích hợp cần vào mục Cập nhật hồ sơ "
-                    "để cập nhật Ảnh thẻ và thông tin về CMTND trước khi thực hiện mục này ;"
-                    "-Sinh viên điền đầy đủ thông tin về Ngành học, "
-                    "Khoa, Lớp trong phần Lý do, đính kèm 01 ảnh 3x4 "
-                    "(tên file ảnh ghi Họ tên - không dấu); đến Phòng "
-                    "104-E3 để nộp lệ phí sau 03 ngày đăng ký Online; "
-                    "Khi làm xong, Phòng CTSV sẽ báo cho sinh viên đến nhận",
+                  Text(
+                    ConstantString.request9Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -79,7 +99,7 @@ class Request9State extends State<Request9> {
                       setState(() {});
                     },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -92,26 +112,13 @@ class Request9State extends State<Request9> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            },
+          ),
         ],
       )
     );

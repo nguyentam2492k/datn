@@ -1,7 +1,15 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request14 extends StatefulWidget {
@@ -17,26 +25,46 @@ class Request14State extends State<Request14> {
 
   final GlobalKey<FormBuilderState> _request14FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
   bool isFormValid() {
     if (_request14FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
   }
 
-  void sendFormData() {
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
     formData.addAll(_request14FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    debugPrint(formData.toString());
+
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.goingAbroad, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override
@@ -50,18 +78,10 @@ class Request14State extends State<Request14> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên làm đơn theo mẫu và kèm theo thư mời do tổ chức, "
-                    "cá nhân trong, ngoài nước gửi, trong đó phải nêu rõ mục đích, "
-                    "thời gian và các khoản tài chính (nếu do phía đối tác chi trả) "
-                    "liên quan mà sinh viên đi nước ngoài được hưởng như vé máy bay, "
-                    "tiền ăn, ở, sinh hoạt phí…scan và đính kèm vào yêu cầu. "
-                    "Hồ sơ được giải quyết chậm nhất sau 05 ngày (không kể thứ Bảy, "
-                    "Chủ nhật) kể từ ngày nhận hồ sơ. Sau 10 ngày kể từ ngày về nước "
-                    "sinh viên phải hoàn thành việc nộp báo cáo theo mẫu cho Nhà trường. "
-                    "Báo cáo nộp tại Văn phòng Khoa 01 bản và Phòng 104-E3 01 bản.",
+                  Text(
+                    ConstantString.request14Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -80,7 +100,12 @@ class Request14State extends State<Request14> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Mau don");},
+                          onTap: () async {
+                            await FileServices().actionDownloadFileWithUrl(
+                              context, 
+                              url: ConstantString.request14DocumentUrl1
+                            );
+                          },
                         ),
                         InkWell(
                           child: const Text(
@@ -93,7 +118,12 @@ class Request14State extends State<Request14> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Báo cáo");},
+                          onTap: () async {
+                            await FileServices().actionDownloadFileWithUrl(
+                              context, 
+                              url: ConstantString.request14DocumentUrl2
+                            );
+                          },
                         )
                       ],
                     ),
@@ -113,7 +143,7 @@ class Request14State extends State<Request14> {
                       setState(() {});
                     },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -126,25 +156,12 @@ class Request14State extends State<Request14> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            }, 
           )
         ],
       )

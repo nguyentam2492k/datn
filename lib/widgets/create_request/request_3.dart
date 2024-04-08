@@ -1,8 +1,15 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request3 extends StatefulWidget {
@@ -19,30 +26,50 @@ class Request3State extends State<Request3> {
 
   final GlobalKey<FormBuilderState> _request3FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
+  bool isFormValid() {
+    if (_request3FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+    
+    await EasyLoading.show(status: "Đang gửi");
+    formData.addAll(_request3FormKey.currentState!.value);
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.pauseExam, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    bool isFormValid() {
-      if (_request3FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-        return true;
-      }
-    return false;
-    }
-
-    void sendFormData() {
-      formData.addAll(_request3FormKey.currentState!.value);
-      
-      // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-      List<String> listFiles = files.map((file) => file.name).toList();
-      formData['file'] = listFiles;
-      debugPrint(formData.toString());
-    }
 
     return FormBuilder(
       key: _request3FormKey,
@@ -53,21 +80,17 @@ class Request3State extends State<Request3> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ thông tin bên dưới, "
-                    "đính kèm bản scan giấy xác nhận các lý do "
-                    "đã nêu trong phần lý do (giấy khám bệnh…), "
-                    "sau đó bấm Gửi yêu cầu để nộp bàn gốc cho "
-                    "phòng 104-E3 trong vòng 05 ngày kể từ ngày thi.",
+                  Text(
+                    ConstantString.request3Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
                     labelText: "Môn học:", 
-                    name: "subject", 
+                    name: "subject_name", 
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -81,7 +104,7 @@ class Request3State extends State<Request3> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Giảng viên giảng dạy:", 
-                    name: "lecturer", 
+                    name: "teacher_name", 
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -95,15 +118,30 @@ class Request3State extends State<Request3> {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Ngày thi:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
+                        child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Ngày thi:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
                           ),
-                        ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDateTimePicker(
@@ -136,7 +174,7 @@ class Request3State extends State<Request3> {
                     onChanged: (value) { setState(() {
                     }); },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -149,25 +187,12 @@ class Request3State extends State<Request3> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            }, 
           )
         ],
       )

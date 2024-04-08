@@ -1,8 +1,14 @@
+import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_dropdown_button.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
-import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request8 extends StatefulWidget {
@@ -18,32 +24,37 @@ class Request8State extends State<Request8> {
 
   final GlobalKey<FormBuilderState> _request8FormKey = GlobalKey<FormBuilderState>();
 
-  List<String> monthFee = ['960000đ', '3000000đ', '3500000đ', '4200000đ'];
+  bool isFormValid() {
+    return _request8FormKey.currentState!.saveAndValidate();
+  }
 
-  Map<String, dynamic> formData = {};
+  Future<void> sendFormData() async {
 
-  List<PlatformFile> files = [];
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
 
-  bool isFileAdded = true;
+    formData.addAll(_request8FormKey.currentState!.value);
+    
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.bankLoan).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    bool isFormValid() {
-      if (_request8FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-        return true;
-      }
-    return false;
-    }
-
-    void sendFormData() {
-    formData.addAll(_request8FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    debugPrint(formData.toString());
-  }
     
     return FormBuilder(
       key: _request8FormKey,
@@ -54,15 +65,10 @@ class Request8State extends State<Request8> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên : - Ghi rõ lý do; - Chọn mức học phí "
-                    "theo thác của mình; - Cập nhật hồ sơ "
-                    "(Thông tin về CCCD/CMND; ngày nhập học; ,..) "
-                    "trước khi thực hiện yêu cầu này. Sinh viên tải mẫu đơn, "
-                    "điền đầy đủ thông tin, scan và đính kèm vào phần bên dưới, "
-                    "đến Phòng 104-E3 nhận kết quả sau 01 ngày làm việc.",
+                  Text(
+                    ConstantString.request8Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -79,7 +85,13 @@ class Request8State extends State<Request8> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: () async {
+                        await FileServices().actionDownloadFileWithUrl(
+                          context, 
+                          url: ConstantString.request8DocumentUrl
+                        ).then((value) async {
+                        });
+                      },
                     ),
                   ),
                   const Divider(thickness: 0.4,),
@@ -110,12 +122,13 @@ class Request8State extends State<Request8> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDropdown(
-                          name: 'month_fee',
-                          initialValue: monthFee[0],
-                          items: monthFee
+                          name: 'tuition_type',
+                          initialValue: ConstantList.monthFee[0],
+                          items: ConstantList.monthFee
                             .map((fee) => DropdownMenuItem(
                               value: fee, 
                               child: Text(fee),
@@ -127,6 +140,10 @@ class Request8State extends State<Request8> {
                             }
                             return null;
                           },
+                          valueTransformer: (value) {
+                            final monthFeeIndex = ConstantList.monthFee.indexOf(value!) + 1;
+                            return monthFeeIndex;
+                          },
                         ),
                       ),
                       const Expanded(
@@ -135,39 +152,17 @@ class Request8State extends State<Request8> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 5,),
-                  CustomUploadFileRowWidget(
-                    files: files, 
-                    isFileAdded: isFileAdded, 
-                    onChanged: (List<PlatformFile> value) { 
-                      files = value;
-                      setState(() {});
-                    }, 
-                  )
+                  const SizedBox(height: 10,)
                 ],
               ),
             )
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
+          SendRequestButton(
+            onPressed: () async {
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            },
+          ),
         ],
       )
     );

@@ -1,6 +1,13 @@
+import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request2 extends StatefulWidget {
@@ -14,28 +21,6 @@ class Request2 extends StatefulWidget {
 }
 
 class Request2State extends State<Request2> {
-
-  final List<String> termTypes = [
-    "Tất cả",
-    "Từng kỳ",
-  ];
-
-  final List<String> termNumbers = [
-    "Học kỳ 1",
-    "Học kỳ 2",
-    "Học kỳ 3",
-    "Học kỳ 4",
-    "Học kỳ 5",
-    "Học kỳ 6",
-    "Học kỳ 7",
-    "Học kỳ 8",
-    "Học kỳ 9",
-  ];
-
-  final List<String> transcriptTypes = [
-    "Chữ hệ số 4",
-    "Số hệ số 10",
-  ];
 
   final GlobalKey<FormBuilderState> _request2FormKey = GlobalKey<FormBuilderState>();
 
@@ -59,6 +44,33 @@ class Request2State extends State<Request2> {
       numberOfEngVer != null;
   }
 
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+    
+    await EasyLoading.show(status: "Đang gửi");
+    formData.addAll(_request2FormKey.currentState!.value);
+    formData.addAll({
+      'number_of_copies_vi': numberOfVietVer,
+      'number_of_copies_en': numberOfEngVer,
+    });
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.transcript).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,17 +81,6 @@ class Request2State extends State<Request2> {
   @override
   Widget build(BuildContext context) {
 
-  Map<String, dynamic> formData = {};
-
-    void sendFormData() {
-      formData.addAll(_request2FormKey.currentState!.value);
-      formData.addAll({
-        'quantity_viet': numberOfVietVer,
-        'quantity_eng': numberOfEngVer,
-      });
-      debugPrint(formData.toString());
-    }
-
     return FormBuilder(
       key: _request2FormKey,
       child: Column(
@@ -89,13 +90,10 @@ class Request2State extends State<Request2> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tích chọn loại bảng điểm, bằng tiếng Việt "
-                    "hoặc tiếng Anh, chọn tất cả các kỳ hoặc từng kỳ, "
-                    "hệ điểm 4 hay hệ điểm 10; đến Phòng 104-E3 nhận bảng điểm "
-                    "sau 15h chiều thứ Tư và thứ Sáu hàng tuần.",
+                  Text(
+                    ConstantString.request2Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -105,57 +103,83 @@ class Request2State extends State<Request2> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 1,
-                          child: Text(
-                            "Kỳ:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          )
+                          child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Kỳ:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " *",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ]
+                            )
+                          ),
                         ),
                         Expanded(
                           flex: 4,
                           child: Column(
-                            mainAxisSize: MainAxisSize.max,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                height: 40,
-                                child: FormBuilderRadioGroup(
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none, 
-                                    isCollapsed: true,
-                                  ),
-                                  name: 'term_type', 
-                                  initialValue: termTypes[0],
-                                  options: termTypes
+                              FormBuilderRadioGroup(
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none, 
+                                ),
+                                name: 'is_all_semesters', 
+                                initialValue: ConstantList.termTypes[1],
+                                options: ConstantList.termTypes
                                   .map((termType) => FormBuilderFieldOption(value: termType))
                                   .toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _request2FormKey.currentState!.fields['term_number']!.reset();
-                                    });
-                                  },
-                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _request2FormKey.currentState?.fields['semesters']?.reset();
+                                  });
+                                },
+                                valueTransformer: (value) {
+                                  final termTypesIndex = ConstantList.termTypes.indexOf(value!);
+                                  return termTypesIndex;
+                                },
                               ),
                               const Divider(thickness: 0.4,),
                               Expanded(
                                 child: FormBuilderCheckboxGroup(
-                                  name: 'term_number', 
+                                  name: 'semesters', 
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     isCollapsed: true,
+                                    errorStyle: TextStyle(
+                                      fontSize: 10,
+                                      height: 0.3
+                                    ),
                                   ),
-                                  enabled: _request2FormKey.currentState?.fields['term_type']?.value == termTypes[1],
+                                  enabled: _request2FormKey.currentState?.fields['is_all_semesters']?.value == "Từng kỳ",
                                   validator: (value) {
-                                    if (_request2FormKey.currentState?.fields['term_type']?.value == termTypes[1] && (value == null || value.isEmpty)) {
+                                    if (_request2FormKey.currentState?.fields['is_all_semesters']?.value == "Từng kỳ" && (value == null || value.isEmpty)) {
                                       return "Chọn kỳ mong muốn";
                                     }
                                     return null;
                                   },
-                                  options: termNumbers
-                                    .map((termNumber) => FormBuilderFieldOption(value: termNumber))
+                                  options: ConstantList.termNumbers
+                                    .map((termNumber) => FormBuilderFieldOption(value: termNumber, child: Text("Học kỳ $termNumber"),))
                                     .toList(),
+                                  valueTransformer: (value) {
+                                    if (value == null) {
+                                      return <int>[];
+                                    }
+                                    final intList = value.map(int.parse).toList();
+                                    return intList;
+                                  },
                                 ),
                               )
                             ],
@@ -186,13 +210,14 @@ class Request2State extends State<Request2> {
                               isCollapsed: true,
                             ),
                             name: 'transcript_type', 
-                            initialValue: transcriptTypes[0],
-                            // validator: (value) {
-                              
-                            // },
-                            options: transcriptTypes
-                            .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
-                            .toList(),
+                            initialValue: ConstantList.transcriptTypes[0],
+                            options: ConstantList.transcriptTypes
+                              .map((transcriptType) => FormBuilderFieldOption(value: transcriptType))
+                              .toList(),
+                            valueTransformer: (value) {
+                              final transcriptTypeIndex = ConstantList.transcriptTypes.indexOf(value!) + 1;
+                              return transcriptTypeIndex;
+                            },
                           ),
                         ),
                       ],
@@ -282,24 +307,12 @@ class Request2State extends State<Request2> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () { 
-                  (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
+          SendRequestButton(
+            isFormValid: isFormValid(),
+            onPressed: () async { 
+              (isFormValid() && _request2FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
+            }, 
+          ),
         ],
       ),
     );

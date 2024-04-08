@@ -1,6 +1,12 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request5 extends StatefulWidget {
@@ -18,8 +24,31 @@ class Request5State extends State<Request5> {
 
   DateTime currentDate = DateTime.now();
 
-  void sendFormData() {
-    _request5FormKey.currentState!.saveAndValidate() ? debugPrint(_request5FormKey.currentState!.value.toString()) : null;
+  bool isFormValid() {
+    return _request5FormKey.currentState!.saveAndValidate();
+  }
+
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    await EasyLoading.show(status: "Đang gửi");
+    formData.addAll(_request5FormKey.currentState!.value);
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.pauseTuition).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }    
   }
 
   @override
@@ -35,11 +64,10 @@ class Request5State extends State<Request5> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên theo dõi thông báo của Nhà trường vào mỗi "
-                    "học kỳ và tạo yêu cầu vào đúng thời hạn cho phép.",
+                  Text(
+                    ConstantString.request5Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -62,7 +90,7 @@ class Request5State extends State<Request5> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Năm học:", 
-                    name: 'year',
+                    name: 'school_year',
                     initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
                     isShort: true,
                     validator: (value) {
@@ -78,19 +106,34 @@ class Request5State extends State<Request5> {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Đến ngày:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Đến ngày:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 2,
                         child: CustomFormBuilderDateTimePicker(
-                          name: 'until_date',
+                          name: 'end_date',
                           validator: (value) {
                             if (value == null) {
                               return "Chọn ngày chính xác";
@@ -125,25 +168,12 @@ class Request5State extends State<Request5> {
               ),
             ),
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white
-                  ),
-                  onPressed: () {
-                    sendFormData();
-                    setState(() {});
-                  }, 
-                  label: const Text("Gửi yêu cầu"),
-                ),
-              ),
-            )
+          SendRequestButton(
+            onPressed: () async {
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            }, 
+          ),
         ],
       ),
     );

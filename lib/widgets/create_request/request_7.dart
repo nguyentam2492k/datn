@@ -1,7 +1,15 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request7 extends StatefulWidget {
@@ -17,30 +25,51 @@ class Request7State extends State<Request7> {
 
   final GlobalKey<FormBuilderState> _request7FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
+  bool isFormValid() {
+    if (_request7FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    formData.addAll(_request7FormKey.currentState!.value);
+    
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.socialAssistance, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    bool isFormValid() {
-      if (_request7FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
-        return true;
-      }
-    return false;
-    }
-
-    void sendFormData() {
-      formData.addAll(_request7FormKey.currentState!.value);
-      
-      // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-      List<String> listFiles = files.map((file) => file.name).toList();
-      formData['file'] = listFiles;
-      debugPrint(formData.toString());
-    }
 
     return FormBuilder(
       key: _request7FormKey,
@@ -51,14 +80,10 @@ class Request7State extends State<Request7> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn bên dưới, điền đầy đủ thông tin "
-                    "và đính kèm bản scan các giấy tờ xác nhận được hưởng trợ cấp. "
-                    "Chú ý: nộp hồ sơ theo đúng thời hạn mà Nhà trường thông báo "
-                    "vào đầu mỗi học kỳ. Sinh viên phải nộp bản gốc hồ sơ cho "
-                    "Phòng 104-E3 trong vòng 05 ngày sau ngày nộp Online ",
+                  Text(
+                    ConstantString.request7Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -75,7 +100,12 @@ class Request7State extends State<Request7> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: () async {
+                        await FileServices().actionDownloadFileWithUrl(
+                          context, 
+                          url: ConstantString.request7DocumentUrl
+                        );
+                      },
                     ),
                   ),
                   const Divider(thickness: 0.4,),
@@ -93,7 +123,7 @@ class Request7State extends State<Request7> {
                       setState(() {});
                     },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -106,26 +136,13 @@ class Request7State extends State<Request7> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            },
+          ),
         ],
       ),
     );

@@ -1,7 +1,15 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request13 extends StatefulWidget {
@@ -17,26 +25,46 @@ class Request13State extends State<Request13> {
 
   final GlobalKey<FormBuilderState> _request13FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
   bool isFormValid() {
     if (_request13FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
   }
 
-  void sendFormData() {
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
     formData.addAll(_request13FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    debugPrint(formData.toString());
+
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.stopStudy, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
   }
 
   @override
@@ -50,16 +78,10 @@ class Request13State extends State<Request13> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn, điền đầy đủ thông tin, "
-                    "xin ý kiến của phụ huynh, xác nhận của chính quyền địa phương, "
-                    "xin ý kiến của Ban chủ nhiệm khoa, scan đơn và "
-                    "đính kèm vào yêu cầu; Sinh viên mang bản gốc "
-                    "hồ sơ lên phòng 104-E3 để nộp và hoàn thành các "
-                    "khoản kinh phí (trong thời gian 03 ngày kể từ ngày tạo yêu cầu). "
-                    "Sau 05 ngày sinh viên lên nhận Quyết định và rút hồ sơ.",
+                  Text(
+                    ConstantString.request13Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -78,7 +100,12 @@ class Request13State extends State<Request13> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Mau don");},
+                          onTap: () async {
+                            await FileServices().actionDownloadFileWithUrl(
+                              context, 
+                              url: ConstantString.request13DocumentUrl1
+                            );
+                          },
                         ),
                         InkWell(
                           child: const Text(
@@ -91,7 +118,12 @@ class Request13State extends State<Request13> {
                               decorationColor: Colors.blue,
                             ),
                           ),
-                          onTap: (){debugPrint("Tap Mau don");},
+                          onTap: () async {
+                            await FileServices().actionDownloadFileWithUrl(
+                              context, 
+                              url: ConstantString.request13DocumentUrl2
+                            );
+                          },
                         )
                       ],
                     ),
@@ -111,7 +143,7 @@ class Request13State extends State<Request13> {
                       setState(() {});
                     },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -124,25 +156,12 @@ class Request13State extends State<Request13> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            }, 
           )
         ],
       )

@@ -1,10 +1,20 @@
+import 'package:datn/constants/constant_list.dart';
+import 'package:datn/constants/my_icons.dart';
 import 'package:datn/widgets/create_request/request_1.dart';
 import 'package:datn/widgets/create_request/request_10.dart';
 import 'package:datn/widgets/create_request/request_11.dart';
 import 'package:datn/widgets/create_request/request_12.dart';
 import 'package:datn/widgets/create_request/request_13.dart';
 import 'package:datn/widgets/create_request/request_14.dart';
+import 'package:datn/widgets/create_request/request_15.dart';
+import 'package:datn/widgets/create_request/request_16.dart';
+import 'package:datn/widgets/create_request/request_17.dart';
+import 'package:datn/widgets/create_request/request_18.dart';
+import 'package:datn/widgets/create_request/request_19.dart';
 import 'package:datn/widgets/create_request/request_2.dart';
+import 'package:datn/widgets/create_request/request_20.dart';
+import 'package:datn/widgets/create_request/request_21.dart';
+import 'package:datn/widgets/create_request/request_22.dart';
 import 'package:datn/widgets/create_request/request_3.dart';
 import 'package:datn/widgets/create_request/request_4.dart';
 import 'package:datn/widgets/create_request/request_5.dart';
@@ -27,29 +37,7 @@ class CreateRequestScreen extends StatefulWidget {
 }
 
 class CreateRequestScreenState extends State<CreateRequestScreen> {
-  List<String> requests = [
-    "Giấy chứng nhận", 
-    "Cấp bảng điểm", 
-    "Đề nghị Hoãn thi", 
-    "Xem lại bài thi", 
-    "Hoãn nộp học phí", 
-    "Mượn hồ sơ", 
-    "XN trợ cấp xã hội", 
-    "XN vay vốn ngân hàng", 
-    "Cấp lại thẻ sinh viên", 
-    "CN tốt nghiệp tạm thời", 
-    "Nghỉ học có thời hạn", 
-    "Tiếp tục học", 
-    "Xin thôi học", 
-    "Xác nhận đi nước ngoài", 
-    "Chứng nhận còn nợ môn", 
-    "XN nhận miễn giảm HP", 
-    "Đề nghị làm vé xe buýt",
-    "Cập nhật hồ sơ",
-    "Đề nghị thuê nhà ở",
-    "XN điểm rèn luyện",
-    "Đánh giá Rèn luyện"
-    ];
+
   final List<Widget> requestWidgets = [
     const Request1(),
     const Request2(),
@@ -65,13 +53,14 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
     const Request12(),
     const Request13(),
     const Request14(),
-    const Request3(),
-    const Request1(),
-    const Request2(),
-    const Request3(),
-    const Request1(),
-    const Request2(),
-    const Request3(),
+    const Request15(),
+    const Request16(),
+    const Request17(),
+    const Request18(),
+    const Request19(),
+    const Request20(),
+    const Request21(),
+    const Request22(),
   ];
   late String? selectedItem;
 
@@ -83,11 +72,9 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: createRequestScreenBody(),
-      ),
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: createRequestScreenBody(),
     );
   }
 
@@ -147,7 +134,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
                 flex: 4,
                 child: ElevatedButton.icon(
                   
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: const Icon(MyIcons.arrowDown),
                   label: Text(selectedItem ?? "Chọn yêu cầu"),
                   onPressed: () async {
                     final String? data = await openBottomSheet(selectedItem);
@@ -175,7 +162,7 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
         Expanded(
           child: Builder(builder: (BuildContext context) {
             if (selectedItem != null) {
-              int index = requests.indexOf(selectedItem!);
+              int index = ConstantList.requests.indexOf(selectedItem!);
               return requestWidgets[index];
             } else {
               return Padding(
@@ -201,7 +188,8 @@ class CreateRequestScreenState extends State<CreateRequestScreen> {
       ),
       builder: (context) {
         return BottomSheetWithList(
-          list: requests,
+          title: "Yêu cầu",
+          list: ConstantList.requests,
           selectedItem: selectedItemChanged,
         );
       },

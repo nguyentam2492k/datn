@@ -1,8 +1,16 @@
-import 'package:datn/widgets/custom_widgets/custom_date_picker.dart';
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/function/function.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/file/file_services.dart';
+import 'package:datn/widgets/custom_widgets/custom_date_range_picker.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_upload_file_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request11 extends StatefulWidget {
@@ -18,27 +26,56 @@ class Request11State extends State<Request11> {
 
   final GlobalKey<FormBuilderState> _request11FormKey = GlobalKey<FormBuilderState>();
 
-  Map<String, dynamic> formData = {};
-
   List<PlatformFile> files = [];
 
   bool isFileAdded = true;
 
   bool isFormValid() {
-    if (_request11FormKey.currentState!.saveAndValidate() && files.isNotEmpty) {
+    if (_request11FormKey.currentState!.validate() && files.isNotEmpty) {
+      if (!isListFileOK(files)) {
+        MyToast.showToast(
+          isError: true,
+          errorText: "File lỗi"
+        );
+        return false;
+      }
       return true;
     }
     return false;
-    // return files.isNotEmpty ? true : false;
   }
 
-  void sendFormData() {
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    final dateTimeRange = _request11FormKey.currentState?.fields['date_range']?.value as DateTimeRange;
+    _request11FormKey.currentState?.removeInternalFieldValue("date_range");
+    _request11FormKey.currentState?.save();
+    
+    formData.addAll({
+      'start_date': dateTimeRange.start.toString(),
+      'end_date': dateTimeRange.end.toString()
+    });
+
     formData.addAll(_request11FormKey.currentState!.value);
-      
-    // List<File> listFiles = files.map((file) => File(file.path!)).toList();
-    List<String> listFiles = files.map((file) => file.name).toList();
-    formData['file'] = listFiles;
-    debugPrint(formData.toString());
+
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithFiles(requestType: RequestType.timeLimitedAbsence, data: formData, files: files).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+
   }
 
   @override
@@ -53,16 +90,10 @@ class Request11State extends State<Request11> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên tải mẫu đơn, điền đầy đủ thông tin, "
-                    "xin ý kiến của phụ huynh, xác nhận của chính quyền địa phương, "
-                    "scan đơn, bảng điểm học tập và các giấy tờ khác "
-                    "đính kèm vào yêu cầu; Sinh viên mang bản gốc "
-                    "hồ sơ lên phòng 104-E3 để nộp và hoàn thành "
-                    "các khoản học phí (trong thời gian 03 ngày kể từ ngày tạo yêu "
-                    "cầu). Sau 05 ngày sinh viên lên nhận Quyết định.",
+                  Text(
+                    ConstantString.request11Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -79,21 +110,41 @@ class Request11State extends State<Request11> {
                           decorationColor: Colors.blue,
                         ),
                       ),
-                      onTap: (){debugPrint("Tap Mau don");},
+                      onTap: () async {
+                        await FileServices().actionDownloadFileWithUrl(
+                          context, 
+                          url: ConstantString.request11DocumentUrl
+                        );
+                      },
                     ),
                   ),
                   const Divider(thickness: 0.4,),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         flex: 1,
-                        child: Text(
-                          "Thời gian nghỉ:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Thời gian nghỉ:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                ),
+                              ),
+                            ]
+                          )
                         ),
                       ),
+                      const SizedBox(width: 4,),
                       Expanded(
                         flex: 3,
                         child: CustomFormBuilderDateRangePicker(
@@ -117,11 +168,8 @@ class Request11State extends State<Request11> {
                       }
                       return null;
                     },
-                    // onChanged: (value) {
-                    //   setState(() {});
-                    // },
                   ),
-                  const SizedBox(height: 5,),
+                  const SizedBox(height: 8,),
                   CustomUploadFileRowWidget(
                     files: files, 
                     isFileAdded: isFileAdded, 
@@ -134,25 +182,12 @@ class Request11State extends State<Request11> {
               ),
             )
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () {
-                  isFileAdded = files.isEmpty ? false : true;
-                  isFormValid() ? sendFormData() : null;
-                  setState(() {});
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
+          SendRequestButton(
+            onPressed: () async {
+              isFileAdded = files.isEmpty ? false : true;
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            }, 
           )
         ],
       )

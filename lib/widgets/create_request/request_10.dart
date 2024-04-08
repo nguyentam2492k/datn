@@ -1,6 +1,12 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
 import 'package:datn/widgets/custom_widgets/numeric_step_button.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request10 extends StatefulWidget {
@@ -38,14 +44,36 @@ class Request10State extends State<Request10> {
       numberOfEngVer != null;
   }
 
-  void sendFormData() {
-    formData.addAll(_request10FormKey.currentState!.value);
+  Future<void> sendFormData() async {
+
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
     formData.addAll({
-      'quantity_viet': numberOfVietVer,
-      'quantity_eng': numberOfEngVer,
+      "number_of_copies_vi": numberOfVietVer,
+      "number_of_copies_en": numberOfEngVer
     });
-    debugPrint(formData.toString());
+    formData.addAll(_request10FormKey.currentState!.value);
+
+    await EasyLoading.show(status: "Đang gửi");
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.tempCertificate).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }
+
   }
+
 
   @override
   void initState() {
@@ -65,13 +93,10 @@ class Request10State extends State<Request10> {
               child: Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên chỉ có thể xin chứng nhận sau "
-                    "khi đã có Quyết định công nhận tốt nghiệp, "
-                    "điền đầy đủ thông tin bên dưới, đến Phòng 104-E3 "
-                    "nhận kết quả sau 15h chiều thứ Tư và thứ Sáu hàng tuần.",
+                  Text(
+                    ConstantString.request10Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -157,24 +182,12 @@ class Request10State extends State<Request10> {
               ),
             )
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isFormValid() ? Colors.blue : Colors.grey,
-                  foregroundColor: Colors.white
-                ),
-                onPressed: () { 
-                  (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? sendFormData() : null;
-                }, 
-                label: const Text("Gửi yêu cầu"),
-              ),
-            ),
-          )
+          SendRequestButton(
+            isFormValid: isFormValid(),
+            onPressed: () async {
+              (isFormValid() && _request10FormKey.currentState!.saveAndValidate()) ? await sendFormData() : null;
+            },
+          ),
         ],
       )
     );

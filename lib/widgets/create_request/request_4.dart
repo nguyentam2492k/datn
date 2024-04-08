@@ -1,5 +1,11 @@
+import 'package:datn/constants/constant_string.dart';
+import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/custom_textfield_row_widget.dart';
+import 'package:datn/widgets/custom_widgets/send_request_button.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Request4 extends StatefulWidget {
@@ -17,8 +23,32 @@ class Request4State extends State<Request4> {
 
   DateTime currentDate = DateTime.now();
 
-  void sendFormData() {
-    _request4FormKey.currentState!.saveAndValidate() ? debugPrint(_request4FormKey.currentState!.value.toString()) : null;
+  bool isFormValid() {
+    return _request4FormKey.currentState!.saveAndValidate();
+  }
+
+  Future<void> sendFormData() async {
+    APIService apiService = APIService();
+    Map<String, dynamic> formData = {};
+
+    await EasyLoading.show(status: "Đang gửi");
+    formData.addAll(_request4FormKey.currentState!.value);
+
+    try {
+      await apiService.postDataWithoutFiles(formData: formData, requestType: RequestType.reviewExam).then((value) async {
+        await EasyLoading.dismiss();
+        MyToast.showToast(
+          text: "Gửi xong"
+        );
+      });
+    } catch (e) {
+      await EasyLoading.dismiss();
+      MyToast.showToast(
+        isError: true,
+        errorText: "LỖI: ${e.toString()}"
+      );
+    }    
+      
   }
 
   @override
@@ -34,18 +64,17 @@ class Request4State extends State<Request4> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   const SizedBox(height: 10,),
-                  const Text(
-                    "Sinh viên điền đầy đủ thông tin vào các trường bên dưới, "
-                    "kết quả được thông báo trên Website khi hoàn tất",
+                  Text(
+                    ConstantString.request4Note,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Divider(thickness: 0.4,),
                   CustomTextFieldRowWidget(
                     labelText: "Học phần xin xem lại:", 
-                    name: 'subject_review',
+                    name: 'subject_name',
                     validator: (value) {
                       if (value == null || value.isEmpty ) {
                         return "Điền đầy đủ thông tin!";
@@ -75,7 +104,7 @@ class Request4State extends State<Request4> {
                   const SizedBox(height: 10,),
                   CustomTextFieldRowWidget(
                     labelText: "Năm học:", 
-                    name: 'year',
+                    name: 'school_year',
                     initialValue: (currentDate.month > 6) ? "${currentDate.year}-${currentDate.year + 1}" : "${currentDate.year - 1}-${currentDate.year}",
                     isShort: true,
                     validator: (value) {
@@ -108,25 +137,12 @@ class Request4State extends State<Request4> {
               ),
             ),
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white
-                  ),
-                  onPressed: () {
-                    sendFormData();
-                    setState(() {});
-                  }, 
-                  label: const Text("Gửi yêu cầu"),
-                ),
-              ),
-            )
+          SendRequestButton(
+            onPressed: () async {
+              isFormValid() ? await sendFormData() : null;
+              setState(() {});
+            },
+          )
         ],
       ),
     );

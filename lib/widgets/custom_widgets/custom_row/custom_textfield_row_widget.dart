@@ -7,8 +7,14 @@ class CustomTextFieldRowWidget extends StatefulWidget {
   final int maxLines;
   final String? initialValue;
   final bool isShort;
+  final bool isImportant;
+  final TextInputType? keyboardType;
+  final String? hintText;
+  final CrossAxisAlignment crossAxisAlignment;
+  final bool autoFocus;
   final FormFieldValidator<String?>? validator;
   final ValueChanged<String?>? onChanged;
+  final FormFieldSetter<String?>? onSaved;
 
   const CustomTextFieldRowWidget({
     super.key, 
@@ -16,9 +22,15 @@ class CustomTextFieldRowWidget extends StatefulWidget {
     required this.name, 
     this.maxLines = 1, 
     this.isShort = false,
+    this.isImportant = true,
     this.validator,
     this.onChanged, 
-    this.initialValue,
+    this.onSaved,
+    this.initialValue, 
+    this.keyboardType,
+    this.hintText, 
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.autoFocus = false
   });
 
   @override
@@ -34,24 +46,43 @@ class CustomTextFieldRowWidgetState extends State<CustomTextFieldRowWidget> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: widget.crossAxisAlignment,
       children: [
         Expanded(
           flex: 1,
-          child: Text(
-            widget.labelText,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: widget.labelText,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
+                  ),
+                ),
+                TextSpan(
+                  text: widget.isImportant ? " *" : '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red
+                  ),
+                ),
+              ]
+            )
+          )
         ),
+        const SizedBox(width: 4,),
         Expanded(
           flex: widget.isShort ? 2 : 4,
           child: CustomFormBuilderTextField(
             name: widget.name,
             maxLines: widget.maxLines,
             initialValue: widget.initialValue,
+            keyboardType: widget.keyboardType,
+            autoFocus: widget.autoFocus,
             validator: widget.validator,
             onChanged: widget.onChanged,
+            onSaved: widget.onSaved,
           ),
         ),
         Visibility(
