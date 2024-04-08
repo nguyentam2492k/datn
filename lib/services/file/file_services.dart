@@ -116,21 +116,26 @@ class FileServices {
 
   Future<bool> checkStoragePermission(BuildContext context) async {
     DeviceInfoPlugin plugin = DeviceInfoPlugin();
-    AndroidDeviceInfo android = await plugin.androidInfo;
 
     bool permissionStatus;
 
-    if (android.version.sdkInt >= 33) {
-      final photoStatus = await Permission.photos.request();
-      final videoStatus = await Permission.videos.request();
-      final audioStatus = await Permission.audio.request();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo android = await plugin.androidInfo;
+      if (android.version.sdkInt >= 33) {
+        final photoStatus = await Permission.photos.request();
+        final videoStatus = await Permission.videos.request();
+        final audioStatus = await Permission.audio.request();
 
-      permissionStatus = photoStatus == PermissionStatus.granted
-                        && videoStatus == PermissionStatus.granted
-                        && audioStatus == PermissionStatus.granted;
+        permissionStatus = photoStatus == PermissionStatus.granted
+                          && videoStatus == PermissionStatus.granted
+                          && audioStatus == PermissionStatus.granted;
+      } else {
+        final storageStatus = await Permission.storage.request();
+        permissionStatus = (storageStatus == PermissionStatus.granted);
+      }
     } else {
       final storageStatus = await Permission.storage.request();
-      permissionStatus = (storageStatus == PermissionStatus.granted);
+      permissionStatus = storageStatus == PermissionStatus.granted;
     }
 
     if (!permissionStatus && context.mounted) {
@@ -165,7 +170,6 @@ class FileServices {
           );
         }
       );
-      // await checkStoragePermission();
     }
 
     return permissionStatus;
@@ -175,8 +179,10 @@ class FileServices {
     var permissionReady = await checkStoragePermission(buildContext);
 
     if (permissionReady) {
+      final externalDir = Platform.isAndroid
+        ? await getExternalStorageDirectory() //FOR ANDROID
+        : await getApplicationDocumentsDirectory(); //FOR IOS
 
-      final externalDir = await getExternalStorageDirectory();
       final fullFilename = getFileNameFromUrl(url);
       var savePath = "${externalDir!.path}/$fullFilename";
 

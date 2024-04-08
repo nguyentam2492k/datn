@@ -51,5 +51,31 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
-	</dict>
+
+		<!-- Open URL ios -->
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>https</string>
+			<string>http</string>
+		</array>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+
+		<!-- Get access to document ios -->
+		<key>LSSupportsOpeningDocumentsInPlace</key>
+		<true/>
+		<key>UIFileSharingEnabled</key>
+		<true/>
+
+		<!-- Permission options for the `mediaLibrary` group -->
+		<key>NSAppleMusicUsageDescription</key>
+			<string>Music!</string>
+		<key>kTCCServiceMediaLibrary</key>
+			<string>media</string>
+
+		<!-- Permission options for the `photos` group -->
+		<!-- <key>NSPhotoLibraryUsageDescription</key>
+			<string>photos</string> -->
+
+		</dict>
 </plist>
