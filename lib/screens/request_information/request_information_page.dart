@@ -2,7 +2,6 @@ import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -34,19 +33,6 @@ class RequestInformationPageState extends State<RequestInformationPage> {
     index = widget.index;
   }
 
-  Icon getStatusIcon(int? statusId) {
-    switch (statusId) {
-      case 2: //Đã xong
-        return const Icon(Icons.check_circle, size: 25, color: Color(0xFF21A626),);
-      case 3: //Đã huỷ
-        return const Icon(CupertinoIcons.clear_thick_circled, size: 25, color: Colors.red,);
-      case 1: //Đang xử lý
-        return const Icon(CupertinoIcons.exclamationmark_circle_fill, size: 25, color: Color(0xFFFFBF00),);
-      default:
-        return const Icon(Icons.question_mark, size: 25, color: Colors.grey,);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +47,7 @@ class RequestInformationPageState extends State<RequestInformationPage> {
           fontWeight: FontWeight.bold
         ),
         elevation: 0,
+        scrolledUnderElevation: 0,
         shape: const Border(
           bottom: BorderSide(
             color: Colors.grey,
@@ -95,7 +82,7 @@ class RequestInformationPageState extends State<RequestInformationPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          getStatusIcon(requestInfo.statusId),
+                          getStatusIcon(statusId: requestInfo.statusId),
                           const SizedBox(width: 8,),
                           Text(requestInfo.status, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: getColor(requestInfo.statusId)),),
                         ],

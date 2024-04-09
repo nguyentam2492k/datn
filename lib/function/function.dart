@@ -4,6 +4,7 @@ import 'package:datn/constants/my_icons.dart';
 import 'package:datn/model/request/request_information_model.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
@@ -72,6 +73,19 @@ Color getColor(int? statusId) {
       return const Color(0xFFFFBF00);
     default:
       return Colors.grey;
+  }
+}
+
+Icon getStatusIcon({int? statusId, double size = 25}) {
+  switch (statusId) {
+    case 2: //Đã xong
+      return Icon(Icons.check_circle, size: size, color: Color(0xFF21A626),);
+    case 3: //Đã huỷ
+      return Icon(CupertinoIcons.clear_thick_circled, size: size, color: Colors.red,);
+    case 1: //Đang xử lý
+      return Icon(CupertinoIcons.exclamationmark_circle_fill, size: size, color: Color(0xFFFFBF00),);
+    default:
+      return Icon(Icons.question_mark, size: size, color: Colors.grey,);
   }
 }
 

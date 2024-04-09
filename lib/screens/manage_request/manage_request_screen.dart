@@ -118,6 +118,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
         fontWeight: FontWeight.bold
       ),
       elevation: 0,
+      scrolledUnderElevation: 0,
       shape: const Border(
         bottom: BorderSide(
           color: Colors.grey,
