@@ -220,12 +220,11 @@ class APIService {
     }
   }
 
+  //TODO: STUDENT PROFILE
   Future<StudentProfile> getStudentInformation() async {
     var accessToken = await secureStorageServices.getAccessToken();
 
-    // String baseUrl = "http://192.168.1.5:3000/user";
-    String baseUrl = "http://192.168.0.183:3000/user";
-    Uri url = Uri.parse(baseUrl);
+    Uri url = Uri.parse("$host/profile");
 
     try {
       var response = await dio.getUri(
@@ -246,7 +245,7 @@ class APIService {
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.data);
 
-        var requestData = responseBody;
+        var requestData = responseBody['data']['user'];
         
         return StudentProfile.fromJson(requestData);
       } else {
@@ -258,12 +257,9 @@ class APIService {
     }
   }
 
-
-  //KHÔNG GỬI ĐC MULTIPART/FORM-DATA LÊN API, DO SERVER KHÔNG CHẤP NHẬN CONTENT-TYPE NÀY, THỬ TRÊN POSTMAN CŨNG VẬY
   Future<void> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
     var accessToken = await secureStorageServices.getAccessToken();
-    // Uri url = Uri.parse("http://192.168.1.5:3000/user");
-    Uri url = Uri.parse("http://192.168.1.5:3000/user");
+    Uri url = Uri.parse("$host/profile?_method=PUT");
 
     Map<String, dynamic> updateData = Map.from(profile);
 
@@ -278,22 +274,21 @@ class APIService {
       );
 
       updateData.addAll({
-        "image": fileToUpdate
+        "image_file": fileToUpdate
       });
     } else {
       updateData.addAll({
-        "image": null
+        "image_file": null
       });
     }
 
     final formData = FormData.fromMap(updateData, ListFormat.multiCompatible);
 
     try {
-      final response = await dio.requestUri(
+      final response = await dio.postUri(
         url,
         data: formData,
         options: Options(
-          method: "PUT",
           headers: <String, String>{ 
             'Content-Type': 'multipart/form-data; charset=UTF-8',
             'Accept': 'multipart/form-data; charset=UTF-8',
@@ -305,8 +300,6 @@ class APIService {
           },
         )
       );
-
-      print(response.data);
 
       if (response.statusCode != 200) {
         throw response.statusMessage.toString();

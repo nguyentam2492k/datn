@@ -16,12 +16,7 @@ class CustomAddressRowWidget extends StatefulWidget {
   final FormFieldValidator<dynamic>? provinceValidator;
   final FormFieldValidator<dynamic>? districtValidator;
   final FormFieldValidator<dynamic>? wardValidator;
-  final ValueChanged<dynamic>? provinceChanged;
-  final ValueChanged<dynamic>? districtChanged;
-  final ValueChanged<dynamic>? wardChanged;
-  final String? initialProvinceValue;
-  final String? initialDistrictValue;
-  final String? initialWardValue;
+  final Address? initialAddress;
   final List<Province> provinces;
 
   const CustomAddressRowWidget({
@@ -33,13 +28,8 @@ class CustomAddressRowWidget extends StatefulWidget {
     required this.wardName, 
     this.provinceValidator, 
     this.districtValidator, 
-    this.wardValidator, 
-    this.provinceChanged, 
-    this.districtChanged, 
-    this.wardChanged, 
-    this.initialProvinceValue, 
-    this.initialDistrictValue, 
-    this.initialWardValue,
+    this.wardValidator,
+    this.initialAddress,
     required this.provinces,
     });
   
@@ -52,10 +42,6 @@ class CustomAddressRowWidget extends StatefulWidget {
 class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
 
   late GlobalKey<FormBuilderState> _formKey;
-
-  late String? initialProvinceValue;
-  late String? initialDistrictValue;
-  late String? initialWardValue;
 
   late String provinceName;
   late String districtName;
@@ -73,42 +59,9 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
     color: Colors.black
   );
 
-  InputDecoration buttonDecoration(String labelText) {
-    return InputDecoration(
-      labelText: labelText,
-      labelStyle: const TextStyle(
-        fontSize: 13,
-        color: Colors.grey,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(
-          width: 0.5,
-          color: Colors.grey,
-        ),
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(
-          color: Colors.grey,
-          width: 0.5,
-        ),
-      ),
-      errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      focusedErrorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-    );
-  }
-
   provinceChanged({required String provinceName}) {
     var provinceIndex = provinces.indexWhere((element) => element.name == provinceName);
-    if ((provinceName != selectedAddressChanged.value.province)) {
+    if (provinceName != selectedAddressChanged.value.province) {
       selectedAddressChanged.value = Address(
         province: provinceName,
         district: null,
@@ -141,12 +94,12 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
 
   setInitAddressData() {
     provinces = widget.provinces;
-    if (widget.initialProvinceValue != null) {
-      provinceChanged(provinceName: widget.initialProvinceValue!);
-      if (widget.initialDistrictValue != null) {
-        districtChanged(districtName: widget.initialDistrictValue!);
-        if (widget.initialWardValue != null) {
-          wardChanged(wardName: widget.initialWardValue!);
+    if (widget.initialAddress?.province != null) {
+      provinceChanged(provinceName: widget.initialAddress!.province!);
+      if (widget.initialAddress?.district != null) {
+        districtChanged(districtName: widget.initialAddress!.district!);
+        if (widget.initialAddress?.ward != null) {
+          wardChanged(wardName: widget.initialAddress!.ward!);
         }
       }
     }
@@ -156,21 +109,17 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
   void initState() {
     super.initState();
     _formKey = widget.formKey;
-    setInitAddressData();
     
     provinceName = widget.provinceName;
     districtName = widget.districtName;
     wardName = widget.wardName;
 
-    initialProvinceValue = widget.initialProvinceValue;
-    initialDistrictValue = widget.initialDistrictValue;
-    initialWardValue = widget.initialWardValue;
+    setInitAddressData();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    // print(widget.formKey!.currentState!.value);
     return ValueListenableBuilder(
       valueListenable: selectedAddressChanged,
       builder: (context, selectedAddress, child) {
@@ -267,6 +216,39 @@ class CustomAddressRowWidgetState extends State<CustomAddressRowWidget> {
           ],
         );
       },
+    );
+  }
+  
+  InputDecoration buttonDecoration(String labelText) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: const TextStyle(
+        fontSize: 13,
+        color: Colors.grey,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(
+          width: 0.5,
+          color: Colors.grey,
+        ),
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(
+          color: Colors.grey,
+          width: 0.5,
+        ),
+      ),
+      errorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      focusedErrorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
     );
   }
 }

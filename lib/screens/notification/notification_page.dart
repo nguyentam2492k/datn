@@ -73,7 +73,7 @@ class NotificationPageState extends State<NotificationPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
+                              SizedBox(
                                 height: 28,
                                 width: 28,
                                 child: getStatusIcon(statusId: 2, size: 28)

@@ -79,13 +79,13 @@ Color getColor(int? statusId) {
 Icon getStatusIcon({int? statusId, double size = 25}) {
   switch (statusId) {
     case 2: //Đã xong
-      return Icon(Icons.check_circle, size: size, color: Color(0xFF21A626),);
+      return Icon(MyIcons.checkFill, size: size, color: const Color(0xFF21A626),);
     case 3: //Đã huỷ
-      return Icon(CupertinoIcons.clear_thick_circled, size: size, color: Colors.red,);
+      return Icon(MyIcons.closeFill, size: size, color: Colors.red,);
     case 1: //Đang xử lý
-      return Icon(CupertinoIcons.exclamationmark_circle_fill, size: size, color: Color(0xFFFFBF00),);
+      return Icon(MyIcons.chamthanFill, size: size, color: const Color(0xFFFFBF00),);
     default:
-      return Icon(Icons.question_mark, size: size, color: Colors.grey,);
+      return Icon(MyIcons.questionMark, size: size, color: Colors.grey,);
   }
 }
 

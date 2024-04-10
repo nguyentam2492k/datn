@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
+import 'package:datn/model/address/address.dart';
 import 'package:datn/model/student/student_profile.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/custom_row/text_row.dart';
@@ -34,7 +35,6 @@ class Request18 extends StatefulWidget {
 
 class Request18State extends State<Request18> {
 
-  // final GlobalKey<FormBuilderState> _request18FormKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderState> _personalInformationFormKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderState> _familyInformationFormKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderState> _otherInformationFormKey = GlobalKey<FormBuilderState>();
@@ -81,17 +81,14 @@ class Request18State extends State<Request18> {
     formData.addAll(_personalInformationFormKey.currentState!.value);
     formData.addAll(_familyInformationFormKey.currentState!.value);
     formData.addAll(_otherInformationFormKey.currentState!.value);
-    // print("Personal Information: ${_personalInformationFormKey.currentState?.value}");
-    // print("Family Information: ${_familyInformationFormKey.currentState?.value}");
-    // print("Other Information: ${_otherInformationFormKey.currentState?.value}");
 
-    await EasyLoading.show(status: "Đang gửi");
+    await EasyLoading.show(status: "Đang lưu");
 
     try {
       await apiService.updateStudentProfile(profile: formData, image: file).then((value) async {
         await EasyLoading.dismiss();
         MyToast.showToast(
-          text: "Gửi xong"
+          text: "Lưu thành công"
         );
       });
     } catch (e) {
@@ -120,6 +117,7 @@ class Request18State extends State<Request18> {
       future: Future.wait([getStudentInformation(), getAddressData()]),
       builder:(context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          
           return Column(
             children: [
               Expanded(
@@ -141,13 +139,14 @@ class Request18State extends State<Request18> {
                       FormBuilder(
                         key: _personalInformationFormKey,
                         initialValue: {
-                          'identify_date': getDateFromString(studentProfile.identifyDate),
+                          'identity_date': getDateFromString(studentProfile.identityDate),
                           'admission_date': getDateFromString(studentProfile.admissionDate)
                         },
                         child: ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
+                          maintainState: true,
                           title: const Text(
                             "Thông tin cá nhân",
                             style: TextStyle(
@@ -177,14 +176,15 @@ class Request18State extends State<Request18> {
                       FormBuilder(
                         key: _familyInformationFormKey,
                         initialValue: {
-                          'household_birthdate': getDateFromString(studentProfile.householdBirthdate),
-                          'father_birthdate': getDateFromString(studentProfile.fatherBirthdate),
-                          'mother_birthdate': getDateFromString(studentProfile.motherBirthdate),
+                          'householder_dob': getDateFromString(studentProfile.householdBirthdate),
+                          'father_dob': getDateFromString(studentProfile.fatherBirthdate),
+                          'mother_dob': getDateFromString(studentProfile.motherBirthdate),
                         },
                         child: ExpansionTile(
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
+                          maintainState: true,
                           title: const Text(
                             "Thông tin gia đình",
                             style: TextStyle(
@@ -212,6 +212,7 @@ class Request18State extends State<Request18> {
                           shape: const Border(),
                           tilePadding: EdgeInsetsDirectional.zero,
                           initiallyExpanded: true,
+                          maintainState: true,
                           title: const Text(
                             "Thông tin khác",
                             style: TextStyle(
@@ -362,31 +363,37 @@ class Request18State extends State<Request18> {
   }
 
   Widget personalAddressWidget() {
+    var initAddress = Address(
+      province: studentProfile.tinhKhaisinh,
+      district: studentProfile.huyenKhaisinh,
+      ward: studentProfile.xaKhaisinh
+    );
+
     return Column(
       children: [
         const SizedBox(height: 10,),
         CustomAddressRowWidget(
           formKey: _personalInformationFormKey,
           labelText: "Nơi khai sinh:",
-          provinceName: 'tinh_khaisinh', 
-          districtName: 'huyen_khaisinh', 
-          wardName: 'xa_khaisinh',
+          provinceName: 'birth_city', 
+          districtName: 'birth_district', 
+          wardName: 'birth_ward',
           provinces: provinces,
-          initialProvinceValue: studentProfile.tinhKhaisinh,
-          initialDistrictValue: studentProfile.huyenKhaisinh,
-          initialWardValue: studentProfile.xaKhaisinh,
+          initialAddress: initAddress,
         ),
         const SizedBox(height: 15,),
         CustomAddressRowWidget(
           formKey: _personalInformationFormKey,
           labelText: "Hộ khẩu thường chú:", 
-          provinceName: 'tinh_thuongtru', 
-          districtName: 'huyen_thuongtru', 
-          wardName: 'xa_thuongtru',
+          provinceName: 'residence_city', 
+          districtName: 'residence_district', 
+          wardName: 'residence_ward',
           provinces: provinces,
-          initialProvinceValue: studentProfile.tinhThuongtru,
-          initialDistrictValue: studentProfile.huyenThuongtru,
-          initialWardValue: studentProfile.xaThuongtru,
+          initialAddress: Address(
+            province: studentProfile.tinhThuongtru,
+            district: studentProfile.huyenThuongtru,
+            ward: studentProfile.xaThuongtru
+          ),
         )
       ],
     );
@@ -428,8 +435,8 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: mediumConstraints,
                 child: CustomFormBuilderTextField(
-                  name: 'identify_id',
-                  initialValue: studentProfile.identifyId,
+                  name: 'identity_number',
+                  initialValue: studentProfile.identityId,
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty ) {
@@ -444,7 +451,7 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDateTimePicker(
-                  name: 'identify_date',
+                  name: 'identity_date',
                   inputType: InputType.date,
                   validator: (value) {
                     if (value == null) {
@@ -459,8 +466,8 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDropdown(
-                  name: 'identify_address',
-                  initialValue: studentProfile.identifyAddress,
+                  name: 'identity_place',
+                  initialValue: studentProfile.identityAddress,
                   items: provinces
                     .map((province) => DropdownMenuItem(
                       value: province.name, 
@@ -504,7 +511,7 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderTextField(
-                  name: 'phone_contact',
+                  name: 'phone_number',
                   initialValue: studentProfile.phoneContact,
                   keyboardType: TextInputType.phone,
                   style: customTextStyle,
@@ -514,7 +521,7 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: mediumConstraints,
                 child: CustomFormBuilderTextField(
-                  name: 'email_contact',
+                  name: 'email',
                   initialValue: studentProfile.emailContact,
                   keyboardType: TextInputType.emailAddress,
                   style: customTextStyle,
@@ -550,7 +557,7 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDropdown(
-                  name: 'ethnicity',
+                  name: 'ethnic',
                   initialValue: studentProfile.ethnicity,
                   items: ConstantList.ethnics
                     .map((ethnic) => DropdownMenuItem(
@@ -562,6 +569,10 @@ class Request18State extends State<Request18> {
                       ),
                     ))
                     .toList(),
+                  valueTransformer: (value) {
+                    final ethnicIndex = ConstantList.ethnics.indexOf(value!) + 1;
+                    return ethnicIndex;
+                  },
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Dân tộc"),
                 ),
@@ -581,6 +592,10 @@ class Request18State extends State<Request18> {
                       ),
                     ))
                     .toList(),
+                  valueTransformer: (value) {
+                    final religionIndex = ConstantList.religions.indexOf(value!) + 1;
+                    return religionIndex;
+                  },
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Tôn giáo"),
                 ),
@@ -622,6 +637,10 @@ class Request18State extends State<Request18> {
                   ),
                 ))
                 .toList(),
+              valueTransformer: (value) {
+                final admissionCodeIndex = ConstantList.admissionCodes.indexOf(value!) + 1;
+                return admissionCodeIndex;
+              },
               style: customTextStyle,
               decoration: customDecoration(hintText: "Chọn mã xét tuyển"),
             ),
@@ -678,7 +697,7 @@ class Request18State extends State<Request18> {
           child: Tooltip(
             message: "Nhập đủ cả phần chữ và phần số",
             child: CustomFormBuilderTextField(
-              name: 'health_insurance_id',
+              name: 'health_insurance_code',
               initialValue: studentProfile.healthInsuranceId,
               style: customTextStyle,
               decoration: customDecoration(labelText: "Mã bảo hiểm y tế"),
@@ -708,7 +727,7 @@ class Request18State extends State<Request18> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomFormBuilderTextField(
-                name: 'household_name',
+                name: 'householder_name',
                 initialValue: studentProfile.householdName,
                 keyboardType: TextInputType.name,
                 style: customTextStyle,
@@ -718,14 +737,14 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDateTimePicker(
-                  name: 'household_birthdate',
+                  name: 'householder_dob',
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
                 ),
               ),
               const SizedBox(height: 5,),
               FormBuilderChoiceChip(
-                name: "household_gender", 
+                name: "householder_gender", 
                 initialValue: studentProfile.householdGender,
                 spacing: 5,
                 shape: const StadiumBorder(side: BorderSide(color: Colors.grey, width: 0.5)),
@@ -759,11 +778,15 @@ class Request18State extends State<Request18> {
                         ),
                       ),
                     ))
-                  .toList()
+                  .toList(),
+                valueTransformer: (value) {
+                  final genderIndex = ConstantList.genders.indexOf(value!) + 1;
+                  return genderIndex;
+                },                
               ),
               const SizedBox(height: 5,),
               CustomFormBuilderTextField(
-                name: 'relative_with_household',
+                name: 'householder_relationship',
                 initialValue: studentProfile.relativeWithHousehold,
                 keyboardType: TextInputType.name,
                 style: customTextStyle,
@@ -805,14 +828,14 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDateTimePicker(
-                  name: 'father_birthdate',
+                  name: 'father_dob',
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
                 ),
               ),
               const SizedBox(height: 10,),
               CustomFormBuilderTextField(
-                name: 'father_phone',
+                name: 'father_phone_number',
                 initialValue: studentProfile.fatherPhone,
                 keyboardType: TextInputType.phone,
                 style: customTextStyle,
@@ -861,14 +884,14 @@ class Request18State extends State<Request18> {
               Container(
                 constraints: shortConstraints,
                 child: CustomFormBuilderDateTimePicker(
-                  name: 'mother_birthdate',
+                  name: 'mother_dob',
                   style: customTextStyle,
                   decoration: customDecoration(labelText: "Ngày sinh", isDatePicker: true),
                 ),
               ),
               const SizedBox(height: 10,),
               CustomFormBuilderTextField(
-                name: 'mother_phone',
+                name: 'mother_phone_number',
                 initialValue: studentProfile.motherPhone,
                 keyboardType: TextInputType.phone,
                 style: customTextStyle,
@@ -917,7 +940,7 @@ class Request18State extends State<Request18> {
         Expanded(
           flex: 4,
           child: FormBuilderCheckboxGroup(
-            name: 'student_types', 
+            name: 'student_types[]', 
             initialValue: studentProfile.studentTypes,
             decoration: const InputDecoration(
               border: InputBorder.none,
@@ -933,6 +956,20 @@ class Request18State extends State<Request18> {
                 ),
               ))
               .toList(),
+            valueTransformer: (value) {
+              if (value != null && value.isNotEmpty) {
+                final valueIndex = value.map((e) => ConstantList.studentTypes.indexOf(e) + 1).toList();
+                valueIndex.sort();
+                return valueIndex;
+              } else {
+                return null;
+              }
+            },
+            onSaved: (newValue) {
+              if (newValue == null || newValue.isEmpty) {
+                _otherInformationFormKey.currentState?.fields['student_types[]']?.setValue(null);
+              }
+            },
           ),
         ),
       ]
@@ -955,7 +992,7 @@ class Request18State extends State<Request18> {
         Expanded(
           flex: 4,
           child: FormBuilderRadioGroup(
-            name: 'fee_types', 
+            name: 'tuition_fee_type', 
             initialValue: studentProfile.feeTypes,
             decoration: const InputDecoration(
               border: InputBorder.none,
@@ -970,6 +1007,10 @@ class Request18State extends State<Request18> {
                 ),
               ))
               .toList(),
+            valueTransformer: (value) {
+              final feeTypeIndex = ConstantList.feeTypes.indexOf(value!) + 1;
+              return feeTypeIndex;
+            },
           ),
         ),
       ]

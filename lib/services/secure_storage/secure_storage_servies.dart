@@ -1,5 +1,5 @@
 import 'package:datn/model/login/login_model.dart';
-import 'package:datn/model/login/user.dart';
+import 'package:datn/model/student/student_profile.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageServices {
@@ -71,7 +71,7 @@ class SecureStorageServices {
       return null;
     }
     
-    return LoginResponseModel(accessToken: accessToken, user: User(email: savedUserEmail, name: saveUserName, id: savedUserId));
+    return LoginResponseModel(accessToken: accessToken, user: StudentProfile(email: savedUserEmail, name: saveUserName, id: savedUserId));
   }
 
   Future<void> deleteSavedUserInfo() async {

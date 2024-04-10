@@ -1,8 +1,7 @@
-import 'package:datn/function/function.dart';
-
 class StudentProfile {
   String? name;
   String? id;
+  String? email;
   String? image;
   String? birthdate;
   String? gender;
@@ -13,9 +12,9 @@ class StudentProfile {
   String? tinhThuongtru;
   String? huyenThuongtru;
   String? xaThuongtru;
-  String? identifyId;
-  String? identifyDate;
-  String? identifyAddress;
+  String? identityId;
+  String? identityDate;
+  String? identityAddress;
   String? phoneContact;
   String? emailContact;
   String? ethnicity;
@@ -40,21 +39,22 @@ class StudentProfile {
   String? feeTypes;
 
   StudentProfile({
-    required this.name,
-    required this.id,
+    this.name,
+    this.id,
+    this.email,
     this.image,
-    required this.birthdate,
-    required this.gender,
-    required this.schoolCourse,
+    this.birthdate,
+    this.gender,
+    this.schoolCourse,
     this.tinhKhaisinh,
     this.huyenKhaisinh,
     this.xaKhaisinh,
     this.tinhThuongtru,
     this.huyenThuongtru,
     this.xaThuongtru,
-    this.identifyId,
-    this.identifyDate,
-    this.identifyAddress,
+    this.identityId,
+    this.identityDate,
+    this.identityAddress,
     this.phoneContact,
     this.emailContact,
     this.ethnicity,
@@ -80,87 +80,62 @@ class StudentProfile {
   });
   
   factory StudentProfile.fromJson(Map<String, dynamic> map) {
+    Map<String, dynamic> profile = map['profile'];
+
+    List<String> listStudentTypesString = [];
+    var listStudentTypes = profile["student_types"] as List?;
+
+    if (listStudentTypes != null && listStudentTypes.isNotEmpty) {
+      listStudentTypesString = listStudentTypes.map((studentType) {
+        return studentType['name'] as String;
+      }).toList();
+    }
+
     return StudentProfile(
       name: map['name'] as String?,
-      id: map['id'] as String?,
-      image: map['image'] as String?,
-      birthdate: map['birthdate'] as String?,
-      gender: map['gender'] as String?,
-      schoolCourse: map['school_course'] as String?,
-      tinhKhaisinh: map['tinh_khaisinh'] != null ? map['tinh_khaisinh'] as String : null,
-      huyenKhaisinh: map['huyen_khaisinh'] != null ? map['huyen_khaisinh'] as String : null,
-      xaKhaisinh: map['xa_khaisinh'] != null ? map['xa_khaisinh'] as String : null,
-      tinhThuongtru: map['tinh_thuongtru'] != null ? map['tinh_thuongtru'] as String : null,
-      huyenThuongtru: map['huyen_thuongtru'] != null ? map['huyen_thuongtru'] as String : null,
-      xaThuongtru: map['xa_thuongtru'] != null ? map['xa_thuongtru'] as String : null,
-      identifyId: map['identify_id'] != null ? map['identify_id'] as String : null,
-      identifyDate: map['identify_date'] != null ? map['identify_date'] as String : null,
-      identifyAddress: map['identify_address'] != null ? map['identify_address'] as String : null,
-      phoneContact: map['phone_contact'] != null ? map['phone_contact'] as String : null,
-      emailContact: map['email_contact'] != null ? map['email_contact'] as String : null,
-      ethnicity: map['ethnicity'] != null ? map['ethnicity'] as String : null,
-      religion: map['religion'] != null ? map['religion'] as String : null,
-      admissionCode: map['admission_code'] != null ? map['admission_code'] as String : null,
-      admissionDate: map['admission_date'] != null ? map['admission_date'] as String : null,
-      healthInsuranceId: map['health_insurance_id'] != null ? map['health_insurance_id'] as String : null,
-      householdName: map['household_name'] != null ? map['household_name'] as String : null,
-      householdBirthdate: map['household_birthdate'] != null ? map['household_birthdate'] as String : null,
-      householdGender: map['household_gender'] != null ? map['household_gender'] as String : null,
-      relativeWithHousehold: map['relative_with_household'] != null ? map['relative_with_household'] as String : null,
-      fatherName: map['father_name'] != null ? map['father_name'] as String : null,
-      fatherBirthdate: map['father_birthdate'] != null ? map['father_birthdate'] as String : null,
-      fatherPhone: map['father_phone'] != null ? map['father_phone'] as String : null,
-      fatherJob: map['father_job'] != null ? map['father_job'] as String : null,
-      motherName: map['mother_name'] != null ? map['mother_name'] as String : null,
-      motherBirthdate: map['mother_birthdate'] != null ? map['mother_birthdate'] as String : null,
-      motherPhone: map['mother_phone'] != null ? map['mother_phone'] as String : null,
-      motherJob: map['mother_job'] != null ? map['mother_job'] as String : null,
-      mailingAddress: map['mailing_address'] != null ? map['mailing_address'] as String : null,
-      studentTypes: map['student_types'] != null ? toListString(map["student_types"]) : null,
-      feeTypes: map['fee_types'] != null ? map['fee_types'] as String : null,
+      id: map['code'] as String?,
+      email: map['email'] as String?,
+      birthdate: map['dob'] as String?,
+      gender: map['gender']['name'] as String?,
+      schoolCourse: map['course'] as String?,
+      image: profile['image_file'] as String?,
+
+      tinhKhaisinh: profile['birth_city'] as String?,
+      huyenKhaisinh: profile['birth_district'] as String?,
+      xaKhaisinh: profile['birth_ward'] as String?,
+      tinhThuongtru: profile['residence_city'] as String?,
+      huyenThuongtru: profile['residence_district'] as String?,
+      xaThuongtru: profile['residence_ward'] as String?,
+      identityId: profile['identity_number'] as String?,
+      identityDate: profile['identity_date'] as String?,
+      identityAddress: profile['identity_place'] as String?,
+      phoneContact: profile['phone_number'] as String?,
+      emailContact: profile['email'] as String?,
+      ethnicity: profile['ethnic']['name'] as String?,
+      religion: profile['religion']['name'] as String?,
+      admissionCode: profile['admission_code']['name'] as String?,
+      admissionDate: profile['admission_date'] as String?,
+      healthInsuranceId: profile['health_insurance_code'] as String?,
+      householdName: profile['householder_name'] as String?,
+      householdBirthdate: profile['householder_dob'] as String?,
+      householdGender: profile['householder_gender']['name'] as String?,
+      relativeWithHousehold: profile['householder_relationship'] as String?,
+      fatherName: profile['father_name'] as String?,
+      fatherBirthdate: profile['father_dob'] as String?,
+      fatherPhone: profile['father_phone_number'] as String?,
+      fatherJob: profile['father_job'] as String?,
+      motherName: profile['mother_name'] as String?,
+      motherBirthdate: profile['mother_dob'] as String?,
+      motherPhone: profile['mother_phone_number'] as String?,
+      motherJob: profile['mother_job'] as String?,
+      mailingAddress: profile['mailing_address'] as String?,
+      studentTypes: listStudentTypesString,
+      feeTypes: profile['tuition_fee_type']['name'] as String?,
     );
   }
 
-  // Map<String, dynamic> toMap() {
-  //   return <String, dynamic>{
-  //     'name': name,
-  //     'id': id,
-  //     'image': image,
-  //     'birthdate': birthdate,
-  //     'gender': gender,
-  //     'school_course': schoolCourse,
-  //     'tinh_khaisinh': tinhKhaisinh,
-  //     'huyen_khaisinh': huyenKhaisinh,
-  //     'xa_khaisinh': xaKhaisinh,
-  //     'tinh_thuongtru': tinhThuongtru,
-  //     'huyen_thuongtru': huyenThuongtru,
-  //     'xa_thuongtru': xaThuongtru,
-  //     'identify_id': identifyId,
-  //     'identify_date': identifyDate,
-  //     'identify_address': identifyAddress,
-  //     'phone_contact': phoneContact,
-  //     'email_contact': emailContact,
-  //     'ethnicity': ethnicity,
-  //     'religion': religion,
-  //     'admission_code': admissionCode,
-  //     'admission_date': admissionDate,
-  //     'health_insurance_id': healthInsuranceId,
-  //     'household_name': householdName,
-  //     'household_dirthdate': householdBirthdate,
-  //     'household_gender': householdGender,
-  //     'relative_with_household': relativeWithHousehold,
-  //     'father_name': fatherName,
-  //     'father_birthdate': fatherBirthdate,
-  //     'father_phone': fatherPhone,
-  //     'father_job': fatherJob,
-  //     'mother_name': motherName,
-  //     'mother_birthdate': motherBirthdate,
-  //     'mother_phone': motherPhone,
-  //     'mother_job': motherJob,
-  //     'mailing_address': mailingAddress,
-  //     'student_types': studentTypes,
-  //     'fee_types': feeTypes,
-  //   };
-  // }
-
+  @override
+  String toString() {
+    return 'StudentProfile(name: $name, id: $id, image: $image, birthdate: $birthdate, gender: $gender, schoolCourse: $schoolCourse, tinhKhaisinh: $tinhKhaisinh, huyenKhaisinh: $huyenKhaisinh, xaKhaisinh: $xaKhaisinh, tinhThuongtru: $tinhThuongtru, huyenThuongtru: $huyenThuongtru, xaThuongtru: $xaThuongtru, identifyId: $identityId, identifyDate: $identityDate, identifyAddress: $identityAddress, phoneContact: $phoneContact, emailContact: $emailContact, ethnicity: $ethnicity, religion: $religion, admissionCode: $admissionCode, admissionDate: $admissionDate, healthInsuranceId: $healthInsuranceId, householdName: $householdName, householdBirthdate: $householdBirthdate, householdGender: $householdGender, relativeWithHousehold: $relativeWithHousehold, fatherName: $fatherName, fatherBirthdate: $fatherBirthdate, fatherPhone: $fatherPhone, fatherJob: $fatherJob, motherName: $motherName, motherBirthdate: $motherBirthdate, motherPhone: $motherPhone, motherJob: $motherJob, mailingAddress: $mailingAddress, studentTypes: $studentTypes, feeTypes: $feeTypes)';
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:datn/function/function.dart';
-import 'package:datn/model/login/user.dart';
 import 'package:datn/model/request/request_information_model.dart';
+import 'package:datn/model/student/student_profile.dart';
 
 class GetDataResponseModel {
   int totalRequests;
@@ -14,7 +14,7 @@ class GetDataResponseModel {
 
 class Request {
   int id;
-  User? user;
+  StudentProfile? user;
   String? requestType;
   int requestTypeId;
   String? documentNeed;
@@ -56,7 +56,7 @@ class Request {
 
     return Request(
       id: json['id'] as int,
-      user: User.fromJson(json['user'] as Map<String,dynamic>),
+      user: StudentProfile.fromJson(json['user'] as Map<String,dynamic>),
       requestType: json['type']['name'] as String?,
       requestTypeId: json['type']['id'] as int,
       documentNeed: json['document_need'] as String?,

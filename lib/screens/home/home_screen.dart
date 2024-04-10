@@ -74,7 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.notifications_active_outlined),
+          icon: const Icon(MyIcons.notification),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder:(context) {
             return const NotificationPage();
           },)),
@@ -206,6 +206,8 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildDrawer(BuildContext context) {
+    var imageUrl = loginResponse.user?.image;
+
     return Drawer(
       elevation: 0,
       shape: OutlineInputBorder(
@@ -217,10 +219,12 @@ class HomeScreenState extends State<HomeScreen> {
           UserAccountsDrawerHeader(
             accountName: Text("Họ và tên: ${loginResponse.user?.name}"),
             accountEmail: Text("MSSV: ${loginResponse.user?.id}"),
-            currentAccountPicture: const Image(
-              image: AssetImage('assets/images/uet_logo_background.png'),
+            currentAccountPicture: Image(
               fit: BoxFit.contain,
               height: 40,
+              image: imageUrl != null 
+                ? NetworkImage(imageUrl) 
+                : const AssetImage('assets/images/uet_logo_background.png') as ImageProvider,
             ),
             decoration: const BoxDecoration(
               color: Color(0xFF000980),
