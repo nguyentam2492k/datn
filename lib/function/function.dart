@@ -4,7 +4,6 @@ import 'package:datn/constants/my_icons.dart';
 import 'package:datn/model/request/request_information_model.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';

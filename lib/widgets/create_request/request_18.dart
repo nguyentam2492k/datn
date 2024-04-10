@@ -940,7 +940,7 @@ class Request18State extends State<Request18> {
         Expanded(
           flex: 4,
           child: FormBuilderCheckboxGroup(
-            name: 'student_types[]', 
+            name: 'student_types', 
             initialValue: studentProfile.studentTypes,
             decoration: const InputDecoration(
               border: InputBorder.none,
@@ -957,18 +957,12 @@ class Request18State extends State<Request18> {
               ))
               .toList(),
             valueTransformer: (value) {
-              if (value != null && value.isNotEmpty) {
+              print(value);
+              if (value != null) {
                 final valueIndex = value.map((e) => ConstantList.studentTypes.indexOf(e) + 1).toList();
                 valueIndex.sort();
                 return valueIndex;
-              } else {
-                return null;
-              }
-            },
-            onSaved: (newValue) {
-              if (newValue == null || newValue.isEmpty) {
-                _otherInformationFormKey.currentState?.fields['student_types[]']?.setValue(null);
-              }
+              } 
             },
           ),
         ),

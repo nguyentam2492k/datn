@@ -261,6 +261,9 @@ class APIService {
     var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/profile?_method=PUT");
 
+    var listStudentType = profile['student_types'] as List;
+    profile.removeWhere((key, value) => key == "student_types");
+
     Map<String, dynamic> updateData = Map.from(profile);
 
     if (image != null) {
@@ -283,6 +286,14 @@ class APIService {
     }
 
     final formData = FormData.fromMap(updateData, ListFormat.multiCompatible);
+
+    if (listStudentType.isNotEmpty) {
+      for (var type in listStudentType) {
+        formData.fields.add(MapEntry("student_types[]", type.toString()));
+      }
+    } else {
+      formData.fields.add(const MapEntry("student_types[]", ""));
+    }
 
     try {
       final response = await dio.postUri(
