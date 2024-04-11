@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:datn/function/function.dart';
 import 'package:datn/services/handle/my_handle.dart';
+import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/rename_file_alert.dart';
 import 'package:datn/widgets/custom_widgets/file_alert_dialog.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -13,13 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class FileServices {
 
   Future<List<PlatformFile>?> pickFile(BuildContext context, {bool isPickImage = false, bool allowMultiple = true, required List<PlatformFile> listFiles}) async {
     const maxFileSize = 5 * 1024 * 1024;
-    var permissionReady = await checkStoragePermission(context);
+    var permissionReady = await AppPermission.checkStoragePermission(context);
 
     if (permissionReady) {
       try {
@@ -92,7 +91,7 @@ class FileServices {
       return;
     }
     
-    var permissionReady = await checkStoragePermission(context);
+    var permissionReady = await AppPermission.checkStoragePermission(context);
 
     if (permissionReady) {
       OpenResult result;
@@ -114,69 +113,8 @@ class FileServices {
     }
   }
 
-  Future<bool> checkStoragePermission(BuildContext context) async {
-    DeviceInfoPlugin plugin = DeviceInfoPlugin();
-
-    bool permissionStatus;
-
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo android = await plugin.androidInfo;
-      if (android.version.sdkInt >= 33) {
-        final photoStatus = await Permission.photos.request();
-        final videoStatus = await Permission.videos.request();
-        final audioStatus = await Permission.audio.request();
-
-        permissionStatus = photoStatus == PermissionStatus.granted
-                          && videoStatus == PermissionStatus.granted
-                          && audioStatus == PermissionStatus.granted;
-      } else {
-        final storageStatus = await Permission.storage.request();
-        permissionStatus = (storageStatus == PermissionStatus.granted);
-      }
-    } else {
-      final storageStatus = await Permission.storage.request();
-      permissionStatus = storageStatus == PermissionStatus.granted;
-    }
-
-    if (!permissionStatus && context.mounted) {
-      showDialog(
-        context: context, 
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0))
-            ),
-            titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            actionsPadding: const EdgeInsets.all(5),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            title: const Text("Yêu cầu", style: TextStyle(fontWeight: FontWeight.bold),),
-            content: const Text("Để tải và mở file, vui lòng cho phép ứng dụng quyền quản lý tất cả tệp trên thiết bị"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                }, 
-                child: const Text("Đóng")
-              ),
-              TextButton(
-                onPressed: () {
-                  openAppSettings();
-                }, 
-                child: const Text("Mở Cài đặt")
-              )
-            ],
-          );
-        }
-      );
-    }
-
-    return permissionStatus;
-  }
-
   Future<String> downloadAndGetFileFromUrl(BuildContext buildContext, {required String url}) async {
-    var permissionReady = await checkStoragePermission(buildContext);
+    var permissionReady = await AppPermission.checkStoragePermission(buildContext);
 
     if (permissionReady) {
       final externalDir = Platform.isAndroid

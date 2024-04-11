@@ -1,11 +1,13 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/login/login_model.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/screens/notification/notification_page.dart';
 import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/notification/notification_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +17,9 @@ import 'package:datn/screens/manage_request/manage_request_screen.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class HomeScreen extends StatefulWidget {
-  final LoginResponseModel loginResponse;
 
   const HomeScreen({
     super.key,
-    required this.loginResponse,
   });
 
   @override
@@ -30,12 +30,36 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  late LoginResponseModel loginResponse;
 
   @override
   void initState() {
     super.initState();
-    loginResponse = widget.loginResponse;
+
+    NotificationServices.initNotification().then((value) {
+      NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        return NotificationPage();
+      },));
+      
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      NotificationServices.showSimpleNotification(message: message);
+    });
+
+    FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
+
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if(message != null) {
+        globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+          return NotificationPage();
+        },));
+      }
+    });
+
   }
 
   @override
@@ -206,7 +230,6 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildDrawer(BuildContext context) {
-    var imageUrl = loginResponse.user?.image;
 
     return Drawer(
       elevation: 0,
@@ -217,14 +240,19 @@ class HomeScreenState extends State<HomeScreen> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("Họ và tên: ${loginResponse.user?.name}"),
-            accountEmail: Text("MSSV: ${loginResponse.user?.id}"),
-            currentAccountPicture: Image(
-              fit: BoxFit.contain,
-              height: 40,
-              image: imageUrl != null 
-                ? NetworkImage(imageUrl) 
-                : const AssetImage('assets/images/uet_logo_background.png') as ImageProvider,
+            accountName: Text("Họ và tên: ${getGlobalLoginResponse().name}"),
+            accountEmail: Text("MSSV: ${getGlobalLoginResponse().id}"),
+            currentAccountPicture: ValueListenableBuilder(
+              valueListenable: globalProfileImage,
+              builder: (BuildContext context, String? value, Widget? child) {
+                return Image(
+                  fit: BoxFit.contain,
+                  height: 40,
+                  image: value != null 
+                    ? NetworkImage(value) 
+                    : const AssetImage('assets/images/uet_logo_background.png') as ImageProvider,
+                );
+              },
             ),
             decoration: const BoxDecoration(
               color: Color(0xFF000980),

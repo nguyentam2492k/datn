@@ -242,18 +242,24 @@ class LogInState extends State<LogIn> {
           if (loginResponseData.error == null) {
             if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
               await secureStorageServices.writeSaveAccount(loginRequestModel);
-              await secureStorageServices.writeSaveUserInfo(loginResponseData);
+              await secureStorageServices.writeAccessToken(loginResponseData.accessToken);
+              await secureStorageServices.writeSaveUserInfo(
+                studentProfile: loginResponseData.user!
+              );
+
             } else {
               await secureStorageServices.deleteSavedAccount();
               await secureStorageServices.writeAccessToken(loginResponseData.accessToken);
             }
+
+            await setGlobalLoginResponse(loginResponseData.user!);
 
             TextInput.finishAutofillContext();
             if (context.mounted) {
               Navigator.pushAndRemoveUntil(
                 context, 
                 MaterialPageRoute(builder: (context) {
-                  return HomeScreen(loginResponse: loginResponseData,);
+                  return HomeScreen();
                 }), 
                 (route) => false
               );
@@ -271,7 +277,6 @@ class LogInState extends State<LogIn> {
         });
       } catch (error) {
         await EasyLoading.dismiss();
-
         MyToast.showToast(
           isError: true,
           errorText: "LỖI: ${error.toString()}"

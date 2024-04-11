@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/address/address.dart';
 import 'package:datn/model/student/student_profile.dart';
 import 'package:datn/services/api/api_service.dart';
@@ -86,6 +87,9 @@ class Request18State extends State<Request18> {
 
     try {
       await apiService.updateStudentProfile(profile: formData, image: file).then((value) async {
+        setGlobalLoginResponse(value);
+        secureStorageServices.writeSaveUserInfo(studentProfile: value);
+        
         await EasyLoading.dismiss();
         MyToast.showToast(
           text: "Lưu thành công"
@@ -117,7 +121,6 @@ class Request18State extends State<Request18> {
       future: Future.wait([getStudentInformation(), getAddressData()]),
       builder:(context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          
           return Column(
             children: [
               Expanded(
@@ -238,7 +241,7 @@ class Request18State extends State<Request18> {
                 icon: const Icon(MyIcons.save),
                 labelText: "Lưu hồ sơ",
                 onPressed: () async {
-                  isFormValid() ? await sendFormData() : null;
+                  isFormValid() ? await sendFormData().then((value) => setState(() {})) : null;
                 }, 
               )
             ],
@@ -384,7 +387,7 @@ class Request18State extends State<Request18> {
         const SizedBox(height: 15,),
         CustomAddressRowWidget(
           formKey: _personalInformationFormKey,
-          labelText: "Hộ khẩu thường chú:", 
+          labelText: "Hộ khẩu thường trú:", 
           provinceName: 'residence_city', 
           districtName: 'residence_district', 
           wardName: 'residence_ward',
@@ -957,7 +960,6 @@ class Request18State extends State<Request18> {
               ))
               .toList(),
             valueTransformer: (value) {
-              print(value);
               if (value != null) {
                 final valueIndex = value.map((e) => ConstantList.studentTypes.indexOf(e) + 1).toList();
                 valueIndex.sort();

@@ -2,13 +2,11 @@ import 'package:datn/model/student/student_profile.dart';
 
 class LoginResponseModel {
   String? accessToken;
-  int? expiredTime;
   String? error;
   StudentProfile? user;
 
   LoginResponseModel({
     this.accessToken,
-    this.expiredTime,
     this.error,
     this.user
   });
@@ -16,7 +14,6 @@ class LoginResponseModel {
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(
       accessToken: json['token'] != null ? json['token'] as String : null,
-      expiredTime: json['expires_in'] != null ? json['expires_in'] as int : null,
       error: json['error'] != null ? json['error'] as String : null,
       user: json['user'] != null ? StudentProfile.fromJson(json['user'] as Map<String,dynamic>) : null,
     );

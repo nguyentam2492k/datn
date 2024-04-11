@@ -70,6 +70,7 @@ class APIService {
         ), 
       );
       if(response.statusCode == 200) {
+        await secureStorageServices.deleteAccessToken();
         await secureStorageServices.deleteSavedUserInfo();
 
         var body = response.data;
@@ -220,7 +221,6 @@ class APIService {
     }
   }
 
-  //TODO: STUDENT PROFILE
   Future<StudentProfile> getStudentInformation() async {
     var accessToken = await secureStorageServices.getAccessToken();
 
@@ -242,6 +242,7 @@ class APIService {
           },
         ), 
       );
+
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.data);
 
@@ -257,7 +258,7 @@ class APIService {
     }
   }
 
-  Future<void> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
+  Future<StudentProfile> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
     var accessToken = await secureStorageServices.getAccessToken();
     Uri url = Uri.parse("$host/profile?_method=PUT");
 
@@ -300,6 +301,7 @@ class APIService {
         url,
         data: formData,
         options: Options(
+          responseType: ResponseType.plain,
           headers: <String, String>{ 
             'Content-Type': 'multipart/form-data; charset=UTF-8',
             'Accept': 'multipart/form-data; charset=UTF-8',
@@ -312,7 +314,13 @@ class APIService {
         )
       );
 
-      if (response.statusCode != 200) {
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.data);
+
+        var requestData = responseBody['data']['user'];
+        
+        return StudentProfile.fromJson(requestData);
+      } else {
         throw response.statusMessage.toString();
       }
     } on DioException catch (e) {
