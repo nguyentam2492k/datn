@@ -37,6 +37,10 @@ class NotificationServices {
     await firebaseMessagingInstance.subscribeToTopic(topicName);
   }
 
+  static unsubscribeFromTopic(String topicName) async {
+    await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
+  }
+
   @pragma('vm:entry-point')
   static Future<void> doSomethingWithMessage(RemoteMessage message) async {
     if (message.notification != null) {

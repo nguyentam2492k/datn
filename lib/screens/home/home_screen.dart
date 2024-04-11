@@ -36,6 +36,7 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     NotificationServices.initNotification().then((value) {
+      //TODO: SUBSCRIBE
       NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
     });
 
@@ -322,6 +323,9 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> onLogout() async {
     try {
       await APIService().logout().then((value) {
+        //TODO: UNSUBSCRIBE
+        NotificationServices.unsubscribeFromTopic(getGlobalLoginResponse().id ?? "");
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) {
