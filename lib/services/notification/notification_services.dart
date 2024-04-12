@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/screens/notification/notification_page.dart';
+import 'package:datn/model/request/request_model.dart';
+import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/permission/permission_check.dart';
+import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,26 +30,31 @@ class NotificationServices {
       final fcmToken = await firebaseMessagingInstance.getToken();
       debugPrint("FCM Device Token: $fcmToken");
     } else {
-      print("Chua cap quyen Thong bao");
+      MyToast.showToast(
+        isError: true,
+        errorText: "Chưa cấp quyền thông báo"
+      );
     }
     debugPrint("init firebase msg");
   }
 
   static subscribeToTopic(String topicName) async {
     await firebaseMessagingInstance.subscribeToTopic(topicName);
+    print("SUBSCRIBED TO TOPIC $topicName");
   }
 
   static unsubscribeFromTopic(String topicName) async {
     await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
+    print("UNSUBSCRIBED FROM TOPIC $topicName");
   }
 
   @pragma('vm:entry-point')
   static Future<void> doSomethingWithMessage(RemoteMessage message) async {
-    if (message.notification != null) {
-      debugPrint("Notification message: ${message.data}");
-    } else {
-      debugPrint("NO NOTIFICATION");
-    }
+    // if (message.notification != null) {
+    //   debugPrint("Notification message: ${message.data}");
+    // } else {
+    //   debugPrint("NO NOTIFICATION");
+    // }
   }
 
 
@@ -77,9 +84,14 @@ class NotificationServices {
 
   // on tap local notification in foreground
   static void onNotificationTap(NotificationResponse notificationResponse) {
-    globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-      return NotificationPage();
-    },));
+    var payload = notificationResponse.payload;
+    if (payload != null) {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        var messageData = jsonDecode(payload);
+        var requestData = jsonDecode(messageData['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData));
+      },));
+    }
   }
 
   // show a simple local notification

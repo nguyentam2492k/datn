@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
+import 'package:datn/model/request/request_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/screens/notification/notification_page.dart';
+import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/notification/notification_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
@@ -40,11 +44,20 @@ class HomeScreenState extends State<HomeScreen> {
       NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
     });
 
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+          var requestData = jsonDecode(message.data['request']);
+          return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+        },));        
+      }
+    });
+
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        return NotificationPage();
+        var requestData = jsonDecode(message.data['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
       },));
-      
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -52,15 +65,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
 
     FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
-
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if(message != null) {
-        globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-          return NotificationPage();
-        },));
-      }
-    });
-
   }
 
   @override

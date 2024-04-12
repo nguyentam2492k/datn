@@ -75,7 +75,6 @@ class MyAppState extends State<MyApp> {
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       navigatorKey: globalNavigatorKey,
       title: 'UET Single Window System',
-      themeMode: ThemeMode.light,
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true
@@ -87,7 +86,7 @@ class MyAppState extends State<MyApp> {
       ],
       supportedLocales: const [Locale('vi')],
       home: SafeArea(
-        child: widget.saveUserInfo == null ? const LogIn() : HomeScreen(),
+        child: widget.saveUserInfo == null ? const LogIn() : const HomeScreen(),
       ),
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),

@@ -7,12 +7,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class RequestInformationPage extends StatefulWidget {
 
-  final int index; 
   final Request requestInfo;
 
   const RequestInformationPage({
     super.key, 
-    required this.index, 
     required this.requestInfo
   });
 
@@ -30,7 +28,6 @@ class RequestInformationPageState extends State<RequestInformationPage> {
   void initState() {
     super.initState();
     requestInfo = widget.requestInfo;
-    index = widget.index;
   }
 
   @override

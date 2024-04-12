@@ -269,7 +269,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
       ),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return RequestInformationPage(index: index, requestInfo: list[index]);
+          return RequestInformationPage(requestInfo: list[index]);
         },));
       },
     );
