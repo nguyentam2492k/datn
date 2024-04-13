@@ -8,6 +8,7 @@ import 'package:datn/model/request/request_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/screens/notification/notification_page.dart';
 import 'package:datn/screens/request_information/request_information_page.dart';
+import 'package:datn/screens/update_profile_page/update_profile_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/notification/notification_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
@@ -49,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
         globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
           var requestData = jsonDecode(message.data['request']);
           return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-        },));        
+        },));
       }
     });
 
@@ -285,6 +286,22 @@ class HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            height: 0.3,
+            color: Colors.grey,
+          ),
+          ListTile(
+            title: const Text('Cập nhật hồ sơ'),
+            leading: const Icon(MyIcons.person),
+            trailing: const Icon(MyIcons.arrowRight),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UpdateProfilePage())
+              );
+            },
+          ),
           ListTile(
             title: const Text('Hỗ trợ'),
             leading: const Icon(MyIcons.help),
@@ -297,12 +314,12 @@ class HomeScreenState extends State<HomeScreen> {
             },
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             height: 0.3,
             color: Colors.grey,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
+            padding: const EdgeInsets.fromLTRB(18, 15, 18, 0),
             child: ElevatedButton.icon(
               onPressed: () async {
                 await EasyLoading.show(status: "Đang đăng xuất");
