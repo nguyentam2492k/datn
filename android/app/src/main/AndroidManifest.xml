@@ -48,10 +48,14 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+        <!-- MY ADD -->
+        <meta-data
+          android:name="com.google.firebase.messaging.default_notification_icon"
+          android:resource="@mipmap/ic_stat_uet" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="request_notification"
-        />
+            android:value="request_notification" />
     </application>
 
 
