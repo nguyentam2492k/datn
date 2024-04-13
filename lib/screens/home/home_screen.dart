@@ -37,26 +37,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     NotificationServices.initNotification();
 
-    // FirebaseMessaging.instance.getInitialMessage().then((message) {
-    //   if (message != null) {
-    //     globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-    //       var requestData = jsonDecode(message.data['request']);
-    //       return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-    //     },));
-    //   }
-    // });
-
-    // FirebaseMessaging.onMessageOpenedApp.listen((message) async {
-    //   globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-    //     var requestData = jsonDecode(message.data['request']);
-    //     return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-    //   },));
-    // });
     NotificationServices.onSelectBackgroundNotification();
 
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   NotificationServices.showSimpleNotification(message: message);
-    // });
     NotificationServices.showForegroundNotification();
 
     // FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
@@ -338,7 +320,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> onLogout() async {
     try {
       await APIService().logout().then((value) {
-        //TODO: UNSUBSCRIBE
+
         NotificationServices.unsubscribeFromTopic(getGlobalLoginResponse().id ?? "");
 
         Navigator.pushAndRemoveUntil(

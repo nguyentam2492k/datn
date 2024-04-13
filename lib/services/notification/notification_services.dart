@@ -38,18 +38,17 @@ class NotificationServices {
       // APNS token is available, make FCM plugin API requests...
       }
       final fcmToken = await firebaseMessagingInstance.getToken();
-      debugPrint("FCM Device Token: $fcmToken");
+      print("FCM Device Token: $fcmToken");
     } else {
       MyToast.showToast(
         isError: true,
         errorText: "Chưa cấp quyền thông báo"
       );
     }
-    debugPrint("init firebase msg");
+    print("init firebase msg");
   }
 
   static Future initLocalNotification() async {
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_stat_uet');
     
     const InitializationSettings initializationSettings = InitializationSettings(
@@ -61,25 +60,23 @@ class NotificationServices {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: onSelectForegroundNotification,
     );
-    debugPrint("init local noti");
+    print("init local noti");
   }
 
   static subscribeToTopic(String topicName) async {
     await firebaseMessagingInstance.subscribeToTopic(topicName);
-    print("SUBSCRIBED TO TOPIC $topicName");
   }
 
   static unsubscribeFromTopic(String topicName) async {
     await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
-    print("UNSUBSCRIBED FROM TOPIC $topicName");
   }
 
   @pragma('vm:entry-point')
   static Future<void> doSomethingWithMessage(RemoteMessage message) async {
     // if (message.notification != null) {
-    //   debugPrint("Notification message: ${message.data}");
+    //   print("Notification message: ${message.data}");
     // } else {
-    //   debugPrint("NO NOTIFICATION");
+    //   print("NO NOTIFICATION");
     // }
   }
 
