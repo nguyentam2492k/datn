@@ -1,18 +1,13 @@
-import 'dart:convert';
-
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/request/request_model.dart';
 import 'package:datn/screens/help/help_screen.dart';
 import 'package:datn/screens/notification/notification_page.dart';
-import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/screens/update_profile_page/update_profile_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/services/notification/notification_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -40,32 +35,31 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    NotificationServices.initNotification().then((value) {
-      //TODO: SUBSCRIBE
-      NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
-    });
+    NotificationServices.initNotification();
 
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
-        globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-          var requestData = jsonDecode(message.data['request']);
-          return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-        },));
-      }
-    });
+    // FirebaseMessaging.instance.getInitialMessage().then((message) {
+    //   if (message != null) {
+    //     globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+    //       var requestData = jsonDecode(message.data['request']);
+    //       return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+    //     },));
+    //   }
+    // });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(message.data['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-      },));
-    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+    //   globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+    //     var requestData = jsonDecode(message.data['request']);
+    //     return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+    //   },));
+    // });
+    NotificationServices.onSelectBackgroundNotification();
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      NotificationServices.showSimpleNotification(message: message);
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   NotificationServices.showSimpleNotification(message: message);
+    // });
+    NotificationServices.showForegroundNotification();
 
-    FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
+    // FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
   }
 
   @override

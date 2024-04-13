@@ -11,12 +11,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
+
   static final firebaseMessagingInstance = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    "request_notification", 
+    "Status Changed Notification",
+    description: "This is for notification for request's status changed",
+    importance: Importance.max,
+  );
+
 
   static Future initNotification() async {
     if (await AppPermission.requestNotificationPermission()) {
       await initFirebaseNotification();
       await initLocalNotification();
+      NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
     }
   }
 
@@ -38,6 +48,22 @@ class NotificationServices {
     debugPrint("init firebase msg");
   }
 
+  static Future initLocalNotification() async {
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
+    
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onDidReceiveNotificationResponse: onSelectForegroundNotification,
+    );
+    debugPrint("init local noti");
+  }
+
   static subscribeToTopic(String topicName) async {
     await firebaseMessagingInstance.subscribeToTopic(topicName);
     print("SUBSCRIBED TO TOPIC $topicName");
@@ -57,45 +83,14 @@ class NotificationServices {
     // }
   }
 
-
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    "request_notification", 
-    "Status Changed Notification",
-    description: "This is for notification for request's status changed",
-    importance: Importance.max,
-  );
-
-  static Future initLocalNotification() async {
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
-    
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
-
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onDidReceiveNotificationResponse: onNotificationTap,
-    );
-    debugPrint("init local noti");
+  static Future<void> showForegroundNotification() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      NotificationServices.showLocalNotification(message: message);
+    });
   }
 
-  // on tap local notification in foreground
-  static void onNotificationTap(NotificationResponse notificationResponse) {
-    var payload = notificationResponse.payload;
-    if (payload != null) {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var messageData = jsonDecode(payload);
-        var requestData = jsonDecode(messageData['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData));
-      },));
-    }
-  }
-
-  // show a simple local notification
-  static Future showSimpleNotification({
+  // show local notification
+  static Future showLocalNotification({
     required RemoteMessage message,
   }) async {
     AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
@@ -111,6 +106,37 @@ class NotificationServices {
 
     flutterLocalNotificationsPlugin
         .show(Random().nextInt(99), message.notification?.title, message.notification?.body, notificationDetails, payload: jsonEncode(message.data));
+  }
+
+  // on tp firebase/background notification
+  static Future<void> onSelectBackgroundNotification() async {
+    RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (message?.notification != null) {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        var requestData = jsonDecode(message!.data['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+      },));
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        var requestData = jsonDecode(message.data['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+      },));
+    });
+  }
+
+  // on tap local notification in foreground
+  static void onSelectForegroundNotification(NotificationResponse notificationResponse) {
+    var payload = notificationResponse.payload;
+    if (payload != null) {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        var messageData = jsonDecode(payload);
+        var requestData = jsonDecode(messageData['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData));
+      },));
+    }
   }
   
 }
