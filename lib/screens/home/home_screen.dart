@@ -1,9 +1,12 @@
 import 'package:datn/constants/constant_string.dart';
 import 'package:datn/constants/my_icons.dart';
 import 'package:datn/function/function.dart';
-import 'package:datn/model/login/login_model.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/screens/help/help_screen.dart';
+import 'package:datn/screens/notification/notification_page.dart';
+import 'package:datn/screens/update_profile_page/update_profile_page.dart';
 import 'package:datn/services/api/api_service.dart';
+import 'package:datn/services/notification/notification_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +17,9 @@ import 'package:datn/screens/manage_request/manage_request_screen.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class HomeScreen extends StatefulWidget {
-  final LoginResponseModel loginResponse;
 
   const HomeScreen({
     super.key,
-    required this.loginResponse,
   });
 
   @override
@@ -29,12 +30,18 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  late LoginResponseModel loginResponse;
 
   @override
   void initState() {
     super.initState();
-    loginResponse = widget.loginResponse;
+
+    NotificationServices.initNotification();
+
+    NotificationServices.onSelectBackgroundNotification();
+
+    NotificationServices.showForegroundNotification();
+
+    // FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
   }
 
   @override
@@ -55,6 +62,7 @@ class HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       centerTitle: true,
       elevation: 0,
+      scrolledUnderElevation: 0,
       shape: const Border(
         bottom: BorderSide(
           color: Colors.grey,
@@ -70,6 +78,14 @@ class HomeScreenState extends State<HomeScreen> {
         icon: const Icon(MyIcons.menu),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(MyIcons.notification),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder:(context) {
+            return const NotificationPage();
+          },)),
+        ),
+      ],
     );
   }
 
@@ -196,6 +212,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildDrawer(BuildContext context) {
+
     return Drawer(
       elevation: 0,
       shape: OutlineInputBorder(
@@ -205,12 +222,19 @@ class HomeScreenState extends State<HomeScreen> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("Họ và tên: ${loginResponse.user?.name}"),
-            accountEmail: Text("MSSV: ${loginResponse.user?.id}"),
-            currentAccountPicture: const Image(
-              image: AssetImage('assets/images/uet_logo_background.png'),
-              fit: BoxFit.contain,
-              height: 40,
+            accountName: Text("Họ và tên: ${getGlobalLoginResponse().name}"),
+            accountEmail: Text("MSSV: ${getGlobalLoginResponse().id}"),
+            currentAccountPicture: ValueListenableBuilder(
+              valueListenable: globalProfileImage,
+              builder: (BuildContext context, String? value, Widget? child) {
+                return Image(
+                  fit: BoxFit.contain,
+                  height: 40,
+                  image: value != null 
+                    ? NetworkImage(value) 
+                    : const AssetImage('assets/images/uet_logo_background.png') as ImageProvider,
+                );
+              },
             ),
             decoration: const BoxDecoration(
               color: Color(0xFF000980),
@@ -238,6 +262,22 @@ class HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            height: 0.3,
+            color: Colors.grey,
+          ),
+          ListTile(
+            title: const Text('Cập nhật hồ sơ'),
+            leading: const Icon(MyIcons.person),
+            trailing: const Icon(MyIcons.arrowRight),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UpdateProfilePage())
+              );
+            },
+          ),
           ListTile(
             title: const Text('Hỗ trợ'),
             leading: const Icon(MyIcons.help),
@@ -250,12 +290,12 @@ class HomeScreenState extends State<HomeScreen> {
             },
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             height: 0.3,
             color: Colors.grey,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
+            padding: const EdgeInsets.fromLTRB(18, 15, 18, 0),
             child: ElevatedButton.icon(
               onPressed: () async {
                 await EasyLoading.show(status: "Đang đăng xuất");
@@ -280,6 +320,9 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> onLogout() async {
     try {
       await APIService().logout().then((value) {
+
+        NotificationServices.unsubscribeFromTopic(getGlobalLoginResponse().id ?? "");
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) {

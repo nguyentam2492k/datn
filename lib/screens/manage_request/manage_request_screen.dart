@@ -7,7 +7,7 @@ import 'package:datn/function/function.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/widgets/custom_widgets/bottom_sheet_with_list.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
-import 'package:datn/widgets/manage_request/request_information_dialog.dart';
+import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:flutter/material.dart';
 
 class ManageRequestScreen extends StatefulWidget {
@@ -118,6 +118,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
         fontWeight: FontWeight.bold
       ),
       elevation: 0,
+      scrolledUnderElevation: 0,
       shape: const Border(
         bottom: BorderSide(
           color: Colors.grey,
@@ -267,10 +268,9 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
         ),
       ),
       onTap: () {
-        showDialog(
-          context: context, 
-          builder: (context) => requestInforDialog(context, index, list[index]),
-        );
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return RequestInformationPage(requestInfo: list[index]);
+        },));
       },
     );
   }

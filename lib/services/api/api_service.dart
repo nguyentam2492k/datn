@@ -70,6 +70,7 @@ class APIService {
         ), 
       );
       if(response.statusCode == 200) {
+        await secureStorageServices.deleteAccessToken();
         await secureStorageServices.deleteSavedUserInfo();
 
         var body = response.data;
@@ -223,9 +224,7 @@ class APIService {
   Future<StudentProfile> getStudentInformation() async {
     var accessToken = await secureStorageServices.getAccessToken();
 
-    // String baseUrl = "http://192.168.1.5:3000/user";
-    String baseUrl = "http://192.168.0.183:3000/user";
-    Uri url = Uri.parse(baseUrl);
+    Uri url = Uri.parse("$host/profile");
 
     try {
       var response = await dio.getUri(
@@ -243,10 +242,11 @@ class APIService {
           },
         ), 
       );
+
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.data);
 
-        var requestData = responseBody;
+        var requestData = responseBody['data']['user'];
         
         return StudentProfile.fromJson(requestData);
       } else {
@@ -258,12 +258,12 @@ class APIService {
     }
   }
 
-
-  //KHÔNG GỬI ĐC MULTIPART/FORM-DATA LÊN API, DO SERVER KHÔNG CHẤP NHẬN CONTENT-TYPE NÀY, THỬ TRÊN POSTMAN CŨNG VẬY
-  Future<void> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
+  Future<StudentProfile> updateStudentProfile({required Map<String, dynamic> profile, PlatformFile? image}) async {
     var accessToken = await secureStorageServices.getAccessToken();
-    // Uri url = Uri.parse("http://192.168.1.5:3000/user");
-    Uri url = Uri.parse("http://192.168.1.5:3000/user");
+    Uri url = Uri.parse("$host/profile?_method=PUT");
+
+    var listStudentType = profile['student_types'] as List;
+    profile.removeWhere((key, value) => key == "student_types");
 
     Map<String, dynamic> updateData = Map.from(profile);
 
@@ -278,22 +278,30 @@ class APIService {
       );
 
       updateData.addAll({
-        "image": fileToUpdate
+        "image_file": fileToUpdate
       });
     } else {
       updateData.addAll({
-        "image": null
+        "image_file": null
       });
     }
 
     final formData = FormData.fromMap(updateData, ListFormat.multiCompatible);
 
+    if (listStudentType.isNotEmpty) {
+      for (var type in listStudentType) {
+        formData.fields.add(MapEntry("student_types[]", type.toString()));
+      }
+    } else {
+      formData.fields.add(const MapEntry("student_types[]", ""));
+    }
+
     try {
-      final response = await dio.requestUri(
+      final response = await dio.postUri(
         url,
         data: formData,
         options: Options(
-          method: "PUT",
+          responseType: ResponseType.plain,
           headers: <String, String>{ 
             'Content-Type': 'multipart/form-data; charset=UTF-8',
             'Accept': 'multipart/form-data; charset=UTF-8',
@@ -306,9 +314,13 @@ class APIService {
         )
       );
 
-      print(response.data);
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.data);
 
-      if (response.statusCode != 200) {
+        var requestData = responseBody['data']['user'];
+        
+        return StudentProfile.fromJson(requestData);
+      } else {
         throw response.statusMessage.toString();
       }
     } on DioException catch (e) {

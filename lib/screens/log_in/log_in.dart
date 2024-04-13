@@ -180,7 +180,7 @@ class LogInState extends State<LogIn> {
                         scale: 0.85,
                         child: FormBuilderCheckbox(
                           name: 'remember_account', 
-                          title: const Text("Ghi nhớ tài khoản", style: TextStyle(color: Color(0xFF04006C)),),
+                          title: const Text("Lưu thông tin đăng nhập", style: TextStyle(color: Color(0xFF04006C)),),
                           initialValue: true,
                           activeColor: const Color(0xFF04006C),
                           decoration: const InputDecoration(
@@ -242,18 +242,23 @@ class LogInState extends State<LogIn> {
           if (loginResponseData.error == null) {
             if (_logInFormKey.currentState?.fields["remember_account"]?.value == true) {
               await secureStorageServices.writeSaveAccount(loginRequestModel);
-              await secureStorageServices.writeSaveUserInfo(loginResponseData);
             } else {
               await secureStorageServices.deleteSavedAccount();
-              await secureStorageServices.writeAccessToken(loginResponseData.accessToken);
             }
+
+            await secureStorageServices.writeAccessToken(loginResponseData.accessToken);
+              await secureStorageServices.writeSaveUserInfo(
+                studentProfile: loginResponseData.user!
+              );
+
+            await setGlobalLoginResponse(loginResponseData.user!);
 
             TextInput.finishAutofillContext();
             if (context.mounted) {
               Navigator.pushAndRemoveUntil(
                 context, 
                 MaterialPageRoute(builder: (context) {
-                  return HomeScreen(loginResponse: loginResponseData,);
+                  return const HomeScreen();
                 }), 
                 (route) => false
               );
@@ -271,7 +276,6 @@ class LogInState extends State<LogIn> {
         });
       } catch (error) {
         await EasyLoading.dismiss();
-
         MyToast.showToast(
           isError: true,
           errorText: "LỖI: ${error.toString()}"

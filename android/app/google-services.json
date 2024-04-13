@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "573261740211",
+    "project_id": "uet-student-e09f8",
+    "storage_bucket": "uet-student-e09f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573261740211:android:a2e7d1ed868037dae358c6",
+        "android_client_info": {
+          "package_name": "com.uet.app.singlewindowsystem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpFNz7GyQnVbFvDm6vLn9UzK9-UwVtSKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

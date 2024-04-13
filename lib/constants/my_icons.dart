@@ -34,4 +34,9 @@ class MyIcons {
   static const IconData close = Icons.close;
   static const IconData person = Icons.person;
   static const IconData save = Icons.save;
+  static const IconData checkFill = Icons.check_circle;
+  static const IconData closeFill = CupertinoIcons.clear_thick_circled;
+  static const IconData chamthanFill = CupertinoIcons.exclamationmark_circle_fill;
+  static const IconData questionMark = Icons.question_mark;
+  static const IconData notification = Icons.notifications_active_outlined;
 }

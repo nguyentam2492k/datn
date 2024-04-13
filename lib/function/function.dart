@@ -62,16 +62,29 @@ bool isInteger(String? s) {
   return int.tryParse(s) != null;
 }
 
-Color getColor(int statusId) {
+Color getColor(int? statusId) {
   switch (statusId) {
     case 2: //Đã xong
-      return Colors.green;
+      return const Color(0xFF21A626);
     case 3: //Đã huỷ
       return Colors.red;
     case 1: //Đang xử lý
-      return Colors.yellow;
+      return const Color(0xFFFFBF00);
     default:
       return Colors.grey;
+  }
+}
+
+Icon getStatusIcon({int? statusId, double size = 25}) {
+  switch (statusId) {
+    case 2: //Đã xong
+      return Icon(MyIcons.checkFill, size: size, color: const Color(0xFF21A626),);
+    case 3: //Đã huỷ
+      return Icon(MyIcons.closeFill, size: size, color: Colors.red,);
+    case 1: //Đang xử lý
+      return Icon(MyIcons.chamthanFill, size: size, color: const Color(0xFFFFBF00),);
+    default:
+      return Icon(MyIcons.questionMark, size: size, color: Colors.grey,);
   }
 }
 

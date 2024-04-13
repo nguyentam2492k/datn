@@ -1,15 +1,25 @@
+import 'package:datn/firebase_options.dart';
 import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/login_model.dart';
+import 'package:datn/model/student/student_profile.dart';
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   var userInfo = await secureStorageServices.getSaveUserInfo();
+  if (userInfo != null) {
+    await setGlobalLoginResponse(StudentProfile(name: userInfo.user?.name, id: userInfo.user?.id, email: userInfo.user?.email, image: userInfo.user?.image));
+  }
+
   runApp(MyApp(saveUserInfo: userInfo,));
   configLoading();
 }
@@ -65,9 +75,9 @@ class MyAppState extends State<MyApp> {
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       navigatorKey: globalNavigatorKey,
       title: 'UET Single Window System',
-      theme: ThemeData(
+      theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
+        useMaterial3: true
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -76,7 +86,7 @@ class MyAppState extends State<MyApp> {
       ],
       supportedLocales: const [Locale('vi')],
       home: SafeArea(
-        child: widget.saveUserInfo == null ? const LogIn() : HomeScreen(loginResponse: widget.saveUserInfo!),
+        child: widget.saveUserInfo == null ? const LogIn() : const HomeScreen(),
       ),
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
