@@ -8,6 +8,7 @@ import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
@@ -105,22 +106,16 @@ class NotificationServices {
         .show(Random().nextInt(99), message.notification?.title, message.notification?.body, notificationDetails, payload: jsonEncode(message.data));
   }
 
-  // on tp firebase/background notification
+  // on tap firebase/background notification
   static Future<void> onSelectBackgroundNotification() async {
     RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
 
     if (message?.notification != null) {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(message!.data['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-      },));
+      handleTapNotification(messageData: message!.data);
     }
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(message.data['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-      },));
+      handleTapNotification(messageData: message.data);
     });
   }
 
@@ -128,10 +123,22 @@ class NotificationServices {
   static void onSelectForegroundNotification(NotificationResponse notificationResponse) {
     var payload = notificationResponse.payload;
     if (payload != null) {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var messageData = jsonDecode(payload);
+      var messageData = jsonDecode(payload);
+      handleTapNotification(messageData: messageData);
+    }
+  }
+
+  static void handleTapNotification({required Map<String, dynamic> messageData}) {
+    Clipboard.setData(ClipboardData(text: messageData.toString()));
+    if (isRequestInformationPageOpened) {
+      globalNavigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
         var requestData = jsonDecode(messageData['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData));
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+      },));
+    } else {
+      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        var requestData = jsonDecode(messageData['request']);
+        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
       },));
     }
   }

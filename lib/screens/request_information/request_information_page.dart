@@ -1,4 +1,5 @@
 import 'package:datn/function/function.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/request/request_model.dart';
 import 'package:datn/services/file/file_services.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
@@ -28,6 +29,13 @@ class RequestInformationPageState extends State<RequestInformationPage> {
   void initState() {
     super.initState();
     requestInfo = widget.requestInfo;
+    isRequestInformationPageOpened = true;
+  }
+
+  @override
+  void dispose() {
+    isRequestInformationPageOpened = false;
+    super.dispose();
   }
 
   @override
