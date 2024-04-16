@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/notification_data/notification_data.dart';
 import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
@@ -129,16 +128,15 @@ class NotificationServices {
   }
 
   static void handleTapNotification({required Map<String, dynamic> messageData}) {
-    Clipboard.setData(ClipboardData(text: messageData.toString()));
     if (isRequestInformationPageOpened) {
-      globalNavigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(messageData['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+      globalNavigatorKey.currentState?.pushReplacement(MaterialPageRoute(builder: (context) {
+        var notificationData = NotificationData.fromMap(messageData);
+        return RequestInformationPage(requestInfo: notificationData.request!,);
       },));
     } else {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(messageData['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
+      globalNavigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
+        var notificationData = NotificationData.fromMap(messageData);
+        return RequestInformationPage(requestInfo: notificationData.request!,);
       },));
     }
   }
