@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:datn/model/enum/request_type.dart';
+import 'package:datn/model/notification_data/notification_data.dart';
 import 'package:datn/model/student/student_profile.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -326,6 +327,53 @@ class APIService {
     } on DioException catch (e) {
       throw MyHandle.handleDioError(e.type);
     }
+  }
+
+  Future<GetListNotificationResponseModel> getListNotification({required int pageIndex, int pageSize = 10}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
+    List<NotificationData> listNotification = [];
+
+    String baseUrl = "$host/notifications?pageSize=$pageSize&pageIndex=$pageIndex";
+
+    Uri url = Uri.parse(baseUrl);
+
+    try {
+      var response = await dio.getUri(
+        url,
+        options: Options(
+          responseType: ResponseType.plain,
+          headers: <String, String>{ 
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $accessToken'
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        ), 
+      );
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.data);
+
+        var totalNotification = responseBody["data"]["total"] as int;
+        var notificationData = responseBody["data"]["notifications"] as List;
+        
+        listNotification = notificationData.map((jsonData) {
+          return NotificationData.fromMap(jsonData);
+        }).toList();
+        return GetListNotificationResponseModel(totalNotification: totalNotification, listNotification: listNotification);
+      } else {
+        throw response.statusMessage.toString();
+      }
+
+    } on DioException catch (e) {
+      throw MyHandle.handleDioError(e.type);
+    }
+  }
+
+  deleteNotification({int? notificationId}) {
+
   }
 
   cancelTask() {

@@ -55,6 +55,44 @@ DateTime addDateToDateTime(DateTime date, int numberOfDateAdd) {
   return newDate;
 }
 
+String? getTimePassed(DateTime? from) {
+  if (from == null) {
+    return null;
+  }
+  final now = DateTime.now();
+
+  final minuteDiff = now.difference(from).inMinutes;
+
+  if (minuteDiff < 60) {
+    return "$minuteDiff phút";
+  }
+
+  final hourDiff = now.difference(from).inHours;
+  if (hourDiff > 0 && hourDiff < 24) {
+    return "$hourDiff giờ";
+  }
+
+  final dayDiff = now.difference(from).inDays;
+  if (dayDiff > 0 && dayDiff < 7) {
+    return "$dayDiff ngày";
+  }
+
+  if (dayDiff >=7 && dayDiff < 30) {
+    return "${(dayDiff / 7).round()} tuần";
+  }
+
+  if (dayDiff >= 30 && dayDiff < 365) {
+    return "${(dayDiff / 30).round()} tháng";
+  }
+
+  if (dayDiff >= 365 && dayDiff < 370) {
+    return "${(dayDiff / 365).round()} năm";
+  }
+  
+  var outputFormat = DateFormat('dd/MM/yyyy');
+  return outputFormat.format(from);
+}
+
 bool isInteger(String? s) {
   if (s == null) {
     return false;

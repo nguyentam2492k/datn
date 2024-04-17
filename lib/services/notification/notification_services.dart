@@ -8,6 +8,7 @@ import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
@@ -128,6 +129,7 @@ class NotificationServices {
   }
 
   static void handleTapNotification({required Map<String, dynamic> messageData}) {
+    Clipboard.setData(ClipboardData(text: messageData.toString()));
     if (isRequestInformationPageOpened) {
       globalNavigatorKey.currentState?.pushReplacement(MaterialPageRoute(builder: (context) {
         var notificationData = NotificationData.fromMap(messageData);

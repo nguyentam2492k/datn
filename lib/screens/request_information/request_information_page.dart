@@ -23,7 +23,6 @@ class RequestInformationPage extends StatefulWidget {
 
 class RequestInformationPageState extends State<RequestInformationPage> {
   late Request requestInfo;
-  late int index;
 
   @override
   void initState() {
@@ -40,6 +39,7 @@ class RequestInformationPageState extends State<RequestInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
