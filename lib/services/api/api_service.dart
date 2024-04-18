@@ -372,12 +372,44 @@ class APIService {
     }
   }
 
-  deleteNotification({int? notificationId}) {
+  Future<String> deleteNotification({int? notificationId}) async {
+    var accessToken = await secureStorageServices.getAccessToken();
+    Uri url = Uri();
 
+    if (notificationId != null) {
+      url = Uri.parse("$host/notifications?_method=DELETE&notificationId=$notificationId");
+    } else {
+      url = Uri.parse("$host/notifications?_method=DELETE");
+    }
+
+    try {
+      final response = await dio.postUri(
+        url, 
+        data: null,
+        options: Options(
+          headers: <String, String>{ 
+            'Accept' : 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $accessToken'
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        ), 
+      );
+      if(response.statusCode == 200) {
+        var body = response.data;
+        return body['data']['message'] as String;
+      } else {
+        throw response.statusMessage.toString();
+      }
+    } on DioException catch (error) {
+      throw MyHandle.handleDioError(error.type);
+    }
   }
 
   cancelTask() {
-    dio.close(force: false);
+    dio.close(force: true);
   }
 
 }

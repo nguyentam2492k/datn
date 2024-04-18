@@ -6,6 +6,7 @@ import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -49,7 +50,7 @@ class NotificationPageState extends State<NotificationPage> {
 
         listNotification.value.addAll(value.listNotification);
         listNotification.value = List.from(listNotification.value);
-        
+
         if (listNotification.value.length < totalNotification) {
           currentPage += 1;
           isLoading = false;
@@ -64,8 +65,30 @@ class NotificationPageState extends State<NotificationPage> {
     }
   }
 
-  deleteNotification({int? notificationId}) {
-    print("XOÁ $notificationId");
+  deleteNotification({int? notificationId}) async {
+    await EasyLoading.show(status: "Đang gỡ");
+    
+    try {
+      await apiService.cancelTask();
+      apiService = APIService();
+      await apiService.deleteNotification(notificationId: notificationId).then((value) {
+
+        setState(() {
+          currentPage = 1;
+          isLoading = false;
+        });
+
+        MyToast.showToast(
+          text: value
+        );
+      });
+    } catch (e) {
+      MyToast.showToast(
+        isError: true,
+        errorText: e.toString()
+      );
+    }
+    await EasyLoading.dismiss();
   }
 
   void _handleScroll() {
@@ -92,14 +115,43 @@ class NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context),
       body: SafeArea(
         child: buildNotificationListView(),
       ),
     );
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(BuildContext context) {
+    var closeButton = SizedBox(
+      width: 100,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: const Color(0xFFF5F5F5),
+          foregroundColor: const Color(0xFF464646),
+        ),
+        onPressed: (){
+          Navigator.of(context).pop();
+        }, 
+        child: const Text("Đóng")
+      ),
+    );
+
+    var acceptButton = SizedBox(
+      width: 100,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        ),
+        onPressed: () async {
+          Navigator.of(context).pop();
+          deleteNotification();
+        }, 
+        child: const Text("Gỡ")
+      ),
+    );
+
     return AppBar(
       title: const Text("Thông báo"),
       centerTitle: true,
@@ -121,7 +173,38 @@ class NotificationPageState extends State<NotificationPage> {
         IconButton(
           icon: const Icon(MyIcons.delete),
           onPressed: () {
-            deleteNotification();
+            showDialog(
+              context: context, 
+              builder: (context) {
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                  ),
+                  titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  actionsPadding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                  actionsAlignment: MainAxisAlignment.spaceEvenly,
+                  contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 25),
+                  iconPadding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  iconColor: Colors.black,
+                  contentTextStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600
+                  ),
+                  icon: const Icon(MyIcons.remove),
+                  content: const Text(
+                    "Gỡ toàn bộ thông báo?",
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    closeButton,
+                    acceptButton
+                  ],
+                );
+              },
+            );
           }, 
         )
       ],
@@ -171,7 +254,7 @@ class NotificationPageState extends State<NotificationPage> {
                 separatorBuilder: (_, __) => const SizedBox(height: 8,), 
                 itemCount: list.length + 1,
                 itemBuilder: (BuildContext context, int index) {
-                  
+
                   if (index == list.length) {
                     return (listNotification.value.length < totalNotification)
                       ? const Center(
@@ -189,7 +272,8 @@ class NotificationPageState extends State<NotificationPage> {
                             fontSize: 10
                           ),
                         );
-                  }
+                    }
+
                   return buildListNotificationItem(listNotification.value[index], context);
                 }
               );
@@ -211,7 +295,7 @@ class NotificationPageState extends State<NotificationPage> {
   Widget buildListNotificationItem(NotificationData notificationData, BuildContext context) {
     return GestureDetector(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 8, 0, 10),
+        padding: const EdgeInsets.fromLTRB(8, 8, 2, 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -288,6 +372,7 @@ class NotificationPageState extends State<NotificationPage> {
                     position: PopupMenuPosition.under,
                     padding: EdgeInsets.zero,
                     surfaceTintColor: Colors.white,
+                    color: Colors.white,
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         height: 30,
@@ -306,8 +391,8 @@ class NotificationPageState extends State<NotificationPage> {
                             ),
                           ],
                         ),
-                        onTap: () {
-                          deleteNotification(notificationId: notificationData.id);
+                        onTap: () async {
+                          await deleteNotification(notificationId: notificationData.id);
                         },
                       ),
                     ],
