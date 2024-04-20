@@ -5,7 +5,6 @@ import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -35,8 +34,11 @@ class NotificationPageState extends State<NotificationPage> {
   bool isLoading = false;
   ScrollController scrollController = ScrollController();
 
+  ValueNotifier<bool> isLoadMore = ValueNotifier(false);
+
   Future<void> loadListNotification() async {
     isLoading = true;
+    isLoadMore.value = true;
 
     if (currentPage == 1) {
       listNotification.value = [];
@@ -63,14 +65,13 @@ class NotificationPageState extends State<NotificationPage> {
         errorText: e.toString()
       );
     }
+    isLoadMore.value = false;
   }
 
   deleteNotification({int? notificationId}) async {
     await EasyLoading.show(status: "Đang gỡ");
     
     try {
-      await apiService.cancelTask();
-      apiService = APIService();
       await apiService.deleteNotification(notificationId: notificationId).then((value) {
 
         setState(() {
@@ -146,7 +147,7 @@ class NotificationPageState extends State<NotificationPage> {
         ),
         onPressed: () async {
           Navigator.of(context).pop();
-          deleteNotification();
+          await deleteNotification();
         }, 
         child: const Text("Gỡ")
       ),
@@ -173,7 +174,8 @@ class NotificationPageState extends State<NotificationPage> {
         IconButton(
           icon: const Icon(MyIcons.delete),
           onPressed: () {
-            showDialog(
+            !isLoadMore.value 
+            ? showDialog(
               context: context, 
               builder: (context) {
                 return AlertDialog(
@@ -204,7 +206,8 @@ class NotificationPageState extends State<NotificationPage> {
                   ],
                 );
               },
-            );
+            )
+            : null;
           }, 
         )
       ],
@@ -368,35 +371,47 @@ class NotificationPageState extends State<NotificationPage> {
                 SizedBox(
                   height: 20,
                   width: 20,
-                  child: PopupMenuButton(
-                    position: PopupMenuPosition.under,
-                    padding: EdgeInsets.zero,
-                    surfaceTintColor: Colors.white,
-                    color: Colors.white,
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        value: 0,
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(MyIcons.remove, size: 18,),
-                            SizedBox(width: 5,),
-                            Flexible(
-                              child: Text(
-                                'Gỡ thông báo',
+                  child: ValueListenableBuilder(
+                    valueListenable: isLoadMore,
+                    builder: (context, value, child) {
+                      return !isLoadMore.value
+                        ? PopupMenuButton(
+                          position: PopupMenuPosition.under,
+                          padding: EdgeInsets.zero,
+                          surfaceTintColor: Colors.white,
+                          color: Colors.white,
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              height: 30,
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              value: 0,
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(MyIcons.remove, size: 18,),
+                                  SizedBox(width: 5,),
+                                  Flexible(
+                                    child: Text(
+                                      'Gỡ thông báo',
+                                    ),
+                                  ),
+                                ],
                               ),
+                              onTap: () async {
+                                deleteNotification(notificationId: notificationData.id);
+                              },
                             ),
                           ],
-                        ),
-                        onTap: () async {
-                          await deleteNotification(notificationId: notificationData.id);
-                        },
-                      ),
-                    ],
-                    child: const Icon(MyIcons.more, size: 20,),
+                          child: const Icon(MyIcons.more, size: 18,),
+                        )
+                        : IconButton(
+                          icon: const Icon(MyIcons.more, size: 18,),
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.center,
+                          onPressed: () {}, 
+                        );
+                    },
                   ),
                 ),
               ],
