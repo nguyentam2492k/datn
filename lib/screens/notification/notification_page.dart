@@ -19,20 +19,19 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> {
 
-  static const double loadingIndicatorSize = 20;
+  static const double loadingIndicatorSize = 25;
   static const double requestStatusBarHeight = 45;
   static const int maxLines = 4;
 
   APIService apiService = APIService();
   ValueNotifier<List<NotificationData>> listNotification = ValueNotifier([]);
 
-  int currentPage = 1;
+  int currentOffset = 1;
   int pageSize = 10;
   int totalNotification = 99;
   String? getErrorText;
 
   bool isLoading = false;
-  ScrollController scrollController = ScrollController();
 
   ValueNotifier<bool> isLoadMore = ValueNotifier(false);
 
@@ -40,12 +39,13 @@ class NotificationPageState extends State<NotificationPage> {
     isLoading = true;
     isLoadMore.value = true;
 
-    if (currentPage == 1) {
-      listNotification.value = [];
+    if (currentOffset == 1) {
+      listNotification.value.clear();
+      listNotification.value = List.from(listNotification.value);
     }
 
     try {
-      await apiService.getListNotification(pageIndex: currentPage, pageSize: pageSize).then((value) {
+      await apiService.getListNotification(offset: currentOffset, pageSize: pageSize).then((value) {
         getErrorText = null;
 
         totalNotification = value.totalNotification;
@@ -54,7 +54,7 @@ class NotificationPageState extends State<NotificationPage> {
         listNotification.value = List.from(listNotification.value);
 
         if (listNotification.value.length < totalNotification) {
-          currentPage += 1;
+          currentOffset += 10;
           isLoading = false;
         }
       });
@@ -74,10 +74,17 @@ class NotificationPageState extends State<NotificationPage> {
     try {
       await apiService.deleteNotification(notificationId: notificationId).then((value) {
 
-        setState(() {
-          currentPage = 1;
-          isLoading = false;
-        });
+        if (notificationId != null) {
+          totalNotification -= 1;
+          currentOffset != 1 ? currentOffset -= 1 : currentOffset = 1;
+          listNotification.value.removeWhere((noti) => noti.id == notificationId);
+          listNotification.value = List.from(listNotification.value);
+        } else {
+          totalNotification = 0;
+          currentOffset = 1;
+          listNotification.value.clear();
+          listNotification.value = List.from(listNotification.value);
+        }
 
         MyToast.showToast(
           text: value
@@ -92,18 +99,9 @@ class NotificationPageState extends State<NotificationPage> {
     await EasyLoading.dismiss();
   }
 
-  void _handleScroll() {
-    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - loadingIndicatorSize && !isLoading && listNotification.value.length < totalNotification) {
-      loadListNotification();
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    scrollController.addListener(() {
-      _handleScroll();
-    });
   }
 
   @override
@@ -215,44 +213,43 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   Widget buildNotificationListView() {
-    currentPage = 1;
+    currentOffset = 1;
 
     return FutureBuilder(
       future: loadListNotification(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done){
-          
-          if (getErrorText != null) {
-            return Center(
-              child: Text(
-                "LỖI: $getErrorText!",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF7B7B7B),
-                  fontSize: 12
-                ),
-              ),
-            );
-          }
-          if (totalNotification == 0) {
-            return const Center(
-              child: Text(
-                "Không có thông báo!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF7B7B7B),
-                  fontSize: 12
-                ),
-              ),
-            );
-          }
 
           return ValueListenableBuilder(
             valueListenable: listNotification,
             builder: (context, list, child) {
 
+              if (getErrorText != null) {
+                return Center(
+                  child: Text(
+                    "LỖI: $getErrorText!",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFF7B7B7B),
+                      fontSize: 12
+                    ),
+                  ),
+                );
+              }
+              if (totalNotification == 0) {
+                return const Center(
+                  child: Text(
+                    "Không có thông báo!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF7B7B7B),
+                      fontSize: 12
+                    ),
+                  ),
+                );
+              }
+
               return ListView.separated(
-                controller: scrollController,
                 padding: const EdgeInsets.all(8),
                 separatorBuilder: (_, __) => const SizedBox(height: 8,), 
                 itemCount: list.length + 1,
@@ -260,12 +257,41 @@ class NotificationPageState extends State<NotificationPage> {
 
                   if (index == list.length) {
                     return (listNotification.value.length < totalNotification)
-                      ? const Center(
-                        child: SizedBox(
-                          height: loadingIndicatorSize,
-                          width: loadingIndicatorSize,
-                          child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
-                        ),
+                      ? ValueListenableBuilder(
+                        valueListenable: isLoadMore,
+                        builder: (context, value, child) {
+                          return !isLoadMore.value
+                            ? SizedBox(
+                              height: loadingIndicatorSize + 8,
+                              width: MediaQuery.of(context).size.width - 16,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFFDCDCDC),
+                                  foregroundColor: Colors.black,
+                                  padding: EdgeInsets.zero,
+                                  textStyle: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)
+                                  )
+                                ),
+                                child: const Text("Tải thêm thông báo",),
+                                onPressed: () {
+                                  loadListNotification();
+                                }
+                              )
+                            )
+                            : Center(
+                              child: Container(
+                                height: loadingIndicatorSize,
+                                width: loadingIndicatorSize,
+                                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                                child: const CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.75,),
+                              ),
+                            );
+                        },
                       )
                       : const Text(
                           "Đã tải toàn bộ thông báo!",

@@ -329,11 +329,11 @@ class APIService {
     }
   }
 
-  Future<GetListNotificationResponseModel> getListNotification({required int pageIndex, int pageSize = 10}) async {
+  Future<GetListNotificationResponseModel> getListNotification({required int offset, int pageSize = 10}) async {
     var accessToken = await secureStorageServices.getAccessToken();
     List<NotificationData> listNotification = [];
 
-    String baseUrl = "$host/notifications?pageSize=$pageSize&pageIndex=$pageIndex";
+    String baseUrl = "$host/notifications?pageSize=$pageSize&offset=$offset";
 
     Uri url = Uri.parse(baseUrl);
 
