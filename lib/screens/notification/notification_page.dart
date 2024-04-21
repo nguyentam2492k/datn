@@ -5,6 +5,7 @@ import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/api/api_service.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -34,6 +35,8 @@ class NotificationPageState extends State<NotificationPage> {
   bool isLoading = false;
 
   ValueNotifier<bool> isLoadMore = ValueNotifier(false);
+
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> loadListNotification() async {
     isLoading = true;
@@ -86,6 +89,12 @@ class NotificationPageState extends State<NotificationPage> {
           listNotification.value = List.from(listNotification.value);
         }
 
+        //Check end of list after delete noti
+        //Need to have addPostFrameCallback to check frame after delete
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          _handleScroll();
+        });
+
         MyToast.showToast(
           text: value
         );
@@ -99,9 +108,18 @@ class NotificationPageState extends State<NotificationPage> {
     await EasyLoading.dismiss();
   }
 
+  void _handleScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - loadingIndicatorSize - 8 && !isLoading && listNotification.value.length < totalNotification) {
+      loadListNotification();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      _handleScroll();
+    });
   }
 
   @override
@@ -252,46 +270,18 @@ class NotificationPageState extends State<NotificationPage> {
               return ListView.separated(
                 padding: const EdgeInsets.all(8),
                 separatorBuilder: (_, __) => const SizedBox(height: 8,), 
+                controller: _scrollController,
                 itemCount: list.length + 1,
                 itemBuilder: (BuildContext context, int index) {
 
                   if (index == list.length) {
                     return (listNotification.value.length < totalNotification)
-                      ? ValueListenableBuilder(
-                        valueListenable: isLoadMore,
-                        builder: (context, value, child) {
-                          return !isLoadMore.value
-                            ? SizedBox(
-                              height: loadingIndicatorSize + 8,
-                              width: MediaQuery.of(context).size.width - 16,
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFFDCDCDC),
-                                  foregroundColor: Colors.black,
-                                  padding: EdgeInsets.zero,
-                                  textStyle: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)
-                                  )
-                                ),
-                                child: const Text("Tải thêm thông báo",),
-                                onPressed: () {
-                                  loadListNotification();
-                                }
-                              )
-                            )
-                            : Center(
-                              child: Container(
-                                height: loadingIndicatorSize,
-                                width: loadingIndicatorSize,
-                                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                                child: const CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.75,),
-                              ),
-                            );
-                        },
+                      ? const Center(
+                        child: SizedBox(
+                          height: loadingIndicatorSize,
+                          width: loadingIndicatorSize,
+                          child: CircularProgressIndicator(color: Color(0xFF1E3CFF), strokeWidth: 2.25,)
+                        ),
                       )
                       : const Text(
                           "Đã tải toàn bộ thông báo!",
