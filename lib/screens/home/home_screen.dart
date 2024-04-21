@@ -227,12 +227,13 @@ class HomeScreenState extends State<HomeScreen> {
             currentAccountPicture: ValueListenableBuilder(
               valueListenable: globalProfileImage,
               builder: (BuildContext context, String? value, Widget? child) {
-                return Image(
+                return Image.network(
+                  value ?? "https://i-vn2.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/logo.png",
                   fit: BoxFit.contain,
                   height: 40,
-                  image: value != null 
-                    ? NetworkImage(value) 
-                    : const AssetImage('assets/images/uet_logo_background.png') as ImageProvider,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/uet_logo_background.png');
+                  },
                 );
               },
             ),
