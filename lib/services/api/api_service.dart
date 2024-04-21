@@ -34,7 +34,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
           responseType: ResponseType.plain
         ),
@@ -66,7 +66,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         ), 
       );
@@ -116,7 +116,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         ), 
       );
@@ -155,7 +155,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         )
       );
@@ -209,7 +209,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         )
       );
@@ -239,7 +239,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         ), 
       );
@@ -310,7 +310,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         )
       );
@@ -349,7 +349,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         ), 
       );
@@ -393,7 +393,7 @@ class APIService {
           },
           followRedirects: false,
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status < 600;
           },
         ), 
       );
