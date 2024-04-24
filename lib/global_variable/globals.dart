@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>();
 SecureStorageServices secureStorageServices = SecureStorageServices();
+bool isRequestInformationPageOpened = false;
 
 var globalStudentProfile = StudentProfile();
 ValueNotifier<String?> globalProfileImage = ValueNotifier(null);

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:datn/global_variable/globals.dart';
-import 'package:datn/model/request/request_model.dart';
+import 'package:datn/model/notification_data/notification_data.dart';
 import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
@@ -105,22 +105,16 @@ class NotificationServices {
         .show(Random().nextInt(99), message.notification?.title, message.notification?.body, notificationDetails, payload: jsonEncode(message.data));
   }
 
-  // on tp firebase/background notification
+  // on tap firebase/background notification
   static Future<void> onSelectBackgroundNotification() async {
     RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
 
     if (message?.notification != null) {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(message!.data['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-      },));
+      handleTapNotification(messageData: message!.data);
     }
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var requestData = jsonDecode(message.data['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData),);
-      },));
+      handleTapNotification(messageData: message.data);
     });
   }
 
@@ -128,10 +122,21 @@ class NotificationServices {
   static void onSelectForegroundNotification(NotificationResponse notificationResponse) {
     var payload = notificationResponse.payload;
     if (payload != null) {
-      globalNavigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-        var messageData = jsonDecode(payload);
-        var requestData = jsonDecode(messageData['request']);
-        return RequestInformationPage(requestInfo: Request.fromJson(requestData));
+      var messageData = jsonDecode(payload);
+      handleTapNotification(messageData: messageData);
+    }
+  }
+
+  static void handleTapNotification({required Map<String, dynamic> messageData}) {
+    if (isRequestInformationPageOpened) {
+      globalNavigatorKey.currentState?.pushReplacement(MaterialPageRoute(builder: (context) {
+        var notificationData = NotificationData.fromMap(messageData);
+        return RequestInformationPage(requestInfo: notificationData.request!,);
+      },));
+    } else {
+      globalNavigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
+        var notificationData = NotificationData.fromMap(messageData);
+        return RequestInformationPage(requestInfo: notificationData.request!,);
       },));
     }
   }

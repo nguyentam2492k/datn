@@ -47,7 +47,7 @@ class Request {
 
   factory Request.fromJson(Map<String, dynamic> json) {
 
-    final localDateCreate = formatDateWithTime(json['created_date'] as String, outputIncludeTime: true);
+    final localDateCreate = formatDateWithTime(json['created_date'] as String?, outputIncludeTime: true);
     final localDateReceive = formatDateWithTime(json['receive_date'] as String?, outputIncludeTime: true);
 
     final date = getDateFromString(json['created_date'] as String);
