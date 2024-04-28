@@ -89,28 +89,28 @@ class SecureStorageServices {
   }
 
   Future<void> initNotificationNumber() async {
-    final containNotificationNumber = await secureStorage.containsKey(key: "notification_number");
+    final containNotificationNumber = await secureStorage.containsKey(key: "${getGlobalLoginResponse().id}_notification_number");
 
     if (!containNotificationNumber) {
-      await secureStorage.write(key: "notification_number", value: "0");
+      await secureStorage.write(key: "${getGlobalLoginResponse().id}_notification_number", value: "0");
     }
-    print("init noti number");
+    print("init id ${getGlobalLoginResponse().id} noti number");
   }
 
   Future<void> updateNotificationNumber(int newNotificationNumber) async {
     globalNumberNotification.value = newNotificationNumber;
-    await secureStorage.write(key: "notification_number", value: newNotificationNumber.toString());
+    await secureStorage.write(key: "${getGlobalLoginResponse().id}_notification_number", value: newNotificationNumber.toString());
   }
 
   Future<int?> getNotificationNumber() async {
-    final containAccessToken = await secureStorage.containsKey(key: "notification_number");
+    final containAccessToken = await secureStorage.containsKey(key: "${getGlobalLoginResponse().id}_notification_number");
 
     if (!containAccessToken) {
       globalNumberNotification.value = 0;
       return 0;
     }
 
-    final notificationNumberStr = await secureStorage.read(key: "notification_number");
+    final notificationNumberStr = await secureStorage.read(key: "${getGlobalLoginResponse().id}_notification_number");
 
     if (!isInteger(notificationNumberStr!)) {
       return null;
@@ -122,6 +122,6 @@ class SecureStorageServices {
   
   Future<void> clearNotificationNumber() async {
     globalNumberNotification.value = 0;
-    await secureStorage.write(key: "notification_number", value: "0");
+    await secureStorage.write(key: "${getGlobalLoginResponse().id}_notification_number", value: "0");
   }
 }
