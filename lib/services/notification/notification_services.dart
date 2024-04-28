@@ -23,6 +23,7 @@ class NotificationServices {
 
 
   static Future initNotification() async {
+    await secureStorageServices.initNotificationNumber();
     if (await AppPermission.requestNotificationPermission()) {
       await initFirebaseNotification();
       await initLocalNotification();
@@ -71,18 +72,29 @@ class NotificationServices {
     await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
   }
 
+  static onBackgroundMessage() {
+    FirebaseMessaging.onBackgroundMessage((message) => doSomethingWithMessage(message));
+  }
+
   @pragma('vm:entry-point')
   static Future<void> doSomethingWithMessage(RemoteMessage message) async {
-    // if (message.notification != null) {
-    //   print("Notification message: ${message.data}");
-    // } else {
-    //   print("NO NOTIFICATION");
-    // }
+    var currentNotificationNumber = await secureStorageServices.getNotificationNumber();
+    if (message.notification != null && currentNotificationNumber != null) {
+      secureStorageServices.updateNotificationNumber(currentNotificationNumber += 1);
+    } else {
+      print("NO NOTIFICATION");
+    }
   }
 
   static Future<void> showForegroundNotification() async {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      NotificationServices.showLocalNotification(message: message);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      var currentNotificationNumber = await secureStorageServices.getNotificationNumber();
+      if (message.notification != null && currentNotificationNumber != null) {
+        NotificationServices.showLocalNotification(message: message);
+        secureStorageServices.updateNotificationNumber(currentNotificationNumber += 1);
+      } else {
+        print("NO NOTIFICATION");
+      }
     });
   }
 

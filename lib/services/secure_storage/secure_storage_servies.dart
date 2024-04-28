@@ -1,3 +1,5 @@
+import 'package:datn/function/function.dart';
+import 'package:datn/global_variable/globals.dart';
 import 'package:datn/model/login/login_model.dart';
 import 'package:datn/model/student/student_profile.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -84,5 +86,42 @@ class SecureStorageServices {
     await secureStorage.delete(key: "name");
     await secureStorage.delete(key: "id");
     await secureStorage.delete(key: "image");
+  }
+
+  Future<void> initNotificationNumber() async {
+    final containNotificationNumber = await secureStorage.containsKey(key: "notification_number");
+
+    if (!containNotificationNumber) {
+      await secureStorage.write(key: "notification_number", value: "0");
+    }
+    print("init noti number");
+  }
+
+  Future<void> updateNotificationNumber(int newNotificationNumber) async {
+    globalNumberNotification.value = newNotificationNumber;
+    await secureStorage.write(key: "notification_number", value: newNotificationNumber.toString());
+  }
+
+  Future<int?> getNotificationNumber() async {
+    final containAccessToken = await secureStorage.containsKey(key: "notification_number");
+
+    if (!containAccessToken) {
+      globalNumberNotification.value = 0;
+      return 0;
+    }
+
+    final notificationNumberStr = await secureStorage.read(key: "notification_number");
+
+    if (!isInteger(notificationNumberStr!)) {
+      return null;
+    }
+
+    globalNumberNotification.value = int.tryParse(notificationNumberStr);
+    return int.tryParse(notificationNumberStr);
+  }
+  
+  Future<void> clearNotificationNumber() async {
+    globalNumberNotification.value = 0;
+    await secureStorage.write(key: "notification_number", value: "0");
   }
 }

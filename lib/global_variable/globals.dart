@@ -9,6 +9,8 @@ final GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>()
 SecureStorageServices secureStorageServices = SecureStorageServices();
 bool isRequestInformationPageOpened = false;
 
+ValueNotifier<int?> globalNumberNotification = ValueNotifier(null);
+
 var globalStudentProfile = StudentProfile();
 ValueNotifier<String?> globalProfileImage = ValueNotifier(null);
 

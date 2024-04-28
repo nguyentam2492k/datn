@@ -41,7 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     NotificationServices.showForegroundNotification();
 
-    // FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
+    NotificationServices.onBackgroundMessage;
   }
 
   @override
@@ -80,10 +80,27 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(MyIcons.notification),
+          icon: FutureBuilder(
+            future: secureStorageServices.getNotificationNumber(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ValueListenableBuilder(
+                  valueListenable: globalNumberNotification,
+                  builder: (context, value, child) => Badge(
+                    isLabelVisible: value != null && value != 0,
+                    backgroundColor: Colors.red,
+                    label: Text(value.toString()),
+                    child: const Icon(MyIcons.notification)
+                  ),
+                );
+              } else {
+                return const Icon(MyIcons.notification);
+              }
+            },
+          ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder:(context) {
             return const NotificationPage();
-          },)),
+          },)).then((value) => secureStorageServices.clearNotificationNumber()),
         ),
       ],
     );
