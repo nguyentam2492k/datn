@@ -41,7 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     NotificationServices.showForegroundNotification();
 
-    // FirebaseMessaging.onBackgroundMessage(NotificationServices.doSomethingWithMessage);
+    NotificationServices.onBackgroundMessage;
   }
 
   @override

@@ -38,7 +38,7 @@ class MyIcons {
   static const IconData closeFill = CupertinoIcons.clear_thick_circled;
   static const IconData chamthanFill = CupertinoIcons.exclamationmark_circle_fill;
   static const IconData questionMark = Icons.question_mark;
-  static const IconData notification = Icons.notifications_active_outlined;
+  static const IconData notification = Icons.notifications_none;
   static const IconData more = Icons.more_vert;
   static const IconData delete = Icons.delete_outline_rounded;
   static const IconData remove = Icons.remove_circle_rounded;

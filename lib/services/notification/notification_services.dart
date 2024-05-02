@@ -71,18 +71,25 @@ class NotificationServices {
     await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
   }
 
+  static onBackgroundMessage() {
+    FirebaseMessaging.onBackgroundMessage((message) => doSomethingWithMessage(message));
+  }
+
   @pragma('vm:entry-point')
   static Future<void> doSomethingWithMessage(RemoteMessage message) async {
-    // if (message.notification != null) {
-    //   print("Notification message: ${message.data}");
-    // } else {
-    //   print("NO NOTIFICATION");
-    // }
+  //   if (message.notification != null) {
+  //   } else {
+  //     print("NO NOTIFICATION");
+  //   }
   }
 
   static Future<void> showForegroundNotification() async {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      NotificationServices.showLocalNotification(message: message);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.notification != null) {
+        NotificationServices.showLocalNotification(message: message);
+      } else {
+        print("NO NOTIFICATION");
+      }
     });
   }
 

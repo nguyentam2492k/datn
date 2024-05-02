@@ -9,6 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class NotificationPage extends StatefulWidget {
+  
   const NotificationPage({super.key});
 
   @override
@@ -129,7 +130,7 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
       appBar: buildAppBar(context),
