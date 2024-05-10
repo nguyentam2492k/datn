@@ -3,8 +3,8 @@
 Dựa trên website hệ thống một cửa của trường Đại học Công nghệ: https://student.uet.vnu.edu.vn/
 
 ## Tài khoản DEMO
-> **Tên đăng nhập: 20871390@vnu.edu.vn
-Mật khẩu: Abcd@123**
+> **Tên đăng nhập: 20871390@vnu.edu.vn**
+> **Mật khẩu: Abcd@123**
 
 ## Điều kiện cần để chạy code
 Sử dụng lệnh sau để kiểm tra cài đặt flutter:
