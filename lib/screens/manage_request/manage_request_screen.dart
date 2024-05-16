@@ -109,7 +109,7 @@ class ManageRequestScreenState extends State<ManageRequestScreen> {
 
   AppBar buildAppBar() {
     return AppBar(
-      title: const Text("Xử lý yêu cầu"),
+      title: const Text("Danh mục yêu cầu"),
       centerTitle: true,
       backgroundColor: Colors.white,
       titleTextStyle: const TextStyle(

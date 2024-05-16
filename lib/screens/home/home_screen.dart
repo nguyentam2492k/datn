@@ -242,7 +242,7 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ),
           ListTile(
-            title: const Text('Xử lý yêu cầu'),
+            title: const Text('Danh mục yêu cầu'),
             leading: const Icon(MyIcons.contact),
             trailing: const Icon(MyIcons.arrowRight),
             onTap: () async {
