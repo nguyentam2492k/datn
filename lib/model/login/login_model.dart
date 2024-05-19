@@ -32,7 +32,7 @@ class LoginRequestModel {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'email': username.trim(),
+      'code': username.trim(),
       'password': password.trim(),
     };
   }

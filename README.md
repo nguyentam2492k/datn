@@ -3,7 +3,7 @@
 Dựa trên website hệ thống một cửa của trường Đại học Công nghệ: https://student.uet.vnu.edu.vn/
 
 ## Tài khoản DEMO
-> **Tên đăng nhập: 20871390@vnu.edu.vn**
+> **Tên đăng nhập: 20871390**
 
 > **Mật khẩu: Abcd@123**
 

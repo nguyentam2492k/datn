@@ -169,7 +169,7 @@ class HelpScreen extends StatelessWidget {
                 )
               ),
               const SizedBox(height: 10,),
-              const Text("Ví dụ: Sinh viên có tài khoản đăng nhập email là: \"21021234@vnu.edu.vn\", password \"A12345678\", thì đăng nhập vào hệ thống với:"),
+              const Text("Ví dụ: Sinh viên có tài khoản được nhà trường cung cấp có email là: \"21021234@vnu.edu.vn\", mật khẩu: \"A12345678\", thì đăng nhập vào hệ thống với:"),
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: RichText(
@@ -187,7 +187,7 @@ class HelpScreen extends StatelessWidget {
                         )
                       ),
                       TextSpan(
-                        text: "21021234@vnu.edu.vn\n"
+                        text: "21021234\n"
                       ),
                       TextSpan(
                         text: "Mật khẩu: ",
