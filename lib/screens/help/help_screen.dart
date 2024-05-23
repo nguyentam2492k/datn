@@ -287,14 +287,14 @@ class HelpScreen extends StatelessWidget {
                     ),
                     children: [
                       TextSpan(
-                        text: "• Xử lý yêu cầu: ",
+                        text: "• Danh mục yêu cầu: ",
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.bold
                         )
                       ),
                       TextSpan(
-                        text: "Mở trang \"Xử lý yêu cầu\"\n"
+                        text: "Mở trang \"Danh mục yêu cầu\"\n"
                       ),
                       TextSpan(
                         text: "• Tạo yêu cầu: ",
@@ -315,6 +315,16 @@ class HelpScreen extends StatelessWidget {
                       ),
                       TextSpan(
                         text: "Mở trang \"Hỗ trợ\"\n"
+                      ),
+                      TextSpan(
+                        text: "• Cập nhật hồ sơ: ",
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      TextSpan(
+                        text: "Cập nhật hồ sơ sinh viên\n"
                       ),
                       TextSpan(
                         text: "• Đăng xuất: ",
@@ -459,7 +469,7 @@ class HelpScreen extends StatelessWidget {
                 )
               ),
               const SizedBox(height: 10,),
-              const Text("Sau khi bấm \"Lưu\", yêu cầu đã được gửi thành công. Sinh viên có thể kiểm tra trạng thái yêu cầu của mình gửi ở màn \"Xử lý yêu cầu\".")
+              const Text("Sau khi bấm \"Gửi yêu cầu\", và yêu cầu đã được gửi thành công. Sinh viên có thể kiểm tra trạng thái yêu cầu của mình gửi ở màn \"Danh mục yêu cầu\".")
             ],
           ),
           const Divider(thickness: 0.4,),
@@ -469,14 +479,14 @@ class HelpScreen extends StatelessWidget {
             initiallyExpanded: false,
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
             title: const Text(
-              "Xử lý yêu cầu",
+              " Danh mục yêu cầu",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 17.5
               ),
             ),
             children: [
-              const Text("Chức năng \"Xử lý yêu cầu\" trong \"Menu/Xử lý yêu cầu\" hỗ trợ sinh viên theo dõi trạng thái chi tiết của yêu cầu. Giao diện \"Xử lý yêu cầu\" như hình dưới đây:"),
+              const Text("Chức năng \"Danh mục yêu cầu\" trong \"Menu/Danh mục yêu cầu\" hỗ trợ sinh viên theo dõi trạng thái chi tiết của yêu cầu. Giao diện \"Danh mục yêu cầu\" như hình dưới đây:"),
               const SizedBox(height: 10,),
               Image(
                 image: const AssetImage('assets/help_page_images/7_manage_request.png'),
