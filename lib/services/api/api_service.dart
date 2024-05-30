@@ -16,7 +16,7 @@ import 'package:datn/services/handle/my_handle.dart';
 
 class APIService {
 
-  static const host = "https://uet-student-cc10e59e8dec.herokuapp.com/api/v1";
+  static const host = "http://ec2-57-180-250-163.ap-northeast-1.compute.amazonaws.com/api/v1";
 
   final dio = Dio();
 
