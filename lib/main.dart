@@ -5,15 +5,28 @@ import 'package:datn/model/student/student_profile.dart';
 import 'package:datn/screens/home/home_screen.dart';
 import 'package:datn/screens/log_in/log_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  final notification = message.notification;
+  if (notification != null) {
+    print(notification.title);
+  } else {
+    print("NO NOTIFICATION");
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   var userInfo = await secureStorageServices.getSaveUserInfo();
   if (userInfo != null) {

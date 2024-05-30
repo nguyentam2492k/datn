@@ -6,6 +6,8 @@ import 'package:datn/model/notification_data/notification_data.dart';
 import 'package:datn/screens/request_information/request_information_page.dart';
 import 'package:datn/services/permission/permission_check.dart';
 import 'package:datn/widgets/custom_widgets/my_toast.dart';
+// import 'package:datn/services/permission/permission_check.dart';
+// import 'package:datn/widgets/custom_widgets/my_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -23,28 +25,26 @@ class NotificationServices {
 
 
   static Future initNotification() async {
-    if (await AppPermission.requestNotificationPermission()) {
-      await initFirebaseNotification();
-      await initLocalNotification();
-      NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
-    }
-  }
+    var notificationPermission = await AppPermission.requestNotificationPermission();
+    await initFirebaseNotification();
+    await initLocalNotification();
+    NotificationServices.subscribeToTopic(getGlobalLoginResponse().id ?? "");
 
-  static Future initFirebaseNotification() async {
-    if (await AppPermission.requestNotificationPermission()) {
-
-      final apnsToken = await firebaseMessagingInstance.getAPNSToken();
-      if (apnsToken != null) {
-      // APNS token is available, make FCM plugin API requests...
-      }
-      final fcmToken = await firebaseMessagingInstance.getToken();
-      print("FCM Device Token: $fcmToken");
-    } else {
+    if (!notificationPermission) {
       MyToast.showToast(
         isError: true,
         errorText: "Chưa cấp quyền thông báo"
       );
     }
+  }
+
+  static Future initFirebaseNotification() async {
+    final apnsToken = await firebaseMessagingInstance.getAPNSToken();
+    if (apnsToken != null) {
+    // APNS token is available, make FCM plugin API requests...
+    }
+    final fcmToken = await firebaseMessagingInstance.getToken();
+    print("FCM Device Token: $fcmToken");
     print("init firebase msg");
   }
 
@@ -71,17 +71,20 @@ class NotificationServices {
     await firebaseMessagingInstance.unsubscribeFromTopic(topicName);
   }
 
-  static onBackgroundMessage() {
-    FirebaseMessaging.onBackgroundMessage((message) => doSomethingWithMessage(message));
-  }
+  // @pragma('vm:entry-point')
+  // static onBackgroundMessage() {
+  //   FirebaseMessaging.onBackgroundMessage((message) => doSomethingWithMessage(message));
+  // }
 
-  @pragma('vm:entry-point')
-  static Future<void> doSomethingWithMessage(RemoteMessage message) async {
-  //   if (message.notification != null) {
+  // @pragma('vm:entry-point')
+  // static Future<void> doSomethingWithMessage(RemoteMessage message) async {
+  //   final notification = message.notification;
+  //   if (notification != null) {
+  //     print(notification.title);
   //   } else {
   //     print("NO NOTIFICATION");
   //   }
-  }
+  // }
 
   static Future<void> showForegroundNotification() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
