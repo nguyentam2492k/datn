@@ -39,3 +39,23 @@ Cập nhật Flutter tới phiên bản mới nhất:
 ```sh
 flutter upgrade
 ```
+## Hình ảnh demo:
+Đăng nhập:
+
+![image](https://github.com/user-attachments/assets/4fceda84-3386-4303-8396-a4ee2eadb64a)
+
+Tạo yêu cầu:
+
+![image](https://github.com/user-attachments/assets/1d26c569-f299-4edb-860e-d623a8f74f01) ![image](https://github.com/user-attachments/assets/7a94791a-cc97-4470-b04d-cfbaeb11f1c0)
+
+Xem yêu cầu đã gửi:
+
+![image](https://github.com/user-attachments/assets/05514f9c-ed02-4a68-ab4d-043e90581823) ![image](https://github.com/user-attachments/assets/8ca8293f-6bf0-452d-b39a-e221ea28694e)
+
+Thông báo:
+
+![image](https://github.com/user-attachments/assets/1a645404-abc7-47f8-8b8c-7d8fcf04ba3f)
+
+
+
+
